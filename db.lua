@@ -409,7 +409,10 @@ function DurexDatabase:new()
         if (self.query.fields) then
 
         else
-
+            local elements = fs.list(self.dataPath)
+            for i = 1, #elements - 1 do
+                fs.remove(self.dataPath .. "/" .. elements[i])
+            end
         end
     end
 
