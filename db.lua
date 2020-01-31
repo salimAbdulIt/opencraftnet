@@ -422,10 +422,15 @@ function DurexDatabase:new()
         end
         return false
     end
+    function obj:starts_with(str, start)
+        return str:sub(1, #start) == start
+    end
 
     function obj:isValid(value1, value2, operation)
         if (operation == "=") then
             return tostring(value1) == tostring(value2)
+        else if (operation == "STARTFROM") then
+            return self:starts_with(value1, value2)
         end
     end
 
