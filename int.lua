@@ -26,6 +26,7 @@ local nameOfRobot = 'opencomputers:robot'
 
 local order = {}
 
+local findNameFilter
 
 local revercedAddresses = {}
 revercedAddresses[0] = 1
@@ -114,8 +115,21 @@ local sortFunc = function(a, b)
     return a[2] - b[2]
 end
 
+function createSelectQuery(limit, skip, labelName, orderBy)
+    local selectQuery = "SELECT FROM ITEMS LIMIT " .. limit .. " SKIP " .. skip
+    if (labelName) then
+        selectQuery = selectQuery .. " WHERE label contains " .. labelName
+    end
+
+    if (orderBy) then
+        selectQuery = selectQuery .. " ORDER BY " .. orderBy
+    end
+    return selectQuery
+end
+
+
 function drawItems()
-    items_on_the_screen = db:execute("SELECT FROM ITEMS LIMIT " .. sizeOfPage .. " SKIP " .. (page - 1) * sizeOfPage .. " ORDER BY count", nil)
+    items_on_the_screen = db:execute(createSelectQuery(sizeOfPage, (page - 1) * sizeOfPage, findNameFilter, "count"), nil)
     gpu.setBackground(0x111111)
     gpu.fill(23, 3, 56, 27, ' ')
     for i = 1, #items_on_the_screen do
@@ -173,7 +187,7 @@ function getAllItemsFromDataBaseAll()
 end
 
 function setFilter(name)
-    return dataBase:setFilter(name)
+    findNameFilter = name
 end
 
 function saveItems()
