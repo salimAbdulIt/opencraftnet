@@ -14,6 +14,7 @@ require("durexdb")
 local db = Database:new()
 local transposerAddresses = {}
 local storageAddresses = {}
+local robotAddress = {}
 local items = {}
 gpu.setResolution(80, 30)
 
@@ -21,6 +22,7 @@ local page = 1
 local sizeOfPage = 26
 local items_on_the_screen = {}
 local id_of_available_slot = 'minecraftair_0'
+local nameOfRobot = 'opencomputers:robot'
 
 local order = {}
 
@@ -57,6 +59,7 @@ function saveStorages()
     file:write(serial.serialize(address))
     file:close()
 end
+
 local tempStorages = component.list('transposer')
 local tempTransposers = {}
 for k, v in pairs(tempStorages) do
@@ -78,12 +81,17 @@ function findEnd(address, lastOutputTransposer)
                             transposerAddresses[address].transposer.transferItem(inputSide, outputSide, 64, 1, 1)
                             findEnd(address .. outputSide, transposerAddresses[address].transposer.address)
                             transposerAddresses[address].transposer.transferItem(outputSide, inputSide, 64, 1, 1)
+                        elseif (transposerAddresses[address].transposer.getInventoryName(outputSide) == nameOfRobot) then
+                            robotAddress.address = address
+                            robotAddress.outputSide = outputSide
+                            robotAddress.inputSide = inputSide
                         else
                             -- found storage
                             local address1 = {}
                             address1.address = address
                             address1.side = outputSide
                             storageAddresses[address1] = {}
+                            storageAddresses[address1].name = transposerAddresses[address].transposer.getInventoryName(outputSide)
                             storageAddresses[address1].address = address
                             storageAddresses[address1].outputSide = outputSide
                             storageAddresses[address1].inputSide = inputSide
