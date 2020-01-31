@@ -85,7 +85,7 @@ function DurexDatabase:new()
             oldValue = serial.unserialize(file:read("*a"))
             file:close()
         end
-        self:updateIndexValues(oldValue, self.query.value, self.query.id .. ".row");
+        self:updateIndexValues(oldValue, self.query.value, self.query.id .. ".row")
 
         local file = io.open(self.dataPath .. self.query.id .. ".row", "w")
         file:write(serial.serialize(self.query.value))
@@ -105,10 +105,21 @@ function DurexDatabase:new()
         end
         return true
     end
-    function obj:tablefind(tab,el)
+
+    function obj:tablefind(tab, el)
         for index, value in pairs(tab) do
             if value == el then
                 return index
+            end
+        end
+    end
+
+    function obj:clearIndexes()
+        for i, index in pairs(fs.list(self.indexPath)) do
+            if i ~= 'n' and i ~= 0 then
+                local file = io.open(self.indexPath .. index, "w")
+                file:write('')
+                file:close()
             end
         end
     end
@@ -412,6 +423,7 @@ function DurexDatabase:new()
             for i = 1, #elements do
                 fs.remove(self.dataPath .. "/" .. elements[i])
             end
+            self:clearIndexes()
         end
     end
 
