@@ -429,7 +429,7 @@ function DurexDatabase:new()
     function obj:isValid(value1, value2, operation)
         if (operation == "=") then
             return tostring(value1) == tostring(value2)
-        else if (operation == "STARTFROM") then
+        elseif (operation == "STARTFROM") then
             return self:starts_with(value1, value2)
         end
     end
