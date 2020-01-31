@@ -118,7 +118,7 @@ end
 function createSelectQuery(limit, skip, labelName, orderBy)
     local selectQuery = "SELECT FROM ITEMS LIMIT " .. limit .. " SKIP " .. skip
     if (labelName) then
-        selectQuery = selectQuery .. " WHERE label contains " .. labelName
+        selectQuery = selectQuery .. " WHERE label = " .. labelName
     end
 
     if (orderBy) then
