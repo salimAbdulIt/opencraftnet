@@ -27,7 +27,7 @@ function Database:new()
                 elseif (args[i] == 'LIMIT') then
                     query.limit = tonumber(args[i + 1])
                 elseif (args[i] == 'ORDER' and args[i + 1] == 'BY') then
-                    query.orderby = args[i + 2]
+                    query.orderBy = args[i + 2]
                 end
             end
             if (#fields > 0) then

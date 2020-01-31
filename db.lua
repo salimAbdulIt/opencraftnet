@@ -371,9 +371,9 @@ function DurexDatabase:new()
 
             return self:selectFromObject(values:new(self))
         end
-        if (self.query.orderby) then
+        if (self.query.orderBy) then
             table.sort(sortedValues, function(left, right)
-                return left[self.query.orderby] > right[self.query.orderby]
+                return left[self.query.orderBy] > right[self.query.orderBy]
             end)
 
             for i = 1, #sortedValues do
