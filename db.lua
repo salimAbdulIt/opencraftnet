@@ -430,7 +430,7 @@ function DurexDatabase:new()
         if (operation == "=") then
             return tostring(value1) == tostring(value2)
         elseif (operation == "STARTFROM") then
-            return self:starts_with(value1, value2)
+            return self:starts_with(string.lower(value1), string.lower(value2))
         end
     end
 
