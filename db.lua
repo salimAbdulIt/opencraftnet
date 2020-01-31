@@ -389,14 +389,13 @@ function DurexDatabase:new()
         if fields == null then
             return false
         end
-        local indexes = {}
         for index, value in pairs(fields) do
             if (fs.exists(self.indexPath .. "/" .. value.column .. ".EXACT")) then
                 table.insert(indexes, index)
                 return index
             end
         end
-        return indexes
+        return false
     end
 
     function obj:isValid(value1, value2, operation)
