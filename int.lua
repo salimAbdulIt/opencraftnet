@@ -117,8 +117,9 @@ end
 
 function createSelectQuery(limit, skip, labelName, orderBy)
     local selectQuery = "SELECT FROM ITEMS LIMIT " .. limit .. " SKIP " .. skip
-    if (labelName) then
-        selectQuery = selectQuery .. " WHERE label = " .. labelName
+    if (labelName and labelName ~= '') then
+        local finalName = labelName:gsub(" ", "___")
+        selectQuery = selectQuery .. " WHERE label = " .. finalName
     end
 
     if (orderBy) then

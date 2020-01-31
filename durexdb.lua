@@ -20,7 +20,7 @@ function Database:new()
                     local field = {}
                     field.column = args[i + 1]
                     field.operation = args[i + 2]
-                    field.value = args[i + 3]
+                    field.value = args[i + 3]:gsub("___", " ")
                     table.insert(fields, field)
                 elseif (args[i] == 'SKIP') then
                     query.skip = tonumber(args[i + 1])
