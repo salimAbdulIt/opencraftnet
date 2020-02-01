@@ -406,6 +406,9 @@ function craft(name, damage, count)
 
     tunnel.send(countOfCrafts)
     os.sleep(1)
+
+    local craftedItem = transposerAddresses[robotAddress.address].transposer.getStackInSlot(robotAddress.outputSide, 13)
+    getItemFromSlot(robotAddress.address, robotAddress.outputSide, 13, countOfCrafts)
 end
 
 function pushItems()
