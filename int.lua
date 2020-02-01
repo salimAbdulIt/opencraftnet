@@ -487,6 +487,7 @@ function addCraft()
     end
     tunnel.send(64)
 
+    os.sleep(1)
     getItemFromSlot(robotAddress.address, robotAddress.outputSide, 13, 64)
 end
 
