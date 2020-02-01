@@ -491,7 +491,7 @@ function addCraft()
     end
     tunnel.send(64)
     os.sleep(1)
-    local craftedItem = transposerAddresses[robotAddress.address].transposer.getStackInSLot(robotAddress.outputSide, 13)
+    local craftedItem = transposerAddresses[robotAddress.address].transposer.getStackInSlot(robotAddress.outputSide, 13)
     if (craftedItem) then
         receipt[0] = {}
         receipt[0].name = craftedItem.name
