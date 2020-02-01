@@ -147,6 +147,10 @@ function drawItems()
         gpu.set(74, i + 2, 'Get')
         gpu.setForeground(0xff0000)
         gpu.set(73, i + 2, 'N')
+        if (items_on_the_screen[i].receipt) then
+            gpu.setForeground(0x00ff00)
+            gpu.set(72, i + 2, 'C')
+        end
     end
 end
 
@@ -485,6 +489,17 @@ function addCraft()
             transferItemBack(i, robotAddress.address, robotAddress.outputSide, craftSlots[i], 64, 0)
         end
     end
+    local craftedItem = transposerAddresses[robotAddress.address].transposer.getStackInSLot(robotAddress.outputSide, 13)
+    if (craftedItem) then
+        receipt[0] = {}
+        receipt[0].name = craftedItem.name
+        receipt[0].damage = craftedItem.damage
+
+        local item = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(receipt[0].name, receipt[0].damage))[1]
+        item.receipt = receipt
+        db:execute("INSERT INTO ITEMS " .. getDbId(receipt[0].name, receipt[0].damage), item)
+    end
+
     tunnel.send(64)
 
     os.sleep(1)
