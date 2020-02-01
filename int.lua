@@ -400,7 +400,7 @@ function craft(name, damage, count)
     for i = 1, 9 do
         if (receipt[i]) then
             getItem(receipt[i].name, receipt[i].damage, receipt[i].count * countOfCrafts)
-            transferItemBack(i, robotAddress.address, robotAddress.outputSide, craftSlots[i], receipt[i].count * countOfCrafts, 0)
+            transferItemBack(1, robotAddress.address, robotAddress.outputSide, craftSlots[i], receipt[i].count * countOfCrafts, 0)
         end
     end
 
