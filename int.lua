@@ -174,6 +174,7 @@ function drawInterface()
     gpu.set(7, 16, 'Scan chests')
     gpu.fill(3, 11, 19, 3, ' ')
     gpu.fill(3, 7, 19, 3, ' ')
+    gpu.set(7, 20, 'Add Craft')
     gpu.set(5, 8, 'Find')
     drawItems()
 end
@@ -460,6 +461,10 @@ function pushItems()
     end
 end
 
+function addCraft()
+    transferItemBack(1, robotAddress.address, robotAddress.outputSide, 1, 64, 0)
+end
+
 function findByName()
     gpu.setBackground(0xbbbbbb)
     gpu.setForeground(0xff0000)
@@ -573,6 +578,7 @@ while true do
                 end
             end
         elseif (isClicked(3, 19, 21, 21, x, y)) then
+            addCraft()
         elseif (isClicked(3, 15, 21, 17, x, y)) then
             sinkItemsWithStorages()
             drawInterface()
