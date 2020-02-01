@@ -543,7 +543,8 @@ while true do
                 end
             end
         elseif (isClicked(73, 3, 73, 2 + sizeOfPage, x, y)) then
-            local id_with_damage = items_on_the_screen[y - 2].count
+            local damage = items_on_the_screen[y - 2].damage
+            local id = items_on_the_screen[y - 2].name
             if (y - 2) % 2 == 1 then
                 gpu.setBackground(0x333333)
             else
@@ -558,7 +559,7 @@ while true do
                         drawItems()
                         break
                     else
-                        setNameToItem(id_with_damage, str)
+                        setNameToItem(id, damage, str)
                         drawItems()
                         break
                     end
