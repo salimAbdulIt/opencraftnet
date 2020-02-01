@@ -327,20 +327,24 @@ function getItem(id, damage, count)
     db:execute("INSERT INTO ITEMS " .. getDbId(id, damage), itemsFromDb[1])
 end
 
-function transferItemBack(slot, chest_x, side, index, count, level)
+function transferItemFromTo(fromAddress, fromSide, fromIndex, toAddress, toSide, toIndex)
+    --todo realize in future
+end
+
+function transferItemBack(slot, address, side, index, count, level)
     local sourceSide = 1
-    local storage = transposerAddresses[chest_x:sub(0, level)]
+    local storage = transposerAddresses[address:sub(0, level)]
     if (level ~= 0) then
         sourceSide = storage.inputSide
     end
-    if (level < #chest_x) then
-        storage.transposer.transferItem(sourceSide, tonumber(chest_x:sub(level + 1, level + 1)), count, slot, 1)
-        return transferItemBack(1, chest_x, side, index, count, level + 1)
+    if (level < #address) then
+        storage.transposer.transferItem(sourceSide, tonumber(address:sub(level + 1, level + 1)), count, slot, 1)
+        return transferItemBack(1, address, side, index, count, level + 1)
     else
-        transposerAddresses[chest_x].transposer.transferItem(sourceSide, side, count, slot, index)
-        local tempItem = transposerAddresses[chest_x].transposer.getStackInSlot(side, index)
+        transposerAddresses[address].transposer.transferItem(sourceSide, side, count, slot, index)
+        local tempItem = transposerAddresses[address].transposer.getStackInSlot(side, index)
         local item = {}
-        item.storage = chest_x
+        item.storage = address
         item.side = side
         item.slot = index
         item.size = tempItem.size
@@ -375,7 +379,21 @@ function getNotFullSlots(name, damage, maxSize)
     return returnList
 end
 
-function craft(item, count)
+function craft(name, damage, count)
+    local craftedItem = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(name, damage), nil)[1]
+    local receipt = craftedItem.receipt
+
+    local countOfCrafts = math.cell(count / receipt[0].count)
+
+    for i = 1, 9 do
+        if (receipt[i]) then
+            getItem(receipt[i].name, receipt[i].damage, receipt[i].count * countOfCrafts)
+            transferItemBack(i, robotAddress.address, robotAddress.outputSide, craftSlots[i], receipt[i].count * countOfCrafts, 0)
+        end
+    end
+
+    tunnel.send(countOfCrafts)
+    os.sleep(1)
 end
 
 function pushItems()
@@ -486,6 +504,7 @@ function addCraft()
             receipt[i] = {}
             receipt[i].name = tempItem.name
             receipt[i].damage = tempItem.damage
+            receipt[i].count = tempItem.size
             transferItemBack(i, robotAddress.address, robotAddress.outputSide, craftSlots[i], 64, 0)
         end
     end
@@ -496,13 +515,20 @@ function addCraft()
         receipt[0] = {}
         receipt[0].name = craftedItem.name
         receipt[0].damage = craftedItem.damage
+        receipt[0].count = craftedItem.size
 
-        local item = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(receipt[0].name, receipt[0].damage))[1]
+        local item = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(receipt[0].name, receipt[0].damage))[1] --todo crashes in case if crafted item is not exists in the database.
+        if (not item) then
+            item = {}
+            item.name = craftedItem.name
+            item.damage = craftedItem.damage
+            item.label = craftedItem.label
+            item.count = 0
+            item.itemXdata = {}
+        end
         item.receipt = receipt
-        db:execute("INSERT INTO ITEMS " .. getDbId(receipt[0].name, receipt[0].damage), item)
+        db:execute("INSERT INTO ITEMS " .. getDbId(item.name, item.damage), item)
     end
-
-
     getItemFromSlot(robotAddress.address, robotAddress.outputSide, 13, 64)
 end
 
@@ -575,6 +601,42 @@ while true do
                             break
                         else
                             getItem(id, damage, tonumber(str))
+                            drawItems()
+                            break
+                        end
+                    elseif (asci == 8) then
+                        gpu.fill(37, 15, 5, 1, ' ')
+                        str = unicode.sub(str, 1, unicode.len(str) - 1)
+                        gpu.set(37, 15, str)
+                    elseif (asci >= 48 and asci <= 57) then
+                        str = str .. unicode.char(asci)
+                        gpu.set(37, 15, str)
+                    end
+                end
+            end
+        elseif (isClicked(72, 3, 72, 2 + sizeOfPage, x, y)) then
+            if (items_on_the_screen[y - 2]) then
+
+                local damage = items_on_the_screen[y - 2].damage
+                local id = items_on_the_screen[y - 2].name
+                gpu.setBackground(0xbbbbbb)
+                gpu.fill(28, 10, 24, 8, ' ')
+                gpu.setBackground(0x111111)
+                gpu.fill(30, 11, 20, 6, ' ')
+                gpu.setForeground(0xffffff)
+                gpu.set(34, 14, "Input count")
+                gpu.setBackground(0x666666)
+                gpu.setForeground(0xffffff)
+                gpu.fill(37, 15, 5, 1, ' ')
+                local str = ''
+                while true do
+                    local _, _, asci = event.pull('key_down')
+                    if (asci == 13) then
+                        if (str == '' or tonumber(str) == 0) then
+                            drawItems()
+                            break
+                        else
+                            craft(id, damage, tonumber(str))
                             drawItems()
                             break
                         end
