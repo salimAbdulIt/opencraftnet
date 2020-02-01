@@ -259,8 +259,10 @@ function getItemFromSlot(storageX, side, index, count)
     return item
 end
 
-function setNameToItem(id, name)
-    dataBase:setNameForItem(id, name)
+function setNameToItem(id, damage, name)
+    local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(id, damage), nil)
+    itemsFromDb[1].label = name
+    db:execute("INSERT INTO ITEMS " .. getDbId(id, damage), itemsFromDb[1])
 end
 
 function getDbId(id, damage)
