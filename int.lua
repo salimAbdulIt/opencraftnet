@@ -489,6 +489,8 @@ function addCraft()
             transferItemBack(i, robotAddress.address, robotAddress.outputSide, craftSlots[i], 64, 0)
         end
     end
+    tunnel.send(64)
+    os.sleep(1)
     local craftedItem = transposerAddresses[robotAddress.address].transposer.getStackInSLot(robotAddress.outputSide, 13)
     if (craftedItem) then
         receipt[0] = {}
@@ -500,9 +502,7 @@ function addCraft()
         db:execute("INSERT INTO ITEMS " .. getDbId(receipt[0].name, receipt[0].damage), item)
     end
 
-    tunnel.send(64)
 
-    os.sleep(1)
     getItemFromSlot(robotAddress.address, robotAddress.outputSide, 13, 64)
 end
 
