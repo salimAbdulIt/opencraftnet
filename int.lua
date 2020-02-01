@@ -494,7 +494,6 @@ function craft(name, damage, count)
         return false
     end
     local countOfCrafts = math.ceil(count / receipt[0].count)
-
     for i = 1, 9 do
         if (receipt[i]) then
             local itemsInStorages = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(receipt[i].name, receipt[i].damage))[1]
@@ -507,6 +506,11 @@ function craft(name, damage, count)
                     return false
                 end
             end
+        end
+    end
+
+    for i = 1, 9 do
+        if (receipt[i]) then
             getItem(receipt[i].name, receipt[i].damage, receipt[i].count * countOfCrafts)
             transferItemBack(1, robotAddress.address, robotAddress.outputSide, craftSlots[i], receipt[i].count * countOfCrafts, 0)
         end
