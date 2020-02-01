@@ -378,6 +378,18 @@ function getNotFullSlots(name, damage, maxSize)
     end
     return returnList
 end
+local craftSlots = {
+    [1] = 1,
+    [2] = 2,
+    [3] = 3,
+    [4] = 5,
+    [5] = 6,
+    [6] = 7,
+    [7] = 9,
+    [8] = 10,
+    [9] = 11,
+    [0] = 13
+}
 
 function craft(name, damage, count)
     local craftedItem = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(name, damage), nil)[1]
@@ -483,18 +495,7 @@ function pushItems()
     end
 end
 
-local craftSlots = {
-    [1] = 1,
-    [2] = 2,
-    [3] = 3,
-    [4] = 5,
-    [5] = 6,
-    [6] = 7,
-    [7] = 9,
-    [8] = 10,
-    [9] = 11,
-    [0] = 13
-}
+
 
 function addCraft()
     local receipt = {}
