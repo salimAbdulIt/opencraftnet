@@ -517,11 +517,7 @@ function craft(name, damage, count)
 
     local craftedItem = transposerAddresses[robotAddress.address].transposer.getStackInSlot(robotAddress.outputSide, 13)
     getItemFromSlot(robotAddress.address, robotAddress.outputSide, 13, countOfCrafts)
-    print("before push")
-    os.sleep(3)
     pushItems(1)
-    print("after push")
-    os.sleep(3)
     return true
 end
 
