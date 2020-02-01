@@ -502,7 +502,7 @@ function craft(name, damage, count)
             if (itemsInStorages) then
                 countOfItemsInStorage = itemsInStorages.count
             end
-            if ((receipt[i].count * countOfCrafts) < countOfItemsInStorage) then
+            if ((receipt[i].count * countOfCrafts) > countOfItemsInStorage) then
                 if (not craft(receipt[i].name, receipt[i].damage, (receipt[i].count * countOfCrafts) - countOfItemsInStorage)) then
                     return false
                 end
