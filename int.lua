@@ -8,7 +8,7 @@ local unicode = require("unicode")
 local serial = require("serialization")
 local gpu = component.gpu
 local data = component.database
-
+local tunnel = component.tunnel
 
 require("durexdb")
 local db = Database:new()
@@ -461,8 +461,33 @@ function pushItems()
     end
 end
 
+local craftSlots = {
+    [1] = 1,
+    [2] = 2,
+    [3] = 3,
+    [4] = 5,
+    [5] = 6,
+    [6] = 7,
+    [7] = 9,
+    [8] = 10,
+    [9] = 11,
+    [0] = 13
+}
+
 function addCraft()
-    transferItemBack(1, robotAddress.address, robotAddress.outputSide, 1, 64, 0)
+    local receipt = {}
+    for i = 1, 9 do
+        local tempItem = transposerAddresses[""].transposer.getStackInSlot(1, i)
+        if (tempItem) then
+            receipt[i] = {}
+            receipt[i].name = tempItem.name
+            receipt[i].damage = tempItem.damage
+            transferItemBack(i, robotAddress.address, robotAddress.outputSide, craftSlots[i], 64, 0)
+        end
+    end
+    tunnel.send(64)
+
+    getItemFromSlot(robotAddress.address, robotAddress.outputSide, 13, 64)
 end
 
 function findByName()
