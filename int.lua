@@ -378,6 +378,7 @@ function getNotFullSlots(name, damage, maxSize)
     end
     return returnList
 end
+
 local craftSlots = {
     [1] = 1,
     [2] = 2,
@@ -395,10 +396,23 @@ function craft(name, damage, count)
     local craftedItem = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(name, damage), nil)[1]
     local receipt = craftedItem.receipt
 
+    if (not receipt) then
+        return false
+    end
     local countOfCrafts = math.ceil(count / receipt[0].count)
 
     for i = 1, 9 do
         if (receipt[i]) then
+            local itemsInStorages = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(receipt[i].name, receipt[i].damage))[1]
+            local countOfItemsInStorage = 0
+            if (itemsInStorages) then
+                countOfItemsInStorage = itemsInStorages.count
+            end
+            if ((receipt[i].count * countOfCrafts) < countOfItemsInStorage) then
+                if (not craft(receipt[i].name, receipt[i].damage, (receipt[i].count * countOfCrafts) - countOfItemsInStorage)) then
+                    return false
+                end
+            end
             getItem(receipt[i].name, receipt[i].damage, receipt[i].count * countOfCrafts)
             transferItemBack(1, robotAddress.address, robotAddress.outputSide, craftSlots[i], receipt[i].count * countOfCrafts, 0)
         end
@@ -409,14 +423,22 @@ function craft(name, damage, count)
 
     local craftedItem = transposerAddresses[robotAddress.address].transposer.getStackInSlot(robotAddress.outputSide, 13)
     getItemFromSlot(robotAddress.address, robotAddress.outputSide, 13, countOfCrafts)
+    pushItems(1)
+    return true
 end
 
-function pushItems()
+function pushItems(index)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. id_of_available_slot, nil)
     local availableSlots = getItemsFromRow(itemsFromDb, nil)
     local items = {}
     local caret = 1
-    for i = 1, transposerAddresses[""].transposer.getInventorySize(1) do
+    local startIndex = 1
+    local endIndex = transposerAddresses[""].transposer.getInventorySize(1)
+    if (index) then
+        startIndex = index
+        endIndex = index
+    end
+    for i = startIndex, endIndex do
         local tempItem = transposerAddresses[""].transposer.getStackInSlot(1, i)
         if (tempItem) then
             if (tempItem.size < tempItem.maxSize) then
