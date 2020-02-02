@@ -208,7 +208,7 @@ function sinkItemsWithStorages()
         allItems[i].count = 0
     end
     for k, v in pairs(allItems) do
-        db:execute("INSERT INTO ITEMS " .. k, v)
+        db:execute("INSERT INTO ITEMS " .. getDbId(v.name,v.damage), v)
     end
     local items = {}
     for address, storage in pairs(storageAddresses) do
