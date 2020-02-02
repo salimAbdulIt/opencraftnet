@@ -203,7 +203,13 @@ function saveItems()
 end
 
 function sinkItemsWithStorages()
-    db:execute("DELETE FROM ITEMS")
+    local allItems = db:execute("SELECT FROM ITEMS")
+    for i=1,#allItems do
+        allItems[i].count = 0
+    end
+    for k, v in pairs(allItems) do
+        db:execute("INSERT INTO ITEMS " .. k, v)
+    end
     local items = {}
     for address, storage in pairs(storageAddresses) do
         if (transposerAddresses[storage.address].transposer.getInventorySize(storage.outputSide) ~= nil) then
