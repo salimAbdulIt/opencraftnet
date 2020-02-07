@@ -214,8 +214,8 @@ function sinkItemsWithStorages()
     for address, storage in pairs(storageAddresses) do
         if (transposerAddresses[storage.address].transposer.getInventorySize(storage.outputSide) ~= nil) then
             local itemsOfStorage = transposerAddresses[storage.address].transposer.getAllStacks(storage.outputSide).getAll()
-            for k = 1, #itemsOfStorage  do
-                local v = itemsOfStorage[k- 1]
+            for k = 1, #itemsOfStorage do
+                local v = itemsOfStorage[k - 1]
                 if (not next(v)) then
                     v.name = 'minecraft:air'
                     v.damage = 0
@@ -250,32 +250,50 @@ function sinkItemsWithStorages()
 end
 
 
-function transferItemOut(storageX, side, index, count)
+function transferItemOut(storageX, side, fromSlot, count, toSlot)
     local storage = transposerAddresses[storageX]
-    storage.transposer.transferItem(side, storage.inputSide, count, index)
+    if (toSlot) then
+        storage.transposer.transferItem(side, storage.inputSide, count, fromSlot, toSlot)
+    else
+        storage.transposer.transferItem(side, storage.inputSide, count, fromSlot)
+    end
 end
 
-function getItemFromSlot(storageX, side, index, count)
-    transferItemOut(storageX, side, index, count)
+function getAvailableSlotsOfInputOutput()
+    local itemsOfStorage = transposerAddresses[""].transposer.getAllStacks(1) --todo change 1 to inputSide
+    local availableSlots = {}
+    for k = 1, #itemsOfStorage do
+        local v = itemsOfStorage[k - 1]
+        if (not next(v)) then
+            table.insert(k)
+        end
+    end
+    return availableSlots
+end
 
+function getItemFromSlot(storageX, side, fromSlot, count, toSlot)
+    transferItemOut(storageX, side, fromSlot, count, toSlot)
+    local remainedItem = transposerAddresses[storageX].transposer.getStackInSlot(side, fromSlot)
+    local returnedItem = {}
     if (#storageX > 0) then
-        return getItemFromSlot(storageX:sub(1, #storageX - 1), tonumber(storageX:sub(#storageX, #storageX)), 1, count)
+        local _
+        _, returnedItem = getItemFromSlot(storageX:sub(1, #storageX - 1), tonumber(storageX:sub(#storageX, #storageX)), 1, count, toSlot)
     else
-        local temp_item = transposerAddresses[storageX].transposer.getStackInSlot(side, index)
         local item = {}
-        if (temp_item) then
+        if (remainedItem) then
             item.storage = storageX
             item.side = side
-            item.index = index
-            item.size = temp_item.size
+            item.index = fromSlot
+            item.size = remainedItem.size
         else
             item.storage = storageX
             item.side = side
-            item.index = index
+            item.index = fromSlot
             item.size = 0
         end
         return item
     end
+    return remainedItem, returnedItem
 end
 
 function setNameToItem(id, damage, name)
@@ -331,9 +349,13 @@ function getItem(id, damage, count)
     if not slots then
         return
     end
+    local availableSlots = getAvailableSlotsOfInputOutput()
+    if (#slots > #availableSlots) then
+        error("Not enough space")
+    end
     for i = 1, #slots do
         local slot = slots[i]
-        local item = getItemFromSlot(slot.storage, slot.side, slot.slot, slot.size)
+        local item = getItemFromSlot(slot.storage, slot.side, slot.slot, slot.size, availableSlots[i]) --todo add not enogh place
         local oldCountOfItems = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size
         itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size = item.size
         itemsFromDb[1].count = itemsFromDb[1].count + item.size - oldCountOfItems
