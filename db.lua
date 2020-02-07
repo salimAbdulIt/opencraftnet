@@ -333,7 +333,7 @@ function DurexDatabase:new()
                             end
                             self.isContainceKeys = true
                         else
-                            for index, item in pairs(fs.list(self.parent.dataPath)) do
+                            for index, item in (fs.list(self.parent.dataPath)) do
                                 if index ~= 'n' and index ~= 0 then
                                     file = io.open(self.parent.dataPath .. item)
                                     local tempValue = serial.unserialize(file:read("*a"))
