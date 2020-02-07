@@ -1,6 +1,6 @@
 local component = require("component")
 --    local fs = require("filesystem") --todo fix 96614537
-local fs = component.proxy(component.get("86da76ca"))
+local fs = require("filesystem")
 local shell = require("shell")
 local serial = require("serialization")
 DurexDatabase = {}
