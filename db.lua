@@ -117,40 +117,36 @@ function DurexDatabase:new()
     end
 
     function obj:clearIndexes()
-        for i, index in (fs.list(self.indexPath)) do
-            if i ~= 'n' and i ~= 0 then
-                local file = io.open(self.indexPath .. index, "w")
-                file:write('')
-                file:close()
-            end
+        for index in (fs.list(self.indexPath)) do
+            local file = io.open(self.indexPath .. index, "w")
+            file:write('')
+            file:close()
         end
     end
 
     function obj:updateIndexValues(oldItem, newItem, name)
-        for i, index in (fs.list(self.indexPath)) do
-            if i ~= 'n' and i ~= 0 then
-                local file = io.open(self.indexPath .. index, "r")
-                local tempValue = file:read("*a")
-                local indexedValues = serial.unserialize(tempValue)
-                if (not indexedValues) then
-                    indexedValues = {}
-                end
-                file:close()
-                if (oldItem) then
-                    local indexedValue, value = self:indexValue(oldItem, name, index)
-                    table.remove(indexedValues[indexedValue], self:tablefind(indexedValues[indexedValue], value))
-                end
-                file = io.open(self.indexPath .. index, "w")
-                if (newItem) then
-                    local indexedValue, value = self:indexValue(newItem, name, index)
-                    if (not indexedValues[indexedValue]) then
-                        indexedValues[indexedValue] = {}
-                    end
-                    table.insert(indexedValues[indexedValue], value)
-                end
-                file:write(serial.serialize(indexedValues))
-                file:close()
+        for index in (fs.list(self.indexPath)) do
+            local file = io.open(self.indexPath .. index, "r")
+            local tempValue = file:read("*a")
+            local indexedValues = serial.unserialize(tempValue)
+            if (not indexedValues) then
+                indexedValues = {}
             end
+            file:close()
+            if (oldItem) then
+                local indexedValue, value = self:indexValue(oldItem, name, index)
+                table.remove(indexedValues[indexedValue], self:tablefind(indexedValues[indexedValue], value))
+            end
+            file = io.open(self.indexPath .. index, "w")
+            if (newItem) then
+                local indexedValue, value = self:indexValue(newItem, name, index)
+                if (not indexedValues[indexedValue]) then
+                    indexedValues[indexedValue] = {}
+                end
+                table.insert(indexedValues[indexedValue], value)
+            end
+            file:write(serial.serialize(indexedValues))
+            file:close()
         end
     end
 
@@ -323,13 +319,11 @@ function DurexDatabase:new()
                             end
                             self.isContainceKeys = true
                         else
-                            for index, item in (fs.list(self.parent.dataPath)) do
-                                if index ~= 'n' and index ~= 0 then
-                                    file = io.open(self.parent.dataPath .. item)
-                                    local tempValue = serial.unserialize(file:read("*a"))
-                                    file:close()
-                                    table.insert(searchValues, tempValue)
-                                end
+                            for item in (fs.list(self.parent.dataPath)) do
+                                file = io.open(self.parent.dataPath .. item)
+                                local tempValue = serial.unserialize(file:read("*a"))
+                                file:close()
+                                table.insert(searchValues, tempValue)
                             end
                             table.sort(searchValues, function(left, right)
                                 return left[self.parent.query.orderBy] > right[self.parent.query.orderBy]
@@ -337,10 +331,8 @@ function DurexDatabase:new()
                             self.isContainceKeys = false
                         end
                     else
-                        for index, item in(fs.list(self.parent.dataPath)) do
-                            if index ~= 'n' and index ~= 0 then
-                                table.insert(searchValues, item)
-                            end
+                        for item in (fs.list(self.parent.dataPath)) do
+                            table.insert(searchValues, item)
                         end
                         self.isContainceKeys = true;
                     end
