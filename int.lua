@@ -79,7 +79,8 @@ end
 function findEnd(address, lastOutputTransposer)
     for inputSide = 0, 5 do
         for k, tcomponent in pairs(tempTransposers) do
-            if (tcomponent.getStackInSlot(inputSide, 1) and isStorage(tcomponent.getInventoryName(inputSide))
+            local item = tcomponent.getStackInSlot(inputSide, 1)
+            if (item and item.id == 'minecraft:diamond' and isStorage(tcomponent.getInventoryName(inputSide))
                     and lastOutputTransposer ~= tcomponent.address) then
                 transposerAddresses[address] = {}
                 transposerAddresses[address].transposer = tcomponent
