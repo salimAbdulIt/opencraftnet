@@ -8,7 +8,11 @@ local unicode = require("unicode")
 local serial = require("serialization")
 local gpu = component.gpu
 local data = component.database
-local tunnel = component.tunnel
+local tunnel
+
+if (component.isAvailable('tunnel')) then
+    local tunnel = component.tunnel
+end
 
 require("durexdb")
 local db = Database:new()
