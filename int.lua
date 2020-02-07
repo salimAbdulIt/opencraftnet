@@ -274,12 +274,11 @@ end
 function getItemFromSlot(storageX, side, fromSlot, count, toSlot)
     transferItemOut(storageX, side, fromSlot, count, toSlot)
     local itemFromStorage = transposerAddresses[storageX].transposer.getStackInSlot(side, fromSlot)
-    local returnedItem = {}
     local remainedItem = {}
 
     if (#storageX > 0) then
         local _
-        _, returnedItem = getItemFromSlot(storageX:sub(1, #storageX - 1), tonumber(storageX:sub(#storageX, #storageX)), 1, count, toSlot)
+        remainedItem = getItemFromSlot(storageX:sub(1, #storageX - 1), tonumber(storageX:sub(#storageX, #storageX)), 1, count, toSlot)
     else
         remainedItem.storage = storageX
         remainedItem.side = side
@@ -289,9 +288,9 @@ function getItemFromSlot(storageX, side, fromSlot, count, toSlot)
         else
             remainedItem.size = 0
         end
-        return item
+        return remainedItem
     end
-    return remainedItem, returnedItem
+    return remainedItem
 end
 
 function setNameToItem(id, damage, name)
