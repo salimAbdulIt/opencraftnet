@@ -10,7 +10,7 @@ local gpu = component.gpu
 local data = component.database
 local tunnel = component.tunnel
 
-require("db")
+require("durexdb")
 local db = Database:new()
 local transposerAddresses = {}
 local storageAddresses = {}
