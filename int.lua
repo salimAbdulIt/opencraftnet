@@ -214,8 +214,8 @@ function sinkItemsWithStorages()
     for address, storage in pairs(storageAddresses) do
         if (transposerAddresses[storage.address].transposer.getInventorySize(storage.outputSide) ~= nil) then
             local itemsOfStorage = transposerAddresses[storage.address].transposer.getAllStacks(storage.outputSide).getAll()
-            for k = 0, #itemsOfStorage - 1 do
-                local v = itemsOfStorage[k]
+            for k = 1, #itemsOfStorage  do
+                local v = itemsOfStorage[k- 1]
                 if (not next(v)) then
                     v.name = 'minecraft:air'
                     v.damage = 0
