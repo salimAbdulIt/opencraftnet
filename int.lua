@@ -25,7 +25,7 @@ local id_of_available_slot = 'minecraftair_0'
 local nameOfRobot = 'opencomputers:robot'
 local nameOfChest = 'tile.chest'
 local order = {}
-
+local storages = { ["tile.ironChest"] = 'storage', ['opencomputers:robot'] = 'robot' }
 local findNameFilter
 
 local revercedAddresses = {}
@@ -68,25 +68,25 @@ for k, v in pairs(tempStorages) do
 end
 os.sleep(1)
 
+function isStorage(transposer)
+    return (storages[transposer] == 'storage')
+end
+
+function isRobot(transposer)
+    return (storages[transposer] == 'robot')
+end
+
 function findEnd(address, lastOutputTransposer)
     for inputSide = 0, 5 do
         for k, tcomponent in pairs(tempTransposers) do
-            if (tcomponent.getStackInSlot(inputSide, 1) and tcomponent.getInventoryName(inputSide) == nameOfChest
+            if (tcomponent.getStackInSlot(inputSide, 1) and isStorage(tcomponent.getInventoryName(inputSide))
                     and lastOutputTransposer ~= tcomponent.address) then
                 transposerAddresses[address] = {}
                 transposerAddresses[address].transposer = tcomponent
                 transposerAddresses[address].inputSide = inputSide
                 for outputSide = 0, 5 do
                     if (inputSide ~= outputSide) then
-                        if (transposerAddresses[address].transposer.getInventoryName(outputSide) == nameOfChest) then
-                            transposerAddresses[address].transposer.transferItem(inputSide, outputSide, 64, 1, 1)
-                            findEnd(address .. outputSide, transposerAddresses[address].transposer.address)
-                            transposerAddresses[address].transposer.transferItem(outputSide, inputSide, 64, 1, 1)
-                        elseif (transposerAddresses[address].transposer.getInventoryName(outputSide) == nameOfRobot) then
-                            robotAddress.address = address
-                            robotAddress.outputSide = outputSide
-                            robotAddress.inputSide = inputSide
-                        else
+                        if (isStorage(transposerAddresses[address].transposer.getInventoryName(outputSide))) then
                             -- found storage
                             local address1 = {}
                             address1.address = address
@@ -96,6 +96,15 @@ function findEnd(address, lastOutputTransposer)
                             storageAddresses[address1].address = address
                             storageAddresses[address1].outputSide = outputSide
                             storageAddresses[address1].inputSide = inputSide
+
+                            if (transposerAddresses[address].transposer.transferItem(inputSide, outputSide, 64, 1, 1)) then
+                                findEnd(address .. outputSide, transposerAddresses[address].transposer.address)
+                                transposerAddresses[address].transposer.transferItem(outputSide, inputSide, 64, 1, 1)
+                            end
+                        elseif (isRobot(transposerAddresses[address].transposer.getInventoryName(outputSide))) then
+                            robotAddress.address = address
+                            robotAddress.outputSide = outputSide
+                            robotAddress.inputSide = inputSide
                         end
                     end
                 end
@@ -265,7 +274,7 @@ function getAvailableSlotsOfInputOutput()
     for k = 1, #itemsOfStorage do
         local v = itemsOfStorage[k - 1]
         if (not next(v)) then
-            table.insert(availableSlots,k)
+            table.insert(availableSlots, k)
         end
     end
     return availableSlots
