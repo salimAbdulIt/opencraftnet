@@ -1,14 +1,4 @@
 local component = require("component")
-
-function getApplicableFileSystem()
-    for writeableFS in component.list('filesystem') do
-        local proxy = component.proxy(writeableFS)
-        if not proxy.isReadOnly() then
-            return proxy
-        end
-    end
-end
-
 local fs = require("filesystem")
 local shell = require("shell")
 local serial = require("serialization")
@@ -127,7 +117,7 @@ function DurexDatabase:new()
     end
 
     function obj:clearIndexes()
-        for i, index in pairs(fs.list(self.indexPath)) do
+        for i, index in (fs.list(self.indexPath)) do
             if i ~= 'n' and i ~= 0 then
                 local file = io.open(self.indexPath .. index, "w")
                 file:write('')
@@ -137,7 +127,7 @@ function DurexDatabase:new()
     end
 
     function obj:updateIndexValues(oldItem, newItem, name)
-        for i, index in pairs(fs.list(self.indexPath)) do
+        for i, index in (fs.list(self.indexPath)) do
             if i ~= 'n' and i ~= 0 then
                 local file = io.open(self.indexPath .. index, "r")
                 local tempValue = file:read("*a")
@@ -347,7 +337,7 @@ function DurexDatabase:new()
                             self.isContainceKeys = false
                         end
                     else
-                        for index, item in pairs(fs.list(self.parent.dataPath)) do
+                        for index, item in(fs.list(self.parent.dataPath)) do
                             if index ~= 'n' and index ~= 0 then
                                 table.insert(searchValues, item)
                             end
