@@ -265,7 +265,7 @@ function getAvailableSlotsOfInputOutput()
     for k = 1, #itemsOfStorage do
         local v = itemsOfStorage[k - 1]
         if (not next(v)) then
-            table.insert(k)
+            table.insert(availableSlots,k)
         end
     end
     return availableSlots
