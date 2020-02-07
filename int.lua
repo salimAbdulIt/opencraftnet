@@ -204,19 +204,24 @@ end
 
 function sinkItemsWithStorages()
     local allItems = db:execute("SELECT FROM ITEMS")
-    for i=1,#allItems do
+    for i = 1, #allItems do
         allItems[i].count = 0
     end
     for k, v in pairs(allItems) do
-        db:execute("INSERT INTO ITEMS " .. getDbId(v.name,v.damage), v)
+        db:execute("INSERT INTO ITEMS " .. getDbId(v.name, v.damage), v)
     end
     local items = {}
     for address, storage in pairs(storageAddresses) do
         if (transposerAddresses[storage.address].transposer.getInventorySize(storage.outputSide) ~= nil) then
             local itemsOfStorage = transposerAddresses[storage.address].transposer.getAllStacks(storage.outputSide).getAll()
-            for k = 1, #itemsOfStorage do
+            for k = 0, #itemsOfStorage - 1 do
                 local v = itemsOfStorage[k]
-                --                    if (v.name ~= 'minecraft:air') then
+                if (not next(v)) then
+                    v.name = 'minecraft:air'
+                    v.damage = 0
+                    v.label = 'minecraft:air'
+                    v.size = 0
+                end
                 local id = getDbId(v.name, v.damage)
                 if (not items[id]) then
                     items[id] = {}
@@ -235,7 +240,6 @@ function sinkItemsWithStorages()
                 local itemXdata = {}
                 itemXdata.size = v.size
                 items[id].itemXdata[storage.address][storage.outputSide][k] = itemXdata
-                --                    end
             end
         end
     end
