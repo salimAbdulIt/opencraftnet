@@ -260,14 +260,11 @@ function transferItemOut(storageX, side, fromSlot, count, toSlot)
 end
 
 function getAvailableSlotsOfInputOutput()
-    local itemsOfStorage = transposerAddresses[""].transposer.getAllStacks(1) --todo change 1 to inputSide
+    local itemsOfStorage = transposerAddresses[""].transposer.getAllStacks(1).getAll() --todo change 1 to inputSide
     local availableSlots = {}
-    print(#itemsOfStorage)
     for k = 1, #itemsOfStorage do
         local v = itemsOfStorage[k - 1]
-        print(k,v)
         if (not next(v)) then
-            print("insert")
             table.insert(availableSlots,k)
         end
     end
