@@ -273,23 +273,21 @@ end
 
 function getItemFromSlot(storageX, side, fromSlot, count, toSlot)
     transferItemOut(storageX, side, fromSlot, count, toSlot)
-    local remainedItem = transposerAddresses[storageX].transposer.getStackInSlot(side, fromSlot)
+    local itemFromStorage = transposerAddresses[storageX].transposer.getStackInSlot(side, fromSlot)
     local returnedItem = {}
+    local remainedItem = {}
+
     if (#storageX > 0) then
         local _
         _, returnedItem = getItemFromSlot(storageX:sub(1, #storageX - 1), tonumber(storageX:sub(#storageX, #storageX)), 1, count, toSlot)
     else
-        local item = {}
-        if (remainedItem) then
-            item.storage = storageX
-            item.side = side
-            item.index = fromSlot
-            item.size = remainedItem.size
+        remainedItem.storage = storageX
+        remainedItem.side = side
+        remainedItem.index = fromSlot
+        if (itemFromStorage) then
+            remainedItem.size = itemFromStorage.size
         else
-            item.storage = storageX
-            item.side = side
-            item.index = fromSlot
-            item.size = 0
+            remainedItem.size = 0
         end
         return item
     end
