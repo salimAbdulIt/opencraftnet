@@ -1,6 +1,16 @@
 local component = require("component")
 --    local fs = require("filesystem") --todo fix 96614537
-local fs = require("filesystem")
+
+function getApplicableFileSystem()
+    for writeableFS in component.list('filesystem') do
+        local proxy = component.proxy(writeableFS)
+        if not proxy.isReadOnly() then
+            return proxy
+        end
+    end
+end
+
+local fs = getApplicableFileSystem()
 local shell = require("shell")
 local serial = require("serialization")
 DurexDatabase = {}
@@ -213,7 +223,7 @@ function DurexDatabase:new()
                     file:close()
                     local searchValues = indexedValues[self.parent.query.fields[indexes[1]].value]
                     for i = 2, #indexes do
-                        local file = io.open(self.parent.indexPath .. self.parent.query.fields[indexes[i]].column .. "."  .. self:getIndexType(self.parent.query.fields[indexes[i]].operation))
+                        local file = io.open(self.parent.indexPath .. self.parent.query.fields[indexes[i]].column .. "." .. self:getIndexType(self.parent.query.fields[indexes[i]].operation))
                         local tempIndexedValues = serial.unserialize(file:read("*a"))
                         file:close()
                         searchValues = self.parent:intersection(searchValues, tempIndexedValues[self.parent.query.fields[indexes[i]].value])
@@ -425,6 +435,7 @@ function DurexDatabase:new()
         end
         return false
     end
+
     function obj:starts_with(str, start)
         return str:sub(1, #start) == start
     end
