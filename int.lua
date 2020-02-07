@@ -23,7 +23,7 @@ local sizeOfPage = 26
 local items_on_the_screen = {}
 local id_of_available_slot = 'minecraftair_0'
 local nameOfRobot = 'opencomputers:robot'
-
+local nameOfChest = 'tile:chest'
 local order = {}
 
 local findNameFilter
@@ -71,14 +71,14 @@ os.sleep(1)
 function findEnd(address, lastOutputTransposer)
     for inputSide = 0, 5 do
         for k, tcomponent in pairs(tempTransposers) do
-            if (tcomponent.getStackInSlot(inputSide, 1) and tcomponent.getInventoryName(inputSide) == 'minecraft:chest'
+            if (tcomponent.getStackInSlot(inputSide, 1) and tcomponent.getInventoryName(inputSide) == nameOfChest
                     and lastOutputTransposer ~= tcomponent.address) then
                 transposerAddresses[address] = {}
                 transposerAddresses[address].transposer = tcomponent
                 transposerAddresses[address].inputSide = inputSide
                 for outputSide = 0, 5 do
                     if (inputSide ~= outputSide) then
-                        if (transposerAddresses[address].transposer.getInventoryName(outputSide) == 'minecraft:chest') then
+                        if (transposerAddresses[address].transposer.getInventoryName(outputSide) == nameOfChest) then
                             transposerAddresses[address].transposer.transferItem(inputSide, outputSide, 64, 1, 1)
                             findEnd(address .. outputSide, transposerAddresses[address].transposer.address)
                             transposerAddresses[address].transposer.transferItem(outputSide, inputSide, 64, 1, 1)

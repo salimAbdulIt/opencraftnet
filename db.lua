@@ -1,5 +1,4 @@
 local component = require("component")
---    local fs = require("filesystem") --todo fix 96614537
 
 function getApplicableFileSystem()
     for writeableFS in component.list('filesystem') do
