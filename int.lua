@@ -101,8 +101,9 @@ function findEnd(address, lastOutputTransposer)
                             storageAddresses[address1].address = address
                             storageAddresses[address1].outputSide = outputSide
                             storageAddresses[address1].inputSide = inputSide
-
+                            storageAddresses[address1].ignoreFirstSlot = false
                             if (transposerAddresses[address].transposer.transferItem(inputSide, outputSide, 64, 1, 1)) then
+                                storageAddresses[address1].ignoreFirstSlot = true
                                 findEnd(address .. outputSide, transposerAddresses[address].transposer.address)
                                 transposerAddresses[address].transposer.transferItem(outputSide, inputSide, 64, 1, 1)
                             end
@@ -228,7 +229,11 @@ function sinkItemsWithStorages()
     for address, storage in pairs(storageAddresses) do
         if (transposerAddresses[storage.address].transposer.getInventorySize(storage.outputSide) ~= nil) then
             local itemsOfStorage = transposerAddresses[storage.address].transposer.getAllStacks(storage.outputSide).getAll()
-            for k = 1, #itemsOfStorage do
+            local startIndex = 1
+            if (storage.ignoreFirstSlot) then
+                startIndex = 2
+            end
+            for k = startIndex, #itemsOfStorage do
                 local v = itemsOfStorage[k - 1]
                 if (not next(v)) then
                     v.name = 'minecraft:air'
