@@ -261,7 +261,7 @@ function getItemFromSlot(storageX, side, index, count)
     if (#storageX > 0) then
         return getItemFromSlot(storageX:sub(1, #storageX - 1), tonumber(storageX:sub(#storageX, #storageX)), 1, count)
     else
-        local temp_item = storage.transposer.getStackInSlot(side, index)
+        local temp_item = transposerAddresses[storageX].transposer.getStackInSlot(side, index)
         local item = {}
         if (temp_item) then
             item.storage = storageX
