@@ -246,12 +246,19 @@ function sinkItemsWithStorages()
 end
 
 
-function getItemFromSlot(storageX, side, index, count)
-    local item = {}
+function transferItemOut(storageX, side, index, count)
     local storage = transposerAddresses[storageX]
     storage.transposer.transferItem(side, storage.inputSide, count, index)
-    if (side ~= 0) then
+end
+
+function getItemFromSlot(storageX, side, index, count)
+    transferItemOut(storageX, side, index, count)
+
+    if (#storageX > 0) then
+        return getItemFromSlot(storageX:sub(1, #storageX - 1), tonumber(storageX:sub(#storageX, #storageX)), 1, count)
+    else
         local temp_item = storage.transposer.getStackInSlot(side, index)
+        local item = {}
         if (temp_item) then
             item.storage = storageX
             item.side = side
@@ -263,11 +270,8 @@ function getItemFromSlot(storageX, side, index, count)
             item.index = index
             item.size = 0
         end
+        return item
     end
-    if (#storageX > 0) then
-        getItemFromSlot(storageX:sub(1, #storageX - 1), tonumber(storageX:sub(#storageX, #storageX)), 1, count)
-    end
-    return item
 end
 
 function setNameToItem(id, damage, name)
