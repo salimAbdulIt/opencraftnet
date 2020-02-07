@@ -9,7 +9,7 @@ function getApplicableFileSystem()
     end
 end
 
-local fs = getApplicableFileSystem()
+local fs = require("filesystem")
 local shell = require("shell")
 local serial = require("serialization")
 DurexDatabase = {}
