@@ -272,7 +272,11 @@ function getAvailableSlotsOfInputOutput()
 end
 
 function getItemFromSlot(storageX, side, fromSlot, count, toSlot)
-    transferItemOut(storageX, side, fromSlot, count, toSlot)
+    local transferToSlot = 1
+    if (#storageX == 0) then
+        transferToSlot = toSlot
+    end
+    transferItemOut(storageX, side, fromSlot, count, transferToSlot)
     local itemFromStorage = transposerAddresses[storageX].transposer.getStackInSlot(side, fromSlot)
     local remainedItem = {}
 
@@ -288,7 +292,6 @@ function getItemFromSlot(storageX, side, fromSlot, count, toSlot)
         else
             remainedItem.size = 0
         end
-        return remainedItem
     end
     return remainedItem
 end
