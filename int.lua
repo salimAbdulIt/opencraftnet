@@ -11,7 +11,7 @@ local data = component.database
 local tunnel
 
 if (component.isAvailable('tunnel')) then
-    local tunnel = component.tunnel
+    tunnel = component.tunnel
 end
 
 require("durexdb")
