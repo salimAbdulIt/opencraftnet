@@ -226,6 +226,7 @@ function sinkItemsWithStorages()
     local allItems = db:execute("SELECT FROM ITEMS")
     for i = 1, #allItems do
         allItems[i].count = 0
+        allItems[i].itemXdata = {}
     end
     for k, v in pairs(allItems) do
         db:execute("INSERT INTO ITEMS " .. getDbId(v.name, v.damage), v)
