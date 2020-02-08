@@ -384,7 +384,7 @@ function getItem(id, damage, count)
     end
     for i = 1, #slots do
         local slot = slots[i]
-        local item = getItemFromSlot(slot.storage, slot.side, slot.slot, slot.size, availableSlots[i]) --todo add not enogh place
+        local item = getItemFromSlot(slot.storage, slot.side, slot.slot, slot.size)
         local oldCountOfItems = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size
         itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size = item.size
         itemsFromDb[1].count = itemsFromDb[1].count + item.size - oldCountOfItems
