@@ -29,7 +29,7 @@ local id_of_available_slot = 'minecraftair_0'
 local nameOfRobot = 'opencomputers:robot'
 local nameOfChest = 'tile.chest'
 local order = {}
-local storages = { ["tile.IronChest"] = 'storage', ['opencomputers:robot'] = 'robot' }
+local storages = { ["tile.IronChest"] = 'storage', ['Robot'] = 'robot' }
 local findNameFilter
 
 local revercedAddresses = {}
@@ -77,7 +77,7 @@ function isStorage(transposer)
 end
 
 function isRobot(transposer)
-    return (storages[transposer] == 'Robot')
+    return (storages[transposer] == 'robot')
 end
 
 function findEnd(address, lastOutputTransposer)
@@ -91,11 +91,11 @@ function findEnd(address, lastOutputTransposer)
                 transposerAddresses[address].inputSide = inputSide
                 for outputSide = 0, 5 do
                     if (inputSide ~= outputSide) then
+                        local address1 = {}
+                        address1.address = address
+                        address1.side = outputSide
                         if (isStorage(transposerAddresses[address].transposer.getInventoryName(outputSide))) then
                             -- found storage
-                            local address1 = {}
-                            address1.address = address
-                            address1.side = outputSide
                             storageAddresses[address1] = {}
                             storageAddresses[address1].name = transposerAddresses[address].transposer.getInventoryName(outputSide)
                             storageAddresses[address1].address = address
@@ -108,6 +108,8 @@ function findEnd(address, lastOutputTransposer)
                                 transposerAddresses[address].transposer.transferItem(outputSide, inputSide, 64, 1, 1)
                             end
                         elseif (isRobot(transposerAddresses[address].transposer.getInventoryName(outputSide))) then
+                            storageAddresses[address1].ignoreFirstSlot = true
+                            print("robot")
                             robotAddress.address = address
                             robotAddress.outputSide = outputSide
                             robotAddress.inputSide = inputSide
