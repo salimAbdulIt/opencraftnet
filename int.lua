@@ -445,16 +445,16 @@ function getNotFullSlots(name, damage, maxSize)
 end
 
 local craftSlots = {
-    [1] = 1,
-    [2] = 2,
-    [3] = 3,
-    [4] = 5,
-    [5] = 6,
-    [6] = 7,
-    [7] = 9,
-    [8] = 10,
-    [9] = 11,
-    [0] = 13
+    [1] = 5,
+    [2] = 6,
+    [3] = 7,
+    [4] = 9,
+    [5] = 10,
+    [6] = 11,
+    [7] = 13,
+    [8] = 14,
+    [9] = 15,
+    [0] = 17
 }
 
 function pushItems(index)
