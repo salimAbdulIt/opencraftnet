@@ -584,8 +584,8 @@ function craft(name, damage, count)
     tunnel.send(countOfCrafts)
     os.sleep(1)
 
-    local craftedItem = transposerAddresses[robotAddress.address].transposer.getStackInSlot(robotAddress.outputSide, 13)
-    getItemFromSlot(robotAddress.address, robotAddress.outputSide, 13, receipt[0].count * countOfCrafts)
+    local craftedItem = transposerAddresses[robotAddress.address].transposer.getStackInSlot(robotAddress.outputSide, craftSlots[0])
+    getItemFromSlot(robotAddress.address, robotAddress.outputSide, craftSlots[0], receipt[0].count * countOfCrafts)
     pushItems(1)
     return true
 end
@@ -605,7 +605,7 @@ function addCraft()
     end
     tunnel.send(64)
     os.sleep(1)
-    local craftedItem = transposerAddresses[robotAddress.address].transposer.getStackInSlot(robotAddress.outputSide, 13)
+    local craftedItem = transposerAddresses[robotAddress.address].transposer.getStackInSlot(robotAddress.outputSide, craftSlots[0])
     if (craftedItem) then
         receipt[0] = {}
         receipt[0].name = craftedItem.name
@@ -624,7 +624,7 @@ function addCraft()
         item.receipt = receipt
         db:execute("INSERT INTO ITEMS " .. getDbId(item.name, item.damage), item)
     end
-    getItemFromSlot(robotAddress.address, robotAddress.outputSide, 13, 64)
+    getItemFromSlot(robotAddress.address, robotAddress.outputSide, craftSlots[0], 64)
 end
 
 function findByName()
