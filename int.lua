@@ -239,8 +239,8 @@ function sinkItemsWithStorages()
             if (storage.ignoreFirstSlot) then
                 startIndex = 2
             end
-            for k = startIndex, #itemsOfStorage do
-                local v = itemsOfStorage[k - 1]
+            for k = startIndex, #itemsOfStorage + 1 do -- remove +1 in case if u are using 1.12.2
+                local v = itemsOfStorage[k - 1]  -- remove -1 in case if u are using 1.12.2
                 if (not next(v)) then
                     v.name = 'minecraft:air'
                     v.damage = 0
