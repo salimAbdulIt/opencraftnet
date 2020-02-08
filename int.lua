@@ -102,7 +102,7 @@ function findEnd(address, lastOutputTransposer)
                             storageAddresses[address1].outputSide = outputSide
                             storageAddresses[address1].inputSide = inputSide
                             storageAddresses[address1].ignoreFirstSlot = false
-                            if (transposerAddresses[address].transposer.transferItem(inputSide, outputSide, 64, 1, 1) == 0) then
+                            if (transposerAddresses[address].transposer.transferItem(inputSide, outputSide, 64, 1, 1) ~= 0) then
                                 storageAddresses[address1].ignoreFirstSlot = true
                                 findEnd(address .. outputSide, transposerAddresses[address].transposer.address)
                                 transposerAddresses[address].transposer.transferItem(outputSide, inputSide, 64, 1, 1)
