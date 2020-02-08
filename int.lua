@@ -77,7 +77,7 @@ function isStorage(transposer)
 end
 
 function isRobot(transposer)
-    return (storages[transposer] == 'robot')
+    return (storages[transposer] == 'Robot')
 end
 
 function findEnd(address, lastOutputTransposer)
