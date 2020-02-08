@@ -81,6 +81,7 @@ function isRobot(transposer)
 end
 
 function findEnd(address, lastOutputTransposer)
+    local returnedValue = false
     for inputSide = 0, 5 do
         for k, tcomponent in pairs(tempTransposers) do
             local item = tcomponent.getStackInSlot(inputSide, 1)
@@ -91,11 +92,12 @@ function findEnd(address, lastOutputTransposer)
                 transposerAddresses[address].inputSide = inputSide
                 for outputSide = 0, 5 do
                     if (inputSide ~= outputSide) then
-                        local address1 = {}
-                        address1.address = address
-                        address1.side = outputSide
                         if (isStorage(transposerAddresses[address].transposer.getInventoryName(outputSide))) then
                             -- found storage
+                            returnedValue = true
+                            local address1 = {}
+                            address1.address = address
+                            address1.side = outputSide
                             storageAddresses[address1] = {}
                             storageAddresses[address1].name = transposerAddresses[address].transposer.getInventoryName(outputSide)
                             storageAddresses[address1].address = address
@@ -103,13 +105,13 @@ function findEnd(address, lastOutputTransposer)
                             storageAddresses[address1].inputSide = inputSide
                             storageAddresses[address1].ignoreFirstSlot = false
                             if (transposerAddresses[address].transposer.transferItem(inputSide, outputSide, 64, 1, 1) ~= 0) then
-                                storageAddresses[address1].ignoreFirstSlot = true
-                                findEnd(address .. outputSide, transposerAddresses[address].transposer.address)
+                                if (findEnd(address .. outputSide, transposerAddresses[address].transposer.address)) then
+                                    storageAddresses[address1].ignoreFirstSlot = true
+                                end
                                 transposerAddresses[address].transposer.transferItem(outputSide, inputSide, 64, 1, 1)
                             end
                         elseif (isRobot(transposerAddresses[address].transposer.getInventoryName(outputSide))) then
-                            storageAddresses[address1].ignoreFirstSlot = true
-                            print("robot")
+                            returnedValue = true
                             robotAddress.address = address
                             robotAddress.outputSide = outputSide
                             robotAddress.inputSide = inputSide
@@ -119,6 +121,7 @@ function findEnd(address, lastOutputTransposer)
             end
         end
     end
+    return returnedValue
 end
 
 function ItemToString(name, dmg)
