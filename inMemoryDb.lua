@@ -83,7 +83,7 @@ function DurexDatabase:new()
 
     function obj:selectById(resultValue)
         local item = databases['ITEMS'][self.query.fields[1].value]
-        return item
+        table.obj:insert(resultValue, item)
     end
 
     function obj:selectFromObject(object)
