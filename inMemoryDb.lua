@@ -2,7 +2,7 @@ local fs = require("filesystem")
 local shell = require("shell")
 local serial = require("serialization")
 local databases = {}
-local databases['ITEMS'] = {}
+databases['ITEMS'] = {}
 DurexDatabase = {}
 function DurexDatabase:new()
     local obj = {}
