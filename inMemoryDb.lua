@@ -1,13 +1,13 @@
 local fs = require("filesystem")
 local shell = require("shell")
 local serial = require("serialization")
+local databases = {}
+local databases['ITEMS'] = {}
 DurexDatabase = {}
 function DurexDatabase:new()
     local obj = {}
 
     function obj:init(value)
-        self.databases = {}
-        self.databases['ITEMS'] = {}
         self.query = value
 
         if (not self.query.limit) then
@@ -36,8 +36,8 @@ function DurexDatabase:new()
     end
 
     function obj:createDataBase()
-        self.databases = {}
-        self.databases['ITEMS'] = {}
+        databases = {}
+        databases['ITEMS'] = {}
     end
 
     function obj:createIndex()
@@ -50,7 +50,7 @@ function DurexDatabase:new()
     end
 
     function obj:insert()
-        self.databases['ITEMS'][self.query.id] = self.query.value
+        databases['ITEMS'][self.query.id] = self.query.value
     end
 
 
@@ -82,7 +82,7 @@ function DurexDatabase:new()
     end
 
     function obj:selectById(resultValue)
-        local item = self.databases['ITEMS'][self.query.fields[1].value]
+        local item = databases['ITEMS'][self.query.fields[1].value]
         return item
     end
 
@@ -129,14 +129,14 @@ function DurexDatabase:new()
                 function obj1:init()
                     local searchValues = {}
                     if (self.parent.query.orderBy) then
-                        for item in pairs(self.parent.databases['ITEMS']) do
+                        for item in pairs(databases['ITEMS']) do
                             table.insert(searchValues, item)
                         end
                         table.sort(searchValues, function(left, right)
                             return left[self.parent.query.orderBy] > right[self.parent.query.orderBy]
                         end)
                     else
-                        for item in pairs(self.parent.databases['ITEMS']) do
+                        for item in pairs(databases['ITEMS']) do
                             table.insert(searchValues, item)
                         end
                     end
@@ -195,7 +195,7 @@ function DurexDatabase:new()
         if (self.query.fields) then
 
         else
-            self.databases['ITEMS'] = {}
+            databases['ITEMS'] = {}
         end
     end
 
