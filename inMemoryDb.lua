@@ -129,14 +129,14 @@ function DurexDatabase:new()
                 function obj1:init()
                     local searchValues = {}
                     if (self.parent.query.orderBy) then
-                        for item in pairs(self.databases['ITEMS']) do
+                        for item in pairs(self.parent.databases['ITEMS']) do
                             table.insert(searchValues, item)
                         end
                         table.sort(searchValues, function(left, right)
                             return left[self.parent.query.orderBy] > right[self.parent.query.orderBy]
                         end)
                     else
-                        for item in pairs(self.databases['ITEMS']) do
+                        for item in pairs(self.parent.databases['ITEMS']) do
                             table.insert(searchValues, item)
                         end
                     end
