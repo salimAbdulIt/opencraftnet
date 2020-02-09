@@ -1,4 +1,3 @@
-local component = require("component")
 local fs = require("filesystem")
 local shell = require("shell")
 local serial = require("serialization")
@@ -379,7 +378,7 @@ function DurexDatabase:new()
 
             return self:selectFromObject(values:new(self))
         end
-        if (self.query.orderBy) then
+        if (self.query.orderBy) then --todo is it valid?
             table.sort(sortedValues, function(left, right)
                 return left[self.query.orderBy] > right[self.query.orderBy]
             end)
