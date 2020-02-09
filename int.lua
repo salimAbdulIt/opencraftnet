@@ -348,7 +348,7 @@ function getItemsFromRow(rows, count)
                     item.side = j
                     item.slot = k
                     local countOfItemsOnSlot = row.itemXdata[i][j][k].size
-                    if (count) then
+                    if (count) then --todo add priority for full stacks
                         if (count > countOfItemsOnSlot) then
                             item.size = countOfItemsOnSlot
                             count = count - countOfItemsOnSlot
