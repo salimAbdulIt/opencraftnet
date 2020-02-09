@@ -6,9 +6,8 @@ function DurexDatabase:new()
     local obj = {}
 
     function obj:init(value)
-        self.fullPath = shell.getWorkingDirectory() .. "/durex/" .. value.table .. "/"
-        self.dataPath = shell.getWorkingDirectory() .. "/durex/" .. value.table .. '/data/'
-        self.indexPath = shell.getWorkingDirectory() .. "/durex/" .. value.table .. '/index/'
+        self.databases = {}
+        self.databases['ITEMS'] = {}
         self.query = value
 
         if (not self.query.limit) then
@@ -37,10 +36,6 @@ function DurexDatabase:new()
     end
 
     function obj:createDataBase()
-        fs.makeDirectory(shell.getWorkingDirectory() .. "/durex")
-        fs.makeDirectory(self.fullPath)
-        fs.makeDirectory(self.dataPath)
-        fs.makeDirectory(self.indexPath)
         self.databases = {}
         self.databases['ITEMS'] = {}
     end

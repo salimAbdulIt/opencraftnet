@@ -19,7 +19,7 @@ if not fs.exists("/lib/inMemoryDb.lua") or alwaysUpdate then
     if fs.exists("/lib/inMemoryDb.lua") then
         shell.execute("rm /lib/inMemoryDb.lua")
     end
-    shell.execute("wget https://gitlab.com/lfreew1ndl/opencraftnetoriginal/raw/master/durexdb.lua /lib/inMemoryDb.lua")
+    shell.execute("wget https://gitlab.com/lfreew1ndl/opencraftnetoriginal/raw/master/inMemoryDb.lua /lib/inMemoryDb.lua")
 end
 
 
