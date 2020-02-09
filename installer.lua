@@ -15,11 +15,11 @@ if not fs.exists("/lib/durexdb.lua") or alwaysUpdate then
     shell.execute("wget https://gitlab.com/lfreew1ndl/opencraftnetoriginal/raw/master/durexdb.lua /lib/durexdb.lua")
 end
 
-if not fs.exists("/lib/inMemory.lua") or alwaysUpdate then
-    if fs.exists("/lib/inMemory.lua") then
-        shell.execute("rm /lib/inMemory.lua")
+if not fs.exists("/lib/inMemoryDb.lua") or alwaysUpdate then
+    if fs.exists("/lib/inMemoryDb.lua") then
+        shell.execute("rm /lib/inMemoryDb.lua")
     end
-    shell.execute("wget https://gitlab.com/lfreew1ndl/opencraftnetoriginal/raw/master/durexdb.lua /lib/inMemory.lua")
+    shell.execute("wget https://gitlab.com/lfreew1ndl/opencraftnetoriginal/raw/master/durexdb.lua /lib/inMemoryDb.lua")
 end
 
 

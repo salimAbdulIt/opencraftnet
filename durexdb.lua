@@ -1,4 +1,5 @@
-require('db')
+--require('db')
+require('inMemoryDb')
 local db = DurexDatabase:new()
 Database = {}
 
