@@ -411,9 +411,9 @@ function getItemsFromRow(rows, count)
                         item.storageType = row.itemXdata[i][j][k].storageType
                         local countOfItemsOnSlot = row.itemXdata[i][j][k].size - usedCount
                         local flag = false
-                        if (countOfItemsOnSlot > rows.maxSize) then
+                        if (countOfItemsOnSlot > row.maxSize) then
                             flag = true
-                            countOfItemsOnSlot = rows.maxSize
+                            countOfItemsOnSlot = row.maxSize
                         end
                         if (count > countOfItemsOnSlot) then
                             item.size = countOfItemsOnSlot
