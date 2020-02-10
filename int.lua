@@ -341,10 +341,13 @@ function getAvailableSlotsOfInputOutput()
 end
 
 function getItemFromStorage(storageX, side, fromSlot, storageType, count, toSlot)
+
     if (storageType == 'drawer') then
-        storageDrawersAddress.drawer.pushItem(storageDrawersAddress.chestSide,1 + fromSlot * 2, count)
+        storageDrawersAddress.drawer.pushItem(storageDrawersAddress.chestSide, 1 + fromSlot * 2, count)
+        return getItemFromSlot(storageX, side, 1, count, toSlot)
+    else
+        return getItemFromSlot(storageX, side, fromSlot, count, toSlot)
     end
-    return getItemFromSlot(storageX, side, 1, count, toSlot)
 end
 
 function getItemFromSlot(storageX, side, fromSlot, count, toSlot)
