@@ -405,6 +405,7 @@ function getItemsFromRow(rows, count)
                         if (tempCount > row.maxSize) then
                             tempCount = row.maxSize
                         end
+                        countToGet = countToGet - tempCount
                         local item = {}
                         item.storage = i
                         item.side = j
