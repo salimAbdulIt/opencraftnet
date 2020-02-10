@@ -409,22 +409,25 @@ function getItemsFromRow(rows, count)
                         item.side = j
                         item.slot = k
                         item.storageType = row.itemXdata[i][j][k].storageType
-                        local countOfItemsOnSlot = row.itemXdata[i][j][k].size - usedCount
-                        local flag = false
-                        if (countOfItemsOnSlot > row.maxSize) then
-                            flag = true
-                            countOfItemsOnSlot = row.maxSize
-                        end
-                        if (count > countOfItemsOnSlot) then
-                            item.size = countOfItemsOnSlot
-                            count = count - countOfItemsOnSlot
+                        if (not count) then
+                            item.size = 0
                         else
-                            item.size = count
-                            count = 0
+                            local countOfItemsOnSlot = row.itemXdata[i][j][k].size - usedCount
+                            local flag = false
+                            if (countOfItemsOnSlot > row.maxSize) then
+                                flag = true
+                                countOfItemsOnSlot = row.maxSize
+                            end
+                            if (count > countOfItemsOnSlot) then
+                                item.size = countOfItemsOnSlot
+                                count = count - countOfItemsOnSlot
+                            else
+                                item.size = count
+                                count = 0
+                            end
                         end
-
                         table.insert(returnList, item)
-                    until (not flag or count == 0)
+                    until (not flag or not count or count == 0)
                     if (count == 0) then
                         return returnList
                     end
