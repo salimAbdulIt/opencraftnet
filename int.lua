@@ -267,6 +267,7 @@ function sinkItemsWithStorages()
                     items[id] = {}
                     items[id].name = v.name
                     items[id].damage = v.damage
+                    items[id].maxSize = v.maxSize
                     items[id].label = v.label
                     items[id].count = 0
                     items[id].itemXdata = {}
@@ -294,6 +295,7 @@ function sinkItemsWithStorages()
                 items[id] = {}
                 items[id].name = tempItem.id
                 items[id].damage = tempItem.dmg
+                items[id].maxSize = tempItem.max_size
                 items[id].label = tempItem.display_name
                 items[id].count = 0
                 items[id].itemXdata = {}
@@ -344,9 +346,9 @@ function getItemFromStorage(storageX, side, fromSlot, storageType, count, toSlot
 
     if (storageType == 'drawer') then
         storageDrawersAddress.drawer.pushItem(storageDrawersAddress.chestSide, 1 + fromSlot * 2, count)
-        return getItemFromSlot(storageX, side, 1, count, toSlot)
+        getItemFromSlot(storageX, side, 1, count, toSlot)
     else
-        return getItemFromSlot(storageX, side, fromSlot, count, toSlot)
+        getItemFromSlot(storageX, side, fromSlot, count, toSlot)
     end
 end
 
@@ -397,23 +399,31 @@ function getItemsFromRow(rows, count)
             for j, jx in pairs(row.itemXdata[i]) do
                 for k, kx in pairs(row.itemXdata[i][j]) do
 
-                    local item = {}
-                    item.storage = i
-                    item.side = j
-                    item.slot = k
-                    item.storageType = row.itemXdata[i][j][k].storageType
-                    local countOfItemsOnSlot = row.itemXdata[i][j][k].size
-                    if (count) then --todo add priority for full stacks
-                        if (count > countOfItemsOnSlot) then
-                            item.size = countOfItemsOnSlot
-                            count = count - countOfItemsOnSlot
-                        else
-                            item.size = count
-                            count = 0
+                    local countToGet = count
+                    while (countToGet > 0) do
+                        local tempCount = count
+                        if (tempCount > row.maxSize) then
+                            tempCount = row.maxSize
                         end
+                        local item = {}
+                        item.storage = i
+                        item.side = j
+                        item.slot = k
+                        item.storageType = kx.storageType
+                        if (item.storageType == 'drawer') then
+                        end
+                        local countOfItemsOnSlot = kx.size
+                        if (tempCount) then --todo add priority for full stacks
+                            if (tempCount > countOfItemsOnSlot) then
+                                item.size = countOfItemsOnSlot
+                                tempCount = tempCount - countOfItemsOnSlot
+                            else
+                                item.size = tempCount
+                                tempCount = 0
+                            end
+                        end
+                        table.insert(returnList, item)
                     end
-                    table.insert(returnList, item)
-
                     if (count == 0) then
                         return returnList
                     end
@@ -439,7 +449,7 @@ function getItem(id, damage, count)
     end
     for i = 1, #slots do
         local slot = slots[i]
-        local item = getItemFromStorage(slot.storage, slot.side, slot.slot, slot.storageType, slot.size)
+        getItemFromStorage(slot.storage, slot.side, slot.slot, slot.storageType, slot.size)
         local oldCountOfItems = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size
         itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size - slot.size
         itemsFromDb[1].count = itemsFromDb[1].count - slot.size
