@@ -393,35 +393,38 @@ end
 
 function getItemsFromRow(rows, count)
     local returnList = {}
+    if (not count or count == 0) then
+        return returnList
+    end
     if (next(rows)) then
         local row = rows[1]
         for i, ix in pairs(row.itemXdata) do
             for j, jx in pairs(row.itemXdata[i]) do
                 for k, kx in pairs(row.itemXdata[i][j]) do
 
-                    while (count > 0) do
-                        local tempCount = count
-                        if (tempCount > row.maxSize) then
-                            tempCount = row.maxSize
-                        end
+                    local usedCount = 0
+                    repeat
                         local item = {}
                         item.storage = i
                         item.side = j
                         item.slot = k
-                        item.storageType = kx.storageType
-                        if (item.storageType == 'drawer') then
+                        item.storageType = row.itemXdata[i][j][k].storageType
+                        local countOfItemsOnSlot = row.itemXdata[i][j][k].size - usedCount
+                        local flag = false
+                        if (countOfItemsOnSlot > rows.maxSize) then
+                            flag = true
+                            countOfItemsOnSlot = rows.maxSize
                         end
-                        local countOfItemsOnSlot = kx.size
-                        if (tempCount > countOfItemsOnSlot) then
+                        if (count > countOfItemsOnSlot) then
                             item.size = countOfItemsOnSlot
                             count = count - countOfItemsOnSlot
                         else
-                            item.size = tempCount
-                            tempCount = 0
-                            count = count - tempCount
+                            item.size = count
+                            count = 0
                         end
+
                         table.insert(returnList, item)
-                    end
+                    until (flag and count ~= 0)
                     if (count == 0) then
                         return returnList
                     end
