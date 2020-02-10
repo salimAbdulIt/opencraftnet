@@ -287,7 +287,7 @@ function sinkItemsWithStorages()
 
     if (storageDrawersAddress.address) then
         local drawerStorageItems = storageDrawersAddress.drawer.getAllStacks()
-        for i = 1, #storageDrawersAddress.drawer.getDrawerCount() do
+        for i = 1, storageDrawersAddress.drawer.getDrawerCount() do
             local tempItem = drawerStorageItems[1 + i * 2].all()
             local id = getDbId(tempItem.id, tempItem.dmg)
             if (not items[id]) then
