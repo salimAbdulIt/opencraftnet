@@ -16,9 +16,13 @@ end
 
 require("durexdb")
 local db = Database:new()
+
 local transposerAddresses = {}
 local storageAddresses = {}
 local robotAddress = {}
+local storageDrawersAddress = {}
+storageDrawersAddress['items'] = {}
+
 local items = {}
 gpu.setResolution(80, 30)
 
@@ -29,7 +33,7 @@ local id_of_available_slot = 'minecraftair_0'
 local nameOfRobot = 'opencomputers:robot'
 local nameOfChest = 'tile.chest'
 local order = {}
-local storages = { ["tile.IronChest"] = 'storage', ['Robot'] = 'robot' }
+local storages = { ["tile.IronChest"] = 'storage', ['Robot'] = 'robot', ["tile.chest"] = 'storageDrawers', }
 local findNameFilter
 
 local revercedAddresses = {}
@@ -80,6 +84,10 @@ function isRobot(transposer)
     return (storages[transposer] == 'robot')
 end
 
+function isDrawerStorage(transposer)
+    return (storages[transposer] == 'storageDrawers')
+end
+
 function findEnd(address, lastOutputTransposer)
     local returnedValue = false
     for inputSide = 0, 5 do
@@ -110,6 +118,13 @@ function findEnd(address, lastOutputTransposer)
                                 end
                                 transposerAddresses[address].transposer.transferItem(outputSide, inputSide, 64, 1, 1)
                             end
+                        elseif (isDrawerStorage(transposerAddresses[address].transposer.getInventoryName(outputSide))) then
+                            returnedValue = true
+                            storageDrawersAddress.address = address
+                            storageDrawersAddress.outputSide = outputSide
+                            storageDrawersAddress.inputSide = inputSide
+                            storageDrawersAddress.drawer = component.drawer
+                            storageDrawersAddress.chestSide = 1
                         elseif (isRobot(transposerAddresses[address].transposer.getInventoryName(outputSide))) then
                             returnedValue = true
                             robotAddress.address = address
@@ -240,7 +255,7 @@ function sinkItemsWithStorages()
                 startIndex = 2
             end
             for k = startIndex, #itemsOfStorage + 1 do -- remove +1 in case if u are using 1.12.2
-                local v = itemsOfStorage[k - 1]  -- remove -1 in case if u are using 1.12.2
+                local v = itemsOfStorage[k - 1] -- remove -1 in case if u are using 1.12.2
                 if (not next(v)) then
                     v.name = 'minecraft:air'
                     v.damage = 0
@@ -263,9 +278,38 @@ function sinkItemsWithStorages()
                 if (not items[id].itemXdata[storage.address][storage.outputSide][k]) then items[id].itemXdata[storage.address][storage.outputSide][k] = {} end
 
                 local itemXdata = {}
+                itemXdata.storageType = 'storage'
                 itemXdata.size = v.size
                 items[id].itemXdata[storage.address][storage.outputSide][k] = itemXdata
             end
+        end
+    end
+
+    if (storageDrawersAddress.address) then
+        local drawerStorageItems = storageDrawersAddress.drawer.getAllStacks()
+        for i = 1, #storageDrawersAddress.drawer.getDrawerCount() do
+            local tempItem = drawerStorageItems[1 + i * 2].all()
+            local id = getDbId(tempItem.id, tempItem.dmg)
+            if (not items[id]) then
+                items[id] = {}
+                items[id].name = tempItem.id
+                items[id].damage = tempItem.dmg
+                items[id].label = tempItem.display_name
+                items[id].count = 0
+                items[id].itemXdata = {}
+            end
+            local itemXdata = {}
+            itemXdata.size = storageDrawersAddress.drawer.getItemCount(i)
+            storageDrawersAddress['items'][getDbId(tempItem.id, tempItem.dmg)] = itemXdata.size
+            items[id].count = items[id].count + itemXdata.size
+            items[id].drawer = true
+            itemXdata.storageType = 'drawer'
+            itemXdata.maxSize = storageDrawersAddress.drawer.getMaxCapacity(i)
+            if (not items[id].itemXdata[storageDrawersAddress.address]) then items[id].itemXdata[storageDrawersAddress.address] = {} end
+            if (not items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide]) then items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide] = {} end
+            if (not items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide][i]) then items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide][i] = {} end
+
+            items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide][i] = itemXdata
         end
     end
 
@@ -294,6 +338,13 @@ function getAvailableSlotsOfInputOutput()
         end
     end
     return availableSlots
+end
+
+function getItemFromStorage(storageX, side, fromSlot, storageType, count, toSlot)
+    if (storageType == 'drawer') then
+        storageDrawersAddress.drawer.pushItem(storageDrawersAddress.chestSide, fromSlot, count)
+    end
+    return getItemFromSlot(storageX, side, 1, count, toSlot)
 end
 
 function getItemFromSlot(storageX, side, fromSlot, count, toSlot)
@@ -384,7 +435,7 @@ function getItem(id, damage, count)
     end
     for i = 1, #slots do
         local slot = slots[i]
-        local item = getItemFromSlot(slot.storage, slot.side, slot.slot, slot.size)
+        local item = getItemFromStorage(slot.storage, slot.side, slot.slot, slot.storageType, slot.size)
         local oldCountOfItems = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size
         itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size = item.size
         itemsFromDb[1].count = itemsFromDb[1].count + item.size - oldCountOfItems
@@ -585,7 +636,7 @@ function craft(name, damage, count)
     os.sleep(1)
 
     local craftedItem = transposerAddresses[robotAddress.address].transposer.getStackInSlot(robotAddress.outputSide, craftSlots[0])
-    getItemFromSlot(robotAddress.address, robotAddress.outputSide, craftSlots[0], receipt[0].count * countOfCrafts)
+    getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', receipt[0].count * countOfCrafts)
     pushItems(1)
     return true
 end
@@ -624,7 +675,7 @@ function addCraft()
         item.receipt = receipt
         db:execute("INSERT INTO ITEMS " .. getDbId(item.name, item.damage), item)
     end
-    getItemFromSlot(robotAddress.address, robotAddress.outputSide, craftSlots[0], 64)
+    getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', 64)
 end
 
 function findByName()
