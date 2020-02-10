@@ -287,8 +287,8 @@ function sinkItemsWithStorages()
 
     if (storageDrawersAddress.address) then
         local drawerStorageItems = storageDrawersAddress.drawer.getAllStacks()
-        for i = 1, storageDrawersAddress.drawer.getDrawerCount() do
-            local tempItem = drawerStorageItems[1 + i * 2].all()
+        for i, v in pairs(drawerStorageItems) do
+            local tempItem = drawerStorageItems[i].all()
             local id = getDbId(tempItem.id, tempItem.dmg)
             if (not items[id]) then
                 items[id] = {}
@@ -299,17 +299,17 @@ function sinkItemsWithStorages()
                 items[id].itemXdata = {}
             end
             local itemXdata = {}
-            itemXdata.size = storageDrawersAddress.drawer.getItemCount(i)
+            itemXdata.size = storageDrawersAddress.drawer.getItemCount((i - 1) / 2)
             storageDrawersAddress['items'][getDbId(tempItem.id, tempItem.dmg)] = itemXdata.size
             items[id].count = items[id].count + itemXdata.size
             items[id].drawer = true
             itemXdata.storageType = 'drawer'
-            itemXdata.maxSize = storageDrawersAddress.drawer.getMaxCapacity(i)
+            itemXdata.maxSize = storageDrawersAddress.drawer.getMaxCapacity((i - 1) / 2)
             if (not items[id].itemXdata[storageDrawersAddress.address]) then items[id].itemXdata[storageDrawersAddress.address] = {} end
             if (not items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide]) then items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide] = {} end
-            if (not items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide][i]) then items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide][i] = {} end
+            if (not items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide][(i - 1) / 2]) then items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide][(i - 1) / 2] = {} end
 
-            items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide][i] = itemXdata
+            items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide][(i - 1) / 2] = itemXdata
         end
     end
 
