@@ -438,8 +438,8 @@ function getItem(id, damage, count)
         local slot = slots[i]
         local item = getItemFromStorage(slot.storage, slot.side, slot.slot, slot.storageType, slot.size)
         local oldCountOfItems = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size
-        itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size = item.size
-        itemsFromDb[1].count = itemsFromDb[1].count + item.size - oldCountOfItems
+        itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size - slot.size
+        itemsFromDb[1].count = itemsFromDb[1].count - slot.size
     end
     db:execute("INSERT INTO ITEMS " .. getDbId(id, damage), itemsFromDb[1])
 end
