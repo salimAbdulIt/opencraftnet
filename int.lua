@@ -124,7 +124,7 @@ function findEnd(address, lastOutputTransposer)
                             storageDrawersAddress.outputSide = outputSide
                             storageDrawersAddress.inputSide = inputSide
                             storageDrawersAddress.drawer = component.drawer
-                            storageDrawersAddress.chestSide = 1
+                            storageDrawersAddress.chestSide = 'UP'
                         elseif (isRobot(transposerAddresses[address].transposer.getInventoryName(outputSide))) then
                             returnedValue = true
                             robotAddress.address = address
