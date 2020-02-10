@@ -424,7 +424,7 @@ function getItemsFromRow(rows, count)
                         end
 
                         table.insert(returnList, item)
-                    until (flag and count ~= 0)
+                    until (not flag or count == 0)
                     if (count == 0) then
                         return returnList
                     end
