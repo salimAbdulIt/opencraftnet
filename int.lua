@@ -393,9 +393,6 @@ end
 
 function getItemsFromRow(rows, count)
     local returnList = {}
-    if (not count or count == 0) then
-        return returnList
-    end
     if (next(rows)) then
         local row = rows[1]
         for i, ix in pairs(row.itemXdata) do
