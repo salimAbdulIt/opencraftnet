@@ -399,13 +399,11 @@ function getItemsFromRow(rows, count)
             for j, jx in pairs(row.itemXdata[i]) do
                 for k, kx in pairs(row.itemXdata[i][j]) do
 
-                    local countToGet = count
-                    while (countToGet > 0) do
+                    while (count > 0) do
                         local tempCount = count
                         if (tempCount > row.maxSize) then
                             tempCount = row.maxSize
                         end
-                        countToGet = countToGet - tempCount
                         local item = {}
                         item.storage = i
                         item.side = j
@@ -414,14 +412,13 @@ function getItemsFromRow(rows, count)
                         if (item.storageType == 'drawer') then
                         end
                         local countOfItemsOnSlot = kx.size
-                        if (tempCount) then --todo add priority for full stacks
-                            if (tempCount > countOfItemsOnSlot) then
-                                item.size = countOfItemsOnSlot
-                                tempCount = tempCount - countOfItemsOnSlot
-                            else
-                                item.size = tempCount
-                                tempCount = 0
-                            end
+                        if (tempCount > countOfItemsOnSlot) then
+                            item.size = countOfItemsOnSlot
+                            count = count - countOfItemsOnSlot
+                        else
+                            item.size = tempCount
+                            tempCount = 0
+                            count = count - tempCount
                         end
                         table.insert(returnList, item)
                     end
