@@ -342,7 +342,7 @@ end
 
 function getItemFromStorage(storageX, side, fromSlot, storageType, count, toSlot)
     if (storageType == 'drawer') then
-        storageDrawersAddress.drawer.pushItem(storageDrawersAddress.chestSide, fromSlot, count)
+        storageDrawersAddress.drawer.pushItem(storageDrawersAddress.chestSide,1 + fromSlot * 2, count)
     end
     return getItemFromSlot(storageX, side, 1, count, toSlot)
 end
