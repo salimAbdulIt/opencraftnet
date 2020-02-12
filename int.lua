@@ -261,6 +261,7 @@ function sinkItemsWithStorages()
                     v.damage = 0
                     v.label = 'minecraft:air'
                     v.size = 0
+                    v.maxSize = 0
                 end
                 local id = getDbId(v.name, v.damage)
                 if (not items[id]) then
@@ -479,6 +480,7 @@ function transferItemBack(slot, address, side, index, count, level)
         item.side = side
         item.slot = index
         item.size = tempItem.size
+        item.maxSize = tempItem.maxSize
         item.name = tempItem.name
         item.label = tempItem.label
         item.damage = tempItem.damage
