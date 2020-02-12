@@ -486,6 +486,31 @@ function transferItemBack(slot, address, side, index, count, level)
     end
 end
 
+function getDrawerSlots(name, damage)
+    local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(name, damage))
+    local returnList = {}
+    if (not itemsFromDb[1]) then
+        return returnList
+    end
+    local row = itemsFromDb[1]
+    for i, ix in pairs(row.itemXdata) do
+        for j, jx in pairs(row.itemXdata[i]) do
+            for k, kx in pairs(row.itemXdata[i][j]) do
+                if (row.itemXdata[i][j][k].drawer) then
+                    local item = {}
+                    item.storage = i
+                    item.side = j
+                    item.slot = k
+                    item.size = row.itemXdata[i][j][k].size
+                    item.maxSize = row.itemXdata[i][j][k].maxSize
+                    table.insert(returnList, item)
+                end
+            end
+        end
+    end
+    return returnList
+end
+
 function getNotFullSlots(name, damage, maxSize)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(name, damage))
     local returnList = {}
@@ -537,6 +562,21 @@ function pushItems(index)
     for i = startIndex, endIndex do
         local tempItem = transposerAddresses[""].transposer.getStackInSlot(1, i)
         if (tempItem) then
+
+            if (storageDrawersAddress.address and storageDrawersAddress['items'][getDbId(tempItem.name, tempItem.damage)]) then
+                local slots = getDrawerSlots(tempItem.name, tempItem.damage)
+                local flag = true
+                for j = 1, #slots do
+                    local count = tempItem.maxSize - transposerAddresses[slots[j].storage].transposer.getStackInSlot(slots[j].side, slots[j].slot).size
+                    table.insert(items, transferItemBack(i, slots[j].storage, slots[j].side, slots[j].slot, count, 0))
+                    tempItem.size = tempItem.size - count
+                    if (tempItem.size <= 0) then
+                        flag = false
+                        break
+                    end
+                end
+            end
+
             if (tempItem.size < tempItem.maxSize) then
                 transposerAddresses[""].transposer.store(1, i, data.address, 1)
                 local slots = getNotFullSlots(tempItem.name, tempItem.damage, tempItem.maxSize)
