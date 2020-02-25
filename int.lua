@@ -664,11 +664,11 @@ end
 
 function craft(name, damage, count)
     local craftedItem = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(name, damage), nil)[1]
-    local receipt = craftedItem.receipt
 
-    if (not receipt) then
+    if (not craftedItem or not craftedItem.receipt) then
         return false
     end
+    local receipt = craftedItem.receipt
     local countOfCrafts = math.ceil(count / receipt[0].count)
     for i = 1, 9 do
         if (receipt[i]) then
