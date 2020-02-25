@@ -6,6 +6,15 @@ Database = {}
 
 function Database:new()
     local obj = {}
+
+    function obj:read() -- only for in memory db
+        return db:read()
+    end
+
+    function obj:save() -- only for in memory db
+        return db:save()
+    end
+
     function obj:execute(inputQuery, value)
         local args = {}
         local query = {}

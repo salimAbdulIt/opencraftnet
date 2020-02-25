@@ -47,6 +47,8 @@ function reverceAddress(address)
     return revercedAddresses[address]
 end
 
+
+db:read()
 function loadStorages()
     if require("filesystem").exists(shell.getWorkingDirectory() .. "/storages.lua") then
         local file = io.open(shell.getWorkingDirectory() .. "/storages.lua", "r")
@@ -386,6 +388,7 @@ function setNameToItem(id, damage, name)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(id, damage), nil)
     itemsFromDb[1].label = name
     db:execute("INSERT INTO ITEMS " .. getDbId(id, damage), itemsFromDb[1])
+    db:save()
 end
 
 function getDbId(id, damage)
@@ -740,6 +743,7 @@ function addCraft()
         item.receipt = receipt
         db:execute("INSERT INTO ITEMS " .. getDbId(item.name, item.damage), item)
     end
+    db:save()
     getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', 64)
 end
 

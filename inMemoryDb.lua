@@ -8,6 +8,7 @@ function DurexDatabase:new()
     local obj = {}
 
     function obj:init(value)
+        self.fullPath = shell.getWorkingDirectory() .. "/durex/" .. value.table .. "/"
         self.query = value
 
         if (not self.query.limit) then
@@ -17,6 +18,22 @@ function DurexDatabase:new()
             self.query.skip = 0
         end
     end
+
+    function obj:save()
+        local file = io.open(self.fullPath "data.backup", "w")
+        file:write(serial.serialize(databases))
+        file:close()
+    end
+
+    function obj:read()
+        local file = io.open(self.fullPath "data.backup", "r")
+        if file then
+            databases = serial.unserialize(file:read("*a"))
+            file:close()
+        end
+    end
+
+
 
     function obj:executeQuery(value)
         self:init(value);
@@ -129,14 +146,14 @@ function DurexDatabase:new()
                 function obj1:init()
                     local searchValues = {}
                     if (self.parent.query.orderBy) then
-                        for id,item in pairs(databases['ITEMS']) do
+                        for id, item in pairs(databases['ITEMS']) do
                             table.insert(searchValues, item)
                         end
                         table.sort(searchValues, function(left, right)
                             return left[self.parent.query.orderBy] > right[self.parent.query.orderBy]
                         end)
                     else
-                        for id,item in pairs(databases['ITEMS']) do
+                        for id, item in pairs(databases['ITEMS']) do
                             table.insert(searchValues, item)
                         end
                     end
