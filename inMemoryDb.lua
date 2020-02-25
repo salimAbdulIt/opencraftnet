@@ -20,13 +20,13 @@ function DurexDatabase:new()
     end
 
     function obj:save()
-        local file = io.open(self.fullPath "data.backup", "w")
+        local file = io.open(self.fullPath .. "data.backup", "w")
         file:write(serial.serialize(databases))
         file:close()
     end
 
     function obj:read()
-        local file = io.open(self.fullPath "data.backup", "r")
+        local file = io.open(self.fullPath .. "data.backup", "r")
         if file then
             databases = serial.unserialize(file:read("*a"))
             file:close()
