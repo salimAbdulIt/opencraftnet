@@ -682,12 +682,20 @@ function craft(name, damage, count)
         end
     end
 
+    local receiptItems = {}
     for i = 1, 9 do
         if (receipt[i]) then
-            getItem(receipt[i].name, receipt[i].damage, receipt[i].count * countOfCrafts)
-            transferItemBack(1, robotAddress.address, robotAddress.outputSide, craftSlots[i], receipt[i].count * countOfCrafts, 0)
+            local itemsInStorages = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(receipt[i].name, receipt[i].damage))[1]
+            receiptItems[i] = itemsInStorages
         end
     end
+
+    for i = 1, 9 do
+        if (receipt[i]) then
+            local itemsInStorages = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(receipt[i].name, receipt[i].damage))[1]
+            receiptItems[i] = itemsInStorages
+        end
+    end 
 
     tunnel.send(countOfCrafts)
     os.sleep(1)
