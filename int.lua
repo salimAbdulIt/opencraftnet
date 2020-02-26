@@ -33,7 +33,7 @@ local id_of_available_slot = 'minecraftair_0'
 local nameOfRobot = 'opencomputers:robot'
 local nameOfChest = 'tile.chest'
 local order = {}
-local storages = { ["tile.IronChest"] = 'storage', ['Robot'] = 'robot', ["tile.chest"] = 'storageDrawers', ["tile.chest"] = 'storage'}
+local storages = { ["tile.IronChest"] = 'storage', ['Robot'] = 'robot', ["tile.chest"] = 'storageDrawers', ["tile.chest"] = 'storage' }
 local findNameFilter
 
 local revercedAddresses = {}
@@ -550,7 +550,7 @@ local craftSlots = {
     [7] = 13,
     [8] = 14,
     [9] = 15,
-    [0] = 17
+    [0] = 8
 }
 
 function pushItems(index)
@@ -662,53 +662,114 @@ function pushItems(index)
 end
 
 
-function craft(name, damage, count)
-    local craftedItem = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(name, damage), nil)[1]
-
-    if (not craftedItem or not craftedItem.receipt) then
-        return false
-    end
-    local receipt = craftedItem.receipt
-    local countOfCrafts = math.ceil(count / receipt[0].count)
-    for i = 1, 9 do
-        if (receipt[i]) then
-            local itemsInStorages = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(receipt[i].name, receipt[i].damage))[1]
-            local countOfItemsInStorage = 0
-            if (itemsInStorages) then
-                countOfItemsInStorage = itemsInStorages.count
-            end
-            if ((receipt[i].count * countOfCrafts) > countOfItemsInStorage) then
-                if (not craft(receipt[i].name, receipt[i].damage, (receipt[i].count * countOfCrafts) - countOfItemsInStorage)) then
-                    return false
-                end
-            end
-        end
-    end
-
-    local receiptItems = {}
-    for i = 1, 9 do
-        if (receipt[i]) then
-            local itemsInStorages = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(receipt[i].name, receipt[i].damage))[1]
-            receiptItems[i] = itemsInStorages
-        end
-    end
-
-    for i = 1, 9 do
-        if (receipt[i]) then
-            local itemsInStorages = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(receipt[i].name, receipt[i].damage))[1]
-            receiptItems[i] = itemsInStorages
-        end
-    end 
-
-    tunnel.send(countOfCrafts)
-    os.sleep(1)
-
-    local craftedItem = transposerAddresses[robotAddress.address].transposer.getStackInSlot(robotAddress.outputSide, craftSlots[0])
-    getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', receipt[0].count * countOfCrafts)
-    pushItems(1)
+function craftItem(name, damage, count)
+    recursiveCraft(name, damage, count)
     return true
 end
 
+function countRecipeItems(recipe)
+    local counts = {}
+    for i = 1, 9, 1 do
+        local id = recipe[i]
+        if id ~= nil then
+            local cnt = counts[id]
+            if cnt == nil then
+                cnt = 0
+            end
+            counts[id] = cnt + 1
+        end
+    end
+    return counts
+end
+
+
+function storage.xcount(itemId)
+    assert(type(itemId)=="string")
+    local stacks = db[itemId]
+    if stacks == nil then return 0 end
+    local counts = { }
+    for slot, stack in pairs(stacks.slots) do
+        counts[stack.hash] = (counts[stack.hash] or 0) +  stack.size
+    end
+    return stacks.size, counts
+end
+
+local deep = 0
+function recursiveCraft(name, damage, requestedCount)
+    local craftedItem = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(name, damage), nil)[1]
+
+    if (not craftedItem) then
+        return false
+    end
+    deep = deep + 1
+    local recipe = craftedItem.receipt
+    if recipe == nil then
+        --        printf("(%d) Невозможно выполнить крафт. Нет рецепта для <%s>\n",
+        --            deep, requestedItem.label)
+        return false
+    end
+    local items = countRecipeItems(recipe)
+    local n = math.ceil(requestedCount / recipe.n)
+    --подсчёт кол-ва необходимых ресурсов и крафт недостающих
+    ::recount::
+    local maxSize = math.min(n, craftedItem.maxSize, math.floor(64 / recipe[0].count))
+    local ok = true
+    printf("(%d) Подсчёт ресурсов.\n", deep)
+    for itemId, nStacks in pairs(items) do
+        local item = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(itemId.name, itemId.damage), nil)[1]
+        local nedded = nStacks * n
+        local itemCount = item.count
+        if itemCount < nedded  then
+--            printf("(%d) Нехватает <%s * %d>\n", deep,
+--                item.label, nedded - itemCount)
+            if not recursiveCraft(item, nedded - itemCount) then
+                ok = false
+                break
+            end
+            goto recount
+        end
+--        if #byHash > 1 then
+--            maxSize = 1
+--        end
+        maxSize = math.min(item.maxSize, maxSize)
+    end
+    if ok then
+--        printf("(%d) Выполняю крафт.\n", deep)
+        ok = craft(name, damage, n, maxSize, recipe)
+        if ok then
+            getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', n)
+            pushItems(1)
+--            printf("(%d) Крафт завершён.\n", deep)
+        else
+--            printf("(%d) Ошибка крафта.\n", deep)
+        end
+    end
+    deep = deep - 1
+    return ok
+end
+
+function craft(name, damage, inCount, maxSize, receipt)
+    local inStep = maxSize
+    while inCount > 0 do
+        local n = inStep
+        if inCount < n then
+            n = inCount
+        end
+        for i = 1, 9, 1 do
+            local itemId = receipt[i]
+            if itemId ~= nil then
+                getItem(itemId.name, itemId.damage, n)
+                transferItemBack(1, robotAddress.address, robotAddress.outputSide, craftSlots[i], n, 0)
+            end
+        end
+
+        tunnel.send(n)
+        os.sleep(1)
+
+        inCount = inCount - n
+    end
+    return true
+end
 
 function addCraft()
     local receipt = {}
