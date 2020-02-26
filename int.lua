@@ -554,7 +554,7 @@ local craftSlots = {
     [7] = 13,
     [8] = 14,
     [9] = 15,
-    [0] = 8
+    [0] = 17
 }
 
 function pushItems(index)
