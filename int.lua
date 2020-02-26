@@ -769,7 +769,7 @@ function craftItem(name, damage, inCount, maxSize, receipt)
             end
         end
 
-        tunnel.send(n)
+        tunnel.send(64)
         os.sleep(1)
         getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', 64)
         pushItems(1)
