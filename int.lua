@@ -275,6 +275,7 @@ function sinkItemsWithStorages()
                     items[id].count = 0
                     items[id].itemXdata = {}
                 end
+                items[id].maxSize = v.maxSize -- remove it
                 items[id].count = items[id].count + v.size
 
                 if (not items[id].itemXdata[storage.address]) then items[id].itemXdata[storage.address] = {} end
@@ -651,6 +652,7 @@ function pushItems(index)
             itemToSave.name = items[i].name
             itemToSave.damage = items[i].damage
             itemToSave.label = items[i].label
+            itemToSave.maxSize = items[i].maxSize
             itemToSave.count = itemToSave.count + countToIncrease
             itemsToSave[id] = itemToSave
         end
