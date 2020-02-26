@@ -753,7 +753,9 @@ function craftItem(name, damage, inCount, maxSize, receipt)
         end
 
         tunnel.send(n)
-        os.sleep(2)
+        os.sleep(1)
+        getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', n)
+        pushItems(1)
 
         inCount = inCount - n
     end
