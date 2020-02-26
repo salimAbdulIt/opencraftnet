@@ -716,7 +716,7 @@ function recursiveCraft(name, damage, requestedCount)
         if itemCount < nedded then
             --            printf("(%d) Нехватает <%s * %d>\n", deep,
             --                item.label, nedded - itemCount)
-            if not recursiveCraft(item, nedded - itemCount) then
+            if not recursiveCraft(item.name,item.damage, nedded - itemCount) then
                 ok = false
                 break
             end
