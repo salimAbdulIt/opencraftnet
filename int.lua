@@ -47,6 +47,12 @@ function reverceAddress(address)
     return revercedAddresses[address]
 end
 
+function say(msg)
+    if (component.isAvailable('chat_box')) then
+        component.chat_box.setName('Storage')
+        component.chat_box.say(msg)
+    end
+end
 
 db:read()
 function loadStorages()
@@ -693,6 +699,7 @@ function recursiveCraft(name, damage, requestedCount)
     local craftedItem = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(name, damage), nil)[1]
 
     if (not craftedItem) then
+        say("I dont know this item" .. name .. ' ' .. damage)
         return false
     end
     deep = deep + 1
@@ -700,12 +707,12 @@ function recursiveCraft(name, damage, requestedCount)
     if recipe == nil then
         --        printf("(%d) Невозможно выполнить крафт. Нет рецепта для <%s>\n",
         --            deep, requestedItem.label)
+        say("I dont have receipt for " .. name .. ' ' .. damage)
         return false
     end
     local items = countRecipeItems(recipe)
     local n = math.ceil(requestedCount / recipe[0].count)
-    --подсчёт кол-ва необходимых ресурсов и крафт недостающих
-    :: recount::
+    --подсчёт кол-ва необходимых ресурсов и крафт недостающих:: recount::
     local maxSize = math.min(n, craftedItem.maxSize, math.floor(64 / recipe[0].count))
     local ok = true
     --    printf("(%d) Подсчёт ресурсов.\n", deep)
@@ -716,7 +723,7 @@ function recursiveCraft(name, damage, requestedCount)
         if itemCount < nedded then
             --            printf("(%d) Нехватает <%s * %d>\n", deep,
             --                item.label, nedded - itemCount)
-            if not recursiveCraft(item.name,item.damage, nedded - itemCount) then
+            if not recursiveCraft(item.name, item.damage, nedded - itemCount) then
                 ok = false
                 break
             end
@@ -731,8 +738,8 @@ function recursiveCraft(name, damage, requestedCount)
         --        printf("(%d) Выполняю крафт.\n", deep)
         ok = craftItem(name, damage, n, maxSize, recipe)
         if ok then
---            getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', n)
---            pushItems(1)
+            --            getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', n)
+            --            pushItems(1)
             --            printf("(%d) Крафт завершён.\n", deep)
         else
             --            printf("(%d) Ошибка крафта.\n", deep)
