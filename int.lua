@@ -753,7 +753,7 @@ function craftItem(name, damage, inCount, maxSize, receipt)
         end
 
         tunnel.send(n)
-        os.sleep(1)
+        os.sleep(2)
 
         inCount = inCount - n
     end
