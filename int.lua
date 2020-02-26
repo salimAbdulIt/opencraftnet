@@ -247,6 +247,9 @@ function sinkItemsWithStorages()
     end
     local items = {}
     for k, v in pairs(allItems) do
+        if (not v.maxSize) then
+            v.maxSize = 64
+        end
         items[getDbId(v.name, v.damage)] = v
     end
     for address, storage in pairs(storageAddresses) do
