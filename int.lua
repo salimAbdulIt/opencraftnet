@@ -698,7 +698,7 @@ function recursiveCraft(name, damage, requestedCount)
         return false
     end
     local items = countRecipeItems(recipe)
-    local n = math.ceil(requestedCount / recipe.n)
+    local n = math.ceil(requestedCount / recipe[0].count)
     --подсчёт кол-ва необходимых ресурсов и крафт недостающих
     ::recount::
     local maxSize = math.min(n, craftedItem.maxSize, math.floor(64 / recipe[0].count))
