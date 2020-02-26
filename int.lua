@@ -662,7 +662,7 @@ function pushItems(index)
 end
 
 
-function craftItem(name, damage, count)
+function craft(name, damage, count)
     recursiveCraft(name, damage, count)
     return true
 end
@@ -724,7 +724,7 @@ function recursiveCraft(name, damage, requestedCount)
     end
     if ok then
 --        printf("(%d) Выполняю крафт.\n", deep)
-        ok = craft(name, damage, n, maxSize, recipe)
+        ok = craftItem(name, damage, n, maxSize, recipe)
         if ok then
             getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', n)
             pushItems(1)
@@ -737,7 +737,7 @@ function recursiveCraft(name, damage, requestedCount)
     return ok
 end
 
-function craft(name, damage, inCount, maxSize, receipt)
+function craftItem(name, damage, inCount, maxSize, receipt)
     local inStep = maxSize
     while inCount > 0 do
         local n = inStep
