@@ -683,17 +683,6 @@ function countRecipeItems(recipe)
 end
 
 
-function storage.xcount(itemId)
-    assert(type(itemId)=="string")
-    local stacks = db[itemId]
-    if stacks == nil then return 0 end
-    local counts = { }
-    for slot, stack in pairs(stacks.slots) do
-        counts[stack.hash] = (counts[stack.hash] or 0) +  stack.size
-    end
-    return stacks.size, counts
-end
-
 local deep = 0
 function recursiveCraft(name, damage, requestedCount)
     local craftedItem = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(name, damage), nil)[1]
