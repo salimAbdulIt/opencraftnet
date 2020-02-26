@@ -245,10 +245,10 @@ function sinkItemsWithStorages()
         allItems[i].count = 0
         allItems[i].itemXdata = {}
     end
+    local items = {}
     for k, v in pairs(allItems) do
-        db:execute("INSERT INTO ITEMS " .. getDbId(v.name, v.damage), v)
+        items[getDbId(v.name, v.damage)] = v
     end
-    local items = allItems
     for address, storage in pairs(storageAddresses) do
         if (transposerAddresses[storage.address].transposer.getInventorySize(storage.outputSide) ~= nil) then
             local itemsOfStorage = transposerAddresses[storage.address].transposer.getAllStacks(storage.outputSide).getAll()
@@ -699,38 +699,37 @@ function recursiveCraft(name, damage, requestedCount)
     end
     local items = countRecipeItems(recipe)
     local n = math.ceil(requestedCount / recipe[0].count)
-    --подсчёт кол-ва необходимых ресурсов и крафт недостающих
-    ::recount::
+    --подсчёт кол-ва необходимых ресурсов и крафт недостающих:: recount::
     local maxSize = math.min(n, craftedItem.maxSize, math.floor(64 / recipe[0].count))
     local ok = true
---    printf("(%d) Подсчёт ресурсов.\n", deep)
+    --    printf("(%d) Подсчёт ресурсов.\n", deep)
     for itemId, nStacks in pairs(items) do
         local item = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(itemId.name, itemId.damage), nil)[1]
         local nedded = nStacks * n
         local itemCount = item.count
-        if itemCount < nedded  then
---            printf("(%d) Нехватает <%s * %d>\n", deep,
---                item.label, nedded - itemCount)
+        if itemCount < nedded then
+            --            printf("(%d) Нехватает <%s * %d>\n", deep,
+            --                item.label, nedded - itemCount)
             if not recursiveCraft(item, nedded - itemCount) then
                 ok = false
                 break
             end
             goto recount
         end
---        if #byHash > 1 then
---            maxSize = 1
---        end
+        --        if #byHash > 1 then
+        --            maxSize = 1
+        --        end
         maxSize = math.min(item.maxSize, maxSize)
     end
     if ok then
---        printf("(%d) Выполняю крафт.\n", deep)
+        --        printf("(%d) Выполняю крафт.\n", deep)
         ok = craftItem(name, damage, n, maxSize, recipe)
         if ok then
             getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', n)
             pushItems(1)
---            printf("(%d) Крафт завершён.\n", deep)
+            --            printf("(%d) Крафт завершён.\n", deep)
         else
---            printf("(%d) Ошибка крафта.\n", deep)
+            --            printf("(%d) Ошибка крафта.\n", deep)
         end
     end
     deep = deep - 1
