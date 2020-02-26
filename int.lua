@@ -726,8 +726,8 @@ function recursiveCraft(name, damage, requestedCount)
         --        printf("(%d) Выполняю крафт.\n", deep)
         ok = craftItem(name, damage, n, maxSize, recipe)
         if ok then
-            getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', n)
-            pushItems(1)
+--            getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', n)
+--            pushItems(1)
             --            printf("(%d) Крафт завершён.\n", deep)
         else
             --            printf("(%d) Ошибка крафта.\n", deep)
