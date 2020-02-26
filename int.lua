@@ -703,7 +703,7 @@ function recursiveCraft(name, damage, requestedCount)
     ::recount::
     local maxSize = math.min(n, craftedItem.maxSize, math.floor(64 / recipe[0].count))
     local ok = true
-    printf("(%d) Подсчёт ресурсов.\n", deep)
+--    printf("(%d) Подсчёт ресурсов.\n", deep)
     for itemId, nStacks in pairs(items) do
         local item = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(itemId.name, itemId.damage), nil)[1]
         local nedded = nStacks * n
