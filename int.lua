@@ -718,7 +718,6 @@ function recursiveCraft(name, damage, requestedCount)
     local ok = true
     --    printf("(%d) Подсчёт ресурсов.\n", deep)
     for itemId, nStacks in pairs(items) do
-        say("I need " .. itemId.name .. itemId.damage .. ' ' .. nStacks)
         local item = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(itemId.name, itemId.damage), nil)[1]
         if(not item) then
             say("I dont know this item" .. itemId.name .. ' ' .. itemId.damage)
@@ -726,6 +725,7 @@ function recursiveCraft(name, damage, requestedCount)
         end
         local nedded = nStacks * n
         local itemCount = item.count
+        say("I need " .. itemId.name .. itemId.damage .. ' ' .. nStacks .. ' I have '.. itemCount )
         if itemCount < nedded then
             --            printf("(%d) Нехватает <%s * %d>\n", deep,
             --                item.label, nedded - itemCount)
