@@ -698,6 +698,9 @@ function countRecipeItems(recipe)
             counts[id] = cnt + 1
         end
     end
+    for k,v in pairs(counts) then
+        say(k.name .. ' ' .. k.damage .. ' ' .. v)
+    end
     return counts
 end
 
