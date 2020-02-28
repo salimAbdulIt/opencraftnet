@@ -683,7 +683,14 @@ function countRecipeItems(recipe)
     for i = 1, 9, 1 do
         local id = recipe[i]
         if id ~= nil then
-            local cnt = counts[id]
+            local cnt
+            for j=1,#counts do
+                if (id.name == counts[j].name and id.damage == counts[j].damage) then
+                    cnt = counts[j]
+                    break
+                end
+            end
+
             if cnt == nil then
                 cnt = 0
             end
