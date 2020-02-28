@@ -686,16 +686,15 @@ function countRecipeItems(recipe)
             local cnt
             for j=1,#counts do
                 if (id.name == counts[j].name and id.damage == counts[j].damage) then
-                    id = counts[j]
-                    cnt = counts[j]
+                    counts[j] = counts[j] + 1
+                    cnt = 1
                     break
                 end
             end
 
             if cnt == nil then
-                cnt = 0
+                counts[id] = 0
             end
-            counts[id] = cnt + 1
         end
     end
     for k,v in pairs(counts) do
