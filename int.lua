@@ -696,9 +696,6 @@ function countRecipeItems(recipe)
             end
         end
     end
-    for k,v in pairs(counts) do
-        say(k.name .. ' ' .. k.damage .. ' ' .. v)
-    end
     return counts
 end
 
@@ -734,7 +731,6 @@ function recursiveCraft(name, damage, requestedCount)
         end
         local nedded = nStacks * n
         local itemCount = item.count
-        say("I need " .. itemId.name .. itemId.damage .. ' ' .. nStacks .. ' I have '.. itemCount )
         if itemCount < nedded then
             --            printf("(%d) Нехватает <%s * %d>\n", deep,
             --                item.label, nedded - itemCount)
@@ -852,7 +848,7 @@ end
 
 findEnd("", -1)
 drawInterface()
-
+sinkItemsWithStorages()
 function isClicked(x1, y1, x2, y2, x, y)
     return (x >= x1 and y >= y1 and x <= x2 and y <= y2)
 end
