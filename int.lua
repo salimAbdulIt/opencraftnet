@@ -795,7 +795,7 @@ function addCraft()
             receipt[i].name = tempItem.name
             receipt[i].damage = tempItem.damage
             receipt[i].count = tempItem.size
-            transferItemBack(i, robotAddress.address, robotAddress.outputSide, craftSlots[i], 64, 0)
+            transferItemBack(craftSlotsInChest[i], robotAddress.address, robotAddress.outputSide, craftSlots[i], 64, 0)
         end
     end
     tunnel.send(64)
