@@ -718,6 +718,7 @@ function recursiveCraft(name, damage, requestedCount)
     local ok = true
     --    printf("(%d) Подсчёт ресурсов.\n", deep)
     for itemId, nStacks in pairs(items) do
+        say("I need " .. itemId.name .. itemId.damage .. ' ' .. nStacks)
         local item = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(itemId.name, itemId.damage), nil)[1]
         if(not item) then
             say("I dont know this item" .. itemId.name .. ' ' .. itemId.damage)
@@ -779,10 +780,11 @@ function craftItem(name, damage, inCount, maxSize, receipt)
     return true
 end
 
+local craftSlotsInChest = {1,2,3,10,11,12,19,20,21}
 function addCraft()
     local receipt = {}
     for i = 1, 9 do
-        local tempItem = transposerAddresses[""].transposer.getStackInSlot(1, i)
+        local tempItem = transposerAddresses[""].transposer.getStackInSlot(1, craftSlotsInChest[i])
         if (tempItem) then
             receipt[i] = {}
             receipt[i].name = tempItem.name
