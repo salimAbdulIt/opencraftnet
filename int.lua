@@ -680,7 +680,7 @@ end
 
 function countRecipeItems(recipe)
     local counts = {}
-    for i = 1, 9, 1 do
+    for i = 1, 9 do
         local id = recipe[i]
         if id ~= nil then
             local cnt
@@ -691,9 +691,9 @@ function countRecipeItems(recipe)
                     break
                 end
             end
-
+            say(cnt)
             if cnt == nil then
-                counts[id] = 0
+                counts[id] = 1
             end
         end
     end
