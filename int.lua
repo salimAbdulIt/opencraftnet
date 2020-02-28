@@ -849,6 +849,7 @@ end
 findEnd("", -1)
 drawInterface()
 sinkItemsWithStorages()
+drawItems()
 function isClicked(x1, y1, x2, y2, x, y)
     return (x >= x1 and y >= y1 and x <= x2 and y <= y2)
 end
