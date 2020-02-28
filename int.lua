@@ -812,6 +812,7 @@ function addCraft()
             item = {}
             item.name = craftedItem.name
             item.damage = craftedItem.damage
+            item.maxSize = craftedItem.maxSize
             item.label = craftedItem.label
             item.count = 0
             item.itemXdata = {}
