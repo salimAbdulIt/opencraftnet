@@ -33,7 +33,7 @@ local id_of_available_slot = 'minecraftair_0'
 local nameOfRobot = 'opencomputers:robot'
 local nameOfChest = 'tile.chest'
 local order = {}
-local storages = { ["tile.IronChest"] = 'storage', ['Robot'] = 'robot', ["tile.chest"] = 'storageDrawers', ["tile.chest"] = 'storage' }
+local storages = { ["tile.IronChest"] = 'storage', ["tile.storage"] = 'storage', ['Robot'] = 'robot', ["tile.chest"] = 'storageDrawers', ["tile.chest"] = 'storage' }
 local findNameFilter
 
 local revercedAddresses = {}
@@ -253,7 +253,7 @@ function sinkItemsWithStorages()
     end
     local items = {}
     for k, v in pairs(allItems) do
-        if (not v.maxSize) then
+        if (not v.maxSize) then --todo remove it
             v.maxSize = 64
         end
         items[getDbId(v.name, v.damage)] = v
