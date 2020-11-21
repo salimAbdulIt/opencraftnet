@@ -29,11 +29,12 @@ gpu.setResolution(80, 30)
 local page = 1
 local sizeOfPage = 26
 local items_on_the_screen = {}
-local id_of_available_slot = 'minecraftair_0'
+--local id_of_available_slot = 'minecraftair_0'
+local id_of_available_slot = 'minecraft:air'
 local nameOfRobot = 'opencomputers:robot'
 local nameOfChest = 'tile.chest'
 local order = {}
-local storages = { ["tile.IronChest"] = 'storage', ["tile.storage"] = 'storage', ['Robot'] = 'robot', ["tile.chest"] = 'storageDrawers', ["tile.chest"] = 'storage' }
+local storages = { ["tile.IronChest"] = 'storage', ["tile.storage"] = 'storage', ['Robot'] = 'robot', ["tile.chest"] = 'storage' }
 local findNameFilter
 
 local revercedAddresses = {}
@@ -67,7 +68,7 @@ function loadStorages()
     end
 end
 
-function saveStorages()
+    function saveStorages()
     local file = io.open(shell.getWorkingDirectory() .. "/storages.lua", "w")
     local address = {}
     for i = 1, #transposerAddresses do
@@ -101,7 +102,7 @@ function findEnd(address, lastOutputTransposer)
     for inputSide = 0, 5 do
         for k, tcomponent in pairs(tempTransposers) do
             local item = tcomponent.getStackInSlot(inputSide, 1)
-            if (item and item.name == 'minecraft:diamond' and isStorage(tcomponent.getInventoryName(inputSide))
+            if (item and item.name == 'minecraft:diamond' and true) --replate true isStorage(tcomponent.getInventoryName(inputSide)
                     and lastOutputTransposer ~= tcomponent.address) then
                 transposerAddresses[address] = {}
                 transposerAddresses[address].transposer = tcomponent
