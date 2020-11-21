@@ -551,16 +551,16 @@ function getNotFullSlots(name, damage, maxSize)
 end
 
 local craftSlots = {
-    [1] = 5,
-    [2] = 6,
-    [3] = 7,
-    [4] = 9,
-    [5] = 10,
-    [6] = 11,
-    [7] = 13,
-    [8] = 14,
-    [9] = 15,
-    [0] = 17
+    [1] = 1,
+    [2] = 2,
+    [3] = 3,
+    [4] = 5,
+    [5] = 6,
+    [6] = 7,
+    [7] = 9,
+    [8] = 10,
+    [9] = 11,
+    [0] = 13
 }
 
 function pushItems(index)
@@ -785,7 +785,7 @@ function craftItem(name, damage, inCount, maxSize, receipt)
     return true
 end
 
-local craftSlotsInChest = {1,2,3,10,11,12,19,20,21}
+local craftSlotsInChest = {1,2,3,13,14,15,25,26,27}
 function addCraft()
     local receipt = {}
     for i = 1, 9 do
