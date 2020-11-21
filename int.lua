@@ -454,6 +454,7 @@ function getItemsFromRow(rows, count)
 end
 
 function getItem(id, damage, count)
+    print(id,damage,count)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(id, damage), nil)
     local slots = getItemsFromRow(itemsFromDb, count)
     if not slots then
