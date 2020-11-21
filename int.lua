@@ -29,7 +29,7 @@ gpu.setResolution(80, 30)
 local page = 1
 local sizeOfPage = 26
 local items_on_the_screen = {}
-local id_of_available_slot = 'minecraftair_0'
+local id_of_available_slot = 'minecraftair_0.0'
 local nameOfRobot = 'opencomputers:robot'
 local nameOfChest = 'tile.chest'
 local order = {}
