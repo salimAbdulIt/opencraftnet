@@ -34,7 +34,7 @@ local id_of_available_slot = 'minecraft:air'
 local nameOfRobot = 'opencomputers:robot'
 local nameOfChest = 'tile.chest'
 local order = {}
-local storages = { ["tile.IronChest"] = 'storage', ["tile.storage"] = 'storage', ['Robot'] = 'robot', ["tile.chest"] = 'storage' }
+local storages = { ["tile.IronChest"] = 'storage',["ironchest:iron_chest"] = 'storage', ["tile.storage"] = 'storage', ['Robot'] = 'robot', ["tile.chest"] = 'storage' }
 local findNameFilter
 
 local revercedAddresses = {}
