@@ -5,6 +5,12 @@ DurexDatabase = {}
 function DurexDatabase:new()
     local obj = {}
 
+    function obj:save()
+    end
+
+    function obj:read()
+    end
+
     function obj:init(value)
         self.fullPath = shell.getWorkingDirectory() .. "/durex/" .. value.table .. "/"
         self.dataPath = shell.getWorkingDirectory() .. "/durex/" .. value.table .. '/data/'
