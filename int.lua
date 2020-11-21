@@ -567,6 +567,9 @@ local craftSlots = {
 
 function pushItems(index)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. id_of_available_slot, nil)
+    for k,v in pairs(itemsFromDb) do
+        print(k,v)
+    end
     local availableSlots = getItemsFromRow(itemsFromDb, nil)
     local items = {}
     local caret = 1
