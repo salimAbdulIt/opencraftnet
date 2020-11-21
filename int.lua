@@ -349,7 +349,7 @@ function getAvailableSlotsOfInputOutput()
     local availableSlots = {}
     for k = 1, #itemsOfStorage do
         local v = itemsOfStorage[k - 1]
-        if (not next(v)) then
+        if (not v or not next(v)) then
             table.insert(availableSlots, k)
         end
     end
@@ -408,7 +408,7 @@ end
 
 function getItemsFromRow(rows, count)
     local returnList = {}
-    if (next(rows)) then
+    if (rows and next(rows)) then
         local row = rows[1]
         for i, ix in pairs(row.itemXdata) do
             for j, jx in pairs(row.itemXdata[i]) do
