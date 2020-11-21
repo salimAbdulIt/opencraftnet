@@ -268,7 +268,7 @@ function sinkItemsWithStorages()
             end
             for k = startIndex, #itemsOfStorage + 1 do -- remove +1 in case if u are using 1.12.2
                 local v = itemsOfStorage[k - 1] -- remove -1 in case if u are using 1.12.2
-                if (not next(v)) then
+                if (not v or not next(v)) then
                     v.name = 'minecraft:air'
                     v.damage = 0
                     v.label = 'minecraft:air'
