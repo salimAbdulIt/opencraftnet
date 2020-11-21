@@ -347,8 +347,8 @@ function getAvailableSlotsOfInputOutput()
     local itemsOfStorage = transposerAddresses[""].transposer.getAllStacks(1).getAll() --todo change 1 to inputSide
     local availableSlots = {}
     for k = 1, #itemsOfStorage do
-        local v = itemsOfStorage[k - 1]
-        if (not v or not next(v)) then
+        local v = itemsOfStorage[k]
+        if (v.name == "minecraft:air") then
             table.insert(availableSlots, k)
         end
     end
