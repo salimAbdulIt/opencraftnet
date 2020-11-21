@@ -612,12 +612,6 @@ function pushItems(index)
                     end
                 end
                 if flag then
-                    print(availableSlots)
-                    print(#availableSlots)
-                    print(caret)
-                    for k,v in pairs(availableSlots) do
-                        print(k,v)
-                    end
                     local slot = availableSlots[caret]
                     caret = caret + 1
                     table.insert(items, transferItemBack(i, slot.storage, slot.side, slot.slot, 64, 0))

@@ -100,7 +100,6 @@ function DurexDatabase:new()
 
     function obj:selectById(resultValue)
         local item = databases['ITEMS'][self.query.fields[1].value]
-        print(item)
         table.insert(resultValue, item)
     end
 
