@@ -453,7 +453,6 @@ function getItemsFromRow(rows, count)
 end
 
 function getItem(id, damage, count)
-    print(id,damage,count)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(id, damage), nil)
     local slots = getItemsFromRow(itemsFromDb, count)
     if not slots then
@@ -566,9 +565,6 @@ local craftSlots = {
 
 function pushItems(index)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. id_of_available_slot, nil)
-    for k,v in pairs(itemsFromDb) do
-        print(k,v)
-    end
     local availableSlots = getItemsFromRow(itemsFromDb, nil)
     local items = {}
     local caret = 1
