@@ -720,7 +720,7 @@ function recursiveCraft(name, damage, requestedCount)
     end
     local items = countRecipeItems(recipe)
     local n = math.ceil(requestedCount / recipe[0].count):: recount::
-    local maxSize = math.min(n, craftedItem.maxSize, math.floor(64 / recipe[0].count))
+    local maxSize = math.min(n, craftedItem.maxSize, math.floor(craftedItem.maxSize / recipe[0].count))
     local ok = true
 
     for itemId, nStacks in pairs(items) do
