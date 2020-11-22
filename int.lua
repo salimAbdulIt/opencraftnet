@@ -33,7 +33,7 @@ local id_of_available_slot = 'minecraftair_0.0'
 local nameOfRobot = 'opencomputers:robot'
 local nameOfChest = 'tile.chest'
 local order = {}
-local storages = { ["tile.IronChest"] = 'storage',["ironchest:iron_chest"] = 'storage', ["tile.storage"] = 'storage', ['opencomputers:robot'] = 'robot', ["tile.chest"] = 'storage' }
+local storages = { ["tile.IronChest"] = 'storage', ["ironchest:iron_chest"] = 'storage', ["tile.storage"] = 'storage', ['opencomputers:robot'] = 'robot', ["tile.chest"] = 'storage' }
 local findNameFilter
 
 local revercedAddresses = {}
@@ -67,7 +67,7 @@ function loadStorages()
     end
 end
 
-    function saveStorages()
+function saveStorages()
     local file = io.open(shell.getWorkingDirectory() .. "/storages.lua", "w")
     local address = {}
     for i = 1, #transposerAddresses do
@@ -660,7 +660,9 @@ function pushItems(index)
             itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot].size = items[i].size
             itemToSave.name = items[i].name
             itemToSave.damage = items[i].damage
-            itemToSave.label = items[i].label
+            if (not itemToSave.label) then
+                itemToSave.label = items[i].label
+            end
             itemToSave.maxSize = items[i].maxSize
             itemToSave.count = itemToSave.count + countToIncrease
             itemsToSave[id] = itemToSave
@@ -684,7 +686,7 @@ function countRecipeItems(recipe)
         local id = recipe[i]
         if id ~= nil then
             local cnt
-            for k,v in pairs(counts) do
+            for k, v in pairs(counts) do
                 if (id.name == k.name and id.damage == k.damage) then
                     counts[k] = v + 1
                     cnt = 1
@@ -711,49 +713,37 @@ function recursiveCraft(name, damage, requestedCount)
     deep = deep + 1
     local recipe = craftedItem.receipt
     if recipe == nil then
-        --        printf("(%d) Невозможно выполнить крафт. Нет рецепта для <%s>\n",
-        --            deep, requestedItem.label)
+
+
         say("I dont have receipt for " .. name .. ' ' .. damage)
         return false
     end
     local items = countRecipeItems(recipe)
-    local n = math.ceil(requestedCount / recipe[0].count)
-    --подсчёт кол-ва необходимых ресурсов и крафт недостающих
-    :: recount::
+    local n = math.ceil(requestedCount / recipe[0].count):: recount::
     local maxSize = math.min(n, craftedItem.maxSize, math.floor(64 / recipe[0].count))
     local ok = true
-    --    printf("(%d) Подсчёт ресурсов.\n", deep)
+
     for itemId, nStacks in pairs(items) do
         local item = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(itemId.name, itemId.damage), nil)[1]
-        if(not item) then
+        if (not item) then
             say("I dont know this item" .. itemId.name .. ' ' .. itemId.damage)
             return false
         end
         local nedded = nStacks * n
         local itemCount = item.count
         if itemCount < nedded then
-            --            printf("(%d) Нехватает <%s * %d>\n", deep,
-            --                item.label, nedded - itemCount)
             if not recursiveCraft(item.name, item.damage, nedded - itemCount) then
                 ok = false
                 break
             end
             goto recount
         end
-        --        if #byHash > 1 then
-        --            maxSize = 1
-        --        end
         maxSize = math.min(item.maxSize, maxSize)
     end
     if ok then
-        --        printf("(%d) Выполняю крафт.\n", deep)
         ok = craftItem(name, damage, n, maxSize, recipe)
         if ok then
-            --            getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', n)
-            --            pushItems(1)
-            --            printf("(%d) Крафт завершён.\n", deep)
         else
-            --            printf("(%d) Ошибка крафта.\n", deep)
         end
     end
     deep = deep - 1
@@ -785,7 +775,7 @@ function craftItem(name, damage, inCount, maxSize, receipt)
     return true
 end
 
-local craftSlotsInChest = {1,2,3,13,14,15,25,26,27}
+local craftSlotsInChest = { 1, 2, 3, 13, 14, 15, 25, 26, 27 }
 function addCraft()
     local receipt = {}
     for i = 1, 9 do
