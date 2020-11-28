@@ -849,6 +849,7 @@ function findByName()
 end
 
 findEnd("", -1)
+saveStorages()
 drawInterface()
 --sinkItemsWithStorages()
 drawItems()
