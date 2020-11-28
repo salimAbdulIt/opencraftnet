@@ -21,6 +21,13 @@ function DurexDatabase:new()
 
     function obj:save()
         local file = io.open(shell.getWorkingDirectory() .. "/data.backup", "w")
+--        local tableToSave = {}
+--        tableToSave['ITEMS'] = {}
+--
+--        for k,v in pairs(databases['ITEMS']) do
+--            local valueToSave = {}
+--            tableToSave['ITEMS'][k] = valueToSave
+--        end
         file:write(serial.serialize(databases))
         file:close()
     end

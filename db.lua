@@ -208,12 +208,12 @@ function DurexDatabase:new()
                 obj1.parent = parent
                 function obj1:init()
                     local indexes = self.parent:isIndexExist(self.parent.query.fields)
-                    local file = io.open(self.parent.indexPath .. self.parent.query.fields[indexes[1]].column .. "." .. self:getIndexType(self.parent.query.fields[indexes[1]].operation))
+                    local file = io.open(self.parent.indexPath .. self.parent.query.fields[indexes[1]].column .. "." .. self.parent:getIndexType(self.parent.query.fields[indexes[1]].operation))
                     local indexedValues = serial.unserialize(file:read("*a"))
                     file:close()
                     local searchValues = indexedValues[self.parent.query.fields[indexes[1]].value]
                     for i = 2, #indexes do
-                        local file = io.open(self.parent.indexPath .. self.parent.query.fields[indexes[i]].column .. "." .. self:getIndexType(self.parent.query.fields[indexes[i]].operation))
+                        local file = io.open(self.parent.indexPath .. self.parent.query.fields[indexes[i]].column .. "." .. self.parent:getIndexType(self.parent.query.fields[indexes[i]].operation))
                         local tempIndexedValues = serial.unserialize(file:read("*a"))
                         file:close()
                         searchValues = self.parent:intersection(searchValues, tempIndexedValues[self.parent.query.fields[indexes[i]].value])

@@ -473,6 +473,17 @@ function getItem(id, damage, count)
 end
 
 function transferItemFromTo(fromAddress, fromSide, fromIndex, toAddress, toSide, toIndex)
+    local sameAddressLetters = string.len(fromAddress)
+    for i=1,string.len(fromAddress) do
+        if (not (fromAddress:sub(i,i) == toAddress(i,i))) then
+            sameAddressLetters = i-1
+            break
+        end
+    end
+    getItemFromStorage()
+    transferItemBack(1, robotAddress.address, robotAddress.outputSide, craftSlots[i], n, 0)
+
+
     --todo realize in future
 end
 
@@ -839,7 +850,7 @@ end
 
 findEnd("", -1)
 drawInterface()
-sinkItemsWithStorages()
+--sinkItemsWithStorages()
 drawItems()
 function isClicked(x1, y1, x2, y2, x, y)
     return (x >= x1 and y >= y1 and x <= x2 and y <= y2)
