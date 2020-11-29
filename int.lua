@@ -293,7 +293,6 @@ function sinkItemsWithStorages()
                 if (not items[id].itemXdata[storage.address][storage.outputSide][k]) then items[id].itemXdata[storage.address][storage.outputSide][k] = {} end
 
                 local itemXdata = {}
-                itemXdata.storageType = 'storage'
                 itemXdata.size = v.size
                 items[id].itemXdata[storage.address][storage.outputSide][k] = itemXdata
             end
@@ -349,7 +348,7 @@ function getAvailableSlotsOfInputOutput()
     local availableSlots = {}
     for k = 1, #itemsOfStorage do
         local v = itemsOfStorage[k]
-        if (v.name == "minecraft:air") then
+        if (v.name == "air") then
             table.insert(availableSlots, k)
         end
     end
@@ -454,6 +453,7 @@ end
 
 function getItem(id, damage, count, stopLevel)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(id, damage), nil)
+    local availableSlotsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. id_of_available_slot, nil)
     local slots = getItemsFromRow(itemsFromDb, count)
     if not slots then
         return
@@ -468,8 +468,17 @@ function getItem(id, damage, count, stopLevel)
         local oldCountOfItems = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size
         itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size - slot.size
         itemsFromDb[1].count = itemsFromDb[1].count - slot.size
+        if (itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size == 0) then
+            itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot] = nil
+            local value = {}
+            value.size = 0
+            if not availableSlotsFromDb[1].itemXdata[slot.storage] = {}
+            if not availableSlotsFromDb[1].itemXdata[slot.storage][slot.side] = {}
+            if not availableSlotsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot] = value
+        end
     end
     db:execute("INSERT INTO ITEMS " .. getDbId(id, damage), itemsFromDb[1])
+    db:execute("INSERT INTO ITEMS " .. id_of_available_slot, availableSlotsFromDb[1])
 end
 function transferItemTo(id, dmg, count, toAddress, toSide, toIndex)
     local sameAddressLetters = 1
