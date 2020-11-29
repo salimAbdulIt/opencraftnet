@@ -365,17 +365,19 @@ function getItemFromStorage(storageX, side, fromSlot, storageType, count, toSlot
     end
 end
 
-function getItemFromSlot(storageX, side, fromSlot, count, toSlot)
+function getItemFromSlot(storageX, side, fromSlot, count, toSlot, stopLevel)
     local transferToSlot = 1
     if (#storageX == 0) then
         transferToSlot = toSlot
     end
     transferItemOut(storageX, side, fromSlot, count, transferToSlot)
     local itemFromStorage = transposerAddresses[storageX].transposer.getStackInSlot(side, fromSlot)
-    local remainedItem = {}
 
-    if (#storageX > 0) then
-        local _
+    local remainedItem = {}
+    if (stopLevel and #storageX == stopLevel) then
+        return itemFromStorage
+    end
+    if (#storageX > 0 and not (stopLevel and #storageX == stopLevel)) then
         remainedItem = getItemFromSlot(storageX:sub(1, #storageX - 1), tonumber(storageX:sub(#storageX, #storageX)), 1, count, toSlot)
     else
         remainedItem.storage = storageX
@@ -452,7 +454,7 @@ function getItemsFromRow(rows, count)
     return
 end
 
-function getItem(id, damage, count)
+function getItem(id, damage, count, stopLevel)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(id, damage), nil)
     local slots = getItemsFromRow(itemsFromDb, count)
     if not slots then
@@ -464,27 +466,24 @@ function getItem(id, damage, count)
     end
     for i = 1, #slots do
         local slot = slots[i]
-        getItemFromStorage(slot.storage, slot.side, slot.slot, slot.storageType, slot.size)
+        getItemFromStorage(slot.storage, slot.side, slot.slot, slot.storageType, slot.size, stopLevel)
         local oldCountOfItems = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size
         itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size - slot.size
         itemsFromDb[1].count = itemsFromDb[1].count - slot.size
     end
     db:execute("INSERT INTO ITEMS " .. getDbId(id, damage), itemsFromDb[1])
 end
-
-function transferItemFromTo(fromAddress, fromSide, fromIndex, toAddress, toSide, toIndex)
-    local sameAddressLetters = string.len(fromAddress)
+function transferItemTo(id, dmg, count, toAddress, toSide, toIndex)
+    local sameAddressLetters = 0
     for i=1,string.len(fromAddress) do
         if (not (fromAddress:sub(i,i) == toAddress(i,i))) then
-            sameAddressLetters = i-1
             break
         end
+        sameAddressLetters = i
     end
-    getItemFromStorage()
-    transferItemBack(1, robotAddress.address, robotAddress.outputSide, craftSlots[i], n, 0)
+    getItem(id, dmg, count, sameAddressLetters)
+    transferItemBack(1, toAddress, toSide, toIndex, count, sameAddressLetters)
 
-
-    --todo realize in future
 end
 
 function transferItemBack(slot, address, side, index, count, level)
@@ -771,8 +770,9 @@ function craftItem(name, damage, inCount, maxSize, receipt)
         for i = 1, 9, 1 do
             local itemId = receipt[i]
             if itemId ~= nil then
-                getItem(itemId.name, itemId.damage, n)
-                transferItemBack(1, robotAddress.address, robotAddress.outputSide, craftSlots[i], n, 0)
+--                getItem(itemId.name, itemId.damage, n)
+--                transferItemBack(1, robotAddress.address, robotAddress.outputSide, craftSlots[i], n, 0)
+                transferItemTo(itemId.name, itemId.damage, n, robotAddress.address, robotAddress.outputSide, craftSlots[i])
             end
         end
 
