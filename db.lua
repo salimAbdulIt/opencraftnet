@@ -226,6 +226,7 @@ function DurexDatabase:new()
                     local indexedValues1 = serial.unserialize(file:read("*a"))
                     file:close()
                     local searchValues = self.parent:selectByIndex(indexedValues1, self.parent.query.fields[indexes[1]].value)
+                    print(searchValue)
                     for i = 2, #indexes do
                         local file = io.open(self.parent.indexPath .. self.parent.query.fields[indexes[i]].column .. "." .. self.parent:getIndexType(self.parent.query.fields[indexes[i]].operation))
                         local tempIndexedValues = serial.unserialize(file:read("*a"))
