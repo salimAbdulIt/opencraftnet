@@ -374,9 +374,8 @@ function getItemFromSlot(storageX, side, fromSlot, count, toSlot, stopLevel)
 
     local remainedItem = {}
 
-    say(stopLevel .. ' ' .. storageX)
     if (#storageX > 0 and not (stopLevel and #storageX == stopLevel)) then
-        remainedItem = getItemFromSlot(storageX:sub(1, #storageX - 1), tonumber(storageX:sub(#storageX, #storageX)), 1, count, toSlot)
+        remainedItem = getItemFromSlot(storageX:sub(1, #storageX - 1), tonumber(storageX:sub(#storageX, #storageX)), 1, count, toSlot, stopLevel)
     else
         remainedItem.storage = storageX
         remainedItem.side = side
@@ -571,7 +570,7 @@ local craftSlots = {
     [0] = 13
 }
 
-function pushItems(index)
+function pushItems(index, fromLevel)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. id_of_available_slot, nil)
     local availableSlots = getItemsFromRow(itemsFromDb, nil)
     local items = {}
@@ -582,6 +581,9 @@ function pushItems(index)
         startIndex = index
         endIndex = index
     end
+    if (not fromLevel) then
+        fromLevel = 0
+    end
     for i = startIndex, endIndex do
         local tempItem = transposerAddresses[""].transposer.getStackInSlot(1, i)
         if (tempItem) then
@@ -591,7 +593,7 @@ function pushItems(index)
                 local flag = true
                 for j = 1, #slots do
                     local count = tempItem.maxSize - transposerAddresses[slots[j].storage].transposer.getStackInSlot(slots[j].side, slots[j].slot).size
-                    table.insert(items, transferItemBack(i, slots[j].storage, slots[j].side, slots[j].slot, count, 0))
+                    table.insert(items, transferItemBack(i, slots[j].storage, slots[j].side, slots[j].slot, count, fromLevel))
                     tempItem.size = tempItem.size - count
                     if (tempItem.size <= 0) then
                         flag = false
@@ -607,7 +609,7 @@ function pushItems(index)
                 for j = 1, #slots do
                     if (transposerAddresses[slots[j].storage].transposer.compareStackToDatabase(slots[j].side, slots[j].slot, data.address, 1, true)) then
                         local count = tempItem.maxSize - transposerAddresses[slots[j].storage].transposer.getStackInSlot(slots[j].side, slots[j].slot).size
-                        table.insert(items, transferItemBack(i, slots[j].storage, slots[j].side, slots[j].slot, count, 0))
+                        table.insert(items, transferItemBack(i, slots[j].storage, slots[j].side, slots[j].slot, count, fromLevel))
                         tempItem.size = tempItem.size - count
                         if (tempItem.size <= 0) then
                             flag = false
@@ -776,7 +778,7 @@ function craftItem(name, damage, inCount, maxSize, receipt)
 
         tunnel.send(64)
         os.sleep(1)
-        getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', 64)
+        getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', 64, nil, 1)
         pushItems(1)
 
         inCount = inCount - n
