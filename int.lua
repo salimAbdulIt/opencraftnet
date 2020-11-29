@@ -336,11 +336,7 @@ end
 
 function transferItemOut(storageX, side, fromSlot, count, toSlot)
     local storage = transposerAddresses[storageX]
-    if (toSlot) then
-        storage.transposer.transferItem(side, storage.inputSide, count, fromSlot, toSlot)
-    else
-        storage.transposer.transferItem(side, storage.inputSide, count, fromSlot)
-    end
+    storage.transposer.transferItem(side, storage.inputSide, count, fromSlot, toSlot)
 end
 
 function getAvailableSlotsOfInputOutput()
@@ -779,7 +775,7 @@ function craftItem(name, damage, inCount, maxSize, receipt)
         tunnel.send(64)
         os.sleep(1)
         getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', 64, nil, 1)
-        pushItems(1)
+        pushItems(1,1)
 
         inCount = inCount - n
     end
