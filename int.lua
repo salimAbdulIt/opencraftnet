@@ -369,7 +369,11 @@ function getItemFromSlot(storageX, side, fromSlot, count, toSlot, stopLevel)
     if (#storageX == 0) then
         transferToSlot = toSlot
     end
-    transferItemOut(storageX, side, fromSlot, count, transferToSlot)
+    if (stopLevel > #storageX) then
+        transposerAddresses[storageX].transposer.transferItem(side,side,count,fromSlot, 1)
+    else
+        transferItemOut(storageX, side, fromSlot, count, transferToSlot)
+    end
     local itemFromStorage = transposerAddresses[storageX].transposer.getStackInSlot(side, fromSlot)
 
     local remainedItem = {}
