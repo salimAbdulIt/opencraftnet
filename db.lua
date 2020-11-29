@@ -203,7 +203,7 @@ function DurexDatabase:new()
             local result = {}
             for k,v in pairs(indexValues) do
                 if (self:isValid(k, searchValue, indexType)) then
-                    table.insert(result, v)
+                    result[k] = v
                 end
             end
             return result
