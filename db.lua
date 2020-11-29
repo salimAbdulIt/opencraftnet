@@ -196,6 +196,20 @@ function DurexDatabase:new()
         return resultValues
     end
 
+    function obj:selectByIndex(indexValues, searchValue, indexType)
+        if (indexType == "EXACT") then
+            return indexValues[searchValue]
+        else if (indexType == "STARTFROM") then
+            local result = {}
+            for k,v in pairs(indexValue) do
+                if (isValid(k, searchValue)) then
+                    table.insert(result, v)
+                end
+            end
+            return result
+        end
+    end
+
     function obj:selectQ()
         local resultValue = {}
         local sortedValues = {}
@@ -209,9 +223,9 @@ function DurexDatabase:new()
                 function obj1:init()
                     local indexes = self.parent:isIndexExist(self.parent.query.fields)
                     local file = io.open(self.parent.indexPath .. self.parent.query.fields[indexes[1]].column .. "." .. self.parent:getIndexType(self.parent.query.fields[indexes[1]].operation))
-                    local indexedValues = serial.unserialize(file:read("*a"))
+                    local indexedValues1 = serial.unserialize(file:read("*a"))
                     file:close()
-                    local searchValues = indexedValues[self.parent.query.fields[indexes[1]].value]
+                    local searchValues = self.parent:selectByIndex(indexedValues1, self.parent.query.fields[indexes[1]].value)
                     for i = 2, #indexes do
                         local file = io.open(self.parent.indexPath .. self.parent.query.fields[indexes[i]].column .. "." .. self.parent:getIndexType(self.parent.query.fields[indexes[i]].operation))
                         local tempIndexedValues = serial.unserialize(file:read("*a"))
