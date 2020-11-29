@@ -245,7 +245,6 @@ function DurexDatabase:new()
                                 end
                             end
 
-                            component.chat_box.say('' .. )
                             table.sort(searchValues, function(left, right)
                                 return tonumber(mapToIndex[left]) > tonumber(mapToIndex[right])
                             end)
