@@ -174,6 +174,11 @@ function DurexDatabase:new()
             return resultValues
         end
 
+        while (self.query.skip > 0) do
+            self.query.skip = self.query.skip - 1
+            object:skip()
+        else
+
         local value = object:next()
         repeat
             local isItemValid = true
