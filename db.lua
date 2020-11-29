@@ -1,6 +1,7 @@
 local fs = require("filesystem")
 local shell = require("shell")
 local serial = require("serialization")
+local component = require('component')
 DurexDatabase = {}
 function DurexDatabase:new()
     local obj = {}
@@ -444,7 +445,11 @@ function DurexDatabase:new()
         if (operation == "=") then
             return tostring(value1) == tostring(value2)
         elseif (operation == "STARTFROM") then
-            return self:starts_with(string.lower(value1), string.lower(value2))
+            local result = self:starts_with(string.lower(value1), string.lower(value2))
+            local a = 'false'
+            if (result) then a = 'true' end
+            component.chat_box.say(value2 .. ' ' .. value2 .. ' ' .. a)
+            return result
         end
     end
 
