@@ -848,8 +848,8 @@ function findByName()
     end
 end
 
-findEnd("", -1)
---loadStorages()
+--findEnd("", -1)
+loadStorages()
 drawInterface()
 --sinkItemsWithStorages()
 drawItems()
