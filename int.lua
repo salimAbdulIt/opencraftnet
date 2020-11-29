@@ -374,9 +374,7 @@ function getItemFromSlot(storageX, side, fromSlot, count, toSlot, stopLevel)
     local itemFromStorage = transposerAddresses[storageX].transposer.getStackInSlot(side, fromSlot)
 
     local remainedItem = {}
-    if (stopLevel and #storageX == stopLevel) then
-        return itemFromStorage
-    end
+
     if (#storageX > 0 and not (stopLevel and #storageX == stopLevel)) then
         remainedItem = getItemFromSlot(storageX:sub(1, #storageX - 1), tonumber(storageX:sub(#storageX, #storageX)), 1, count, toSlot)
     else
