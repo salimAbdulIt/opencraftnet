@@ -108,14 +108,15 @@ function findEnd(address, lastOutputTransposer)
                 transposerAddresses[address].inputSide = inputSide
                 for outputSide = 0, 5 do
                     if (inputSide ~= outputSide) then
-                        if (isStorage(transposerAddresses[address].transposer.getInventoryName(outputSide))) then
+                        local outputSideInventoryName = transposerAddresses[address].transposer.getInventoryName(outputSide)
+                        if (isStorage(outputSideInventoryName)) then
                             -- found storage
                             returnedValue = true
                             local address1 = {}
                             address1.address = address
                             address1.side = outputSide
                             storageAddresses[address1] = {}
-                            storageAddresses[address1].name = transposerAddresses[address].transposer.getInventoryName(outputSide)
+                            storageAddresses[address1].name = outputSideInventoryName
                             storageAddresses[address1].address = address
                             storageAddresses[address1].outputSide = outputSide
                             storageAddresses[address1].inputSide = inputSide
@@ -126,14 +127,14 @@ function findEnd(address, lastOutputTransposer)
                                 end
                                 transposerAddresses[address].transposer.transferItem(outputSide, inputSide, 64, 1, 1)
                             end
-                        elseif (isDrawerStorage(transposerAddresses[address].transposer.getInventoryName(outputSide))) then
+                        elseif (isDrawerStorage(outputSideInventoryName)) then
                             returnedValue = true
                             storageDrawersAddress.address = address
                             storageDrawersAddress.outputSide = outputSide
                             storageDrawersAddress.inputSide = inputSide
                             storageDrawersAddress.drawer = component.drawer
                             storageDrawersAddress.chestSide = 'UP'
-                        elseif (isRobot(transposerAddresses[address].transposer.getInventoryName(outputSide))) then
+                        elseif (isRobot(outputSideInventoryName)) then
                             returnedValue = true
                             robotAddress.address = address
                             robotAddress.outputSide = outputSide
