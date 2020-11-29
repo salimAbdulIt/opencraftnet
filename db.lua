@@ -201,7 +201,7 @@ function DurexDatabase:new()
             return indexValues[searchValue]
         elseif (indexType == "STARTFROM") then
             local result = {}
-            for k,v in pairs(indexValue) do
+            for k,v in pairs(indexValues) do
                 print(k)
                 if (isValid(k, searchValue)) then
                     table.insert(result, v)
