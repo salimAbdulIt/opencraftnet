@@ -570,13 +570,16 @@ local craftSlots = {
     [0] = 13
 }
 
-function pushItems(index, fromLevel)
+function pushItems(index, fromAddress)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. id_of_available_slot, nil)
     local availableSlots = getItemsFromRow(itemsFromDb, nil)
     local items = {}
     local caret = 1
     local startIndex = 1
     local endIndex = transposerAddresses[""].transposer.getInventorySize(1)
+    if (not fromAddress) then
+        fromAddress = ""
+    end
     if (index) then
         startIndex = index
         endIndex = index
@@ -585,7 +588,7 @@ function pushItems(index, fromLevel)
         fromLevel = 0
     end
     for i = startIndex, endIndex do
-        local tempItem = transposerAddresses[""].transposer.getStackInSlot(1, i)
+        local tempItem = transposerAddresses[fromAddress].transposer.getStackInSlot(1, i)
         if (tempItem) then
 
             if (storageDrawersAddress.address and storageDrawersAddress['items'][getDbId(tempItem.name, tempItem.damage)]) then
@@ -593,7 +596,7 @@ function pushItems(index, fromLevel)
                 local flag = true
                 for j = 1, #slots do
                     local count = tempItem.maxSize - transposerAddresses[slots[j].storage].transposer.getStackInSlot(slots[j].side, slots[j].slot).size
-                    table.insert(items, transferItemBack(i, slots[j].storage, slots[j].side, slots[j].slot, count, fromLevel))
+                    table.insert(items, transferItemBack(i, slots[j].storage, slots[j].side, slots[j].slot, count, #fromAddress))
                     tempItem.size = tempItem.size - count
                     if (tempItem.size <= 0) then
                         flag = false
