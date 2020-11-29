@@ -473,7 +473,7 @@ function getItem(id, damage, count, stopLevel)
             local value = {}
             value.size = 0
             if not availableSlotsFromDb[1].itemXdata[slot.storage] then availableSlotsFromDb[1].itemXdata[slot.storage] = {}
-            if not availableSlotsFromDb[1].itemXdata[slot.storage][slot.side] then = availableSlotsFromDb[1].itemXdata[slot.storage][slot.side] {}
+            if not availableSlotsFromDb[1].itemXdata[slot.storage][slot.side] then availableSlotsFromDb[1].itemXdata[slot.storage][slot.side] = {}
             availableSlotsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot] = value
         end
     end
