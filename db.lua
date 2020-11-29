@@ -204,7 +204,9 @@ function DurexDatabase:new()
             local result = {}
             for k,v in pairs(indexValues) do
                 if (self:isValid(k, searchValue, indexType)) then
-                    table.insert(result, v)
+                    for i,v1 in pairs(v) do
+                        table.insert(result, v1)
+                    end
                 end
             end
             return result
