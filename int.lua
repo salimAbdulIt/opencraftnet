@@ -356,7 +356,6 @@ function getAvailableSlotsOfInputOutput()
 end
 
 function getItemFromStorage(storageX, side, fromSlot, storageType, count, toSlot, stopLevel)
-    print(stopLevel)
     if (storageType == 'drawer') then
         storageDrawersAddress.drawer.pushItem(storageDrawersAddress.chestSide, 1 + fromSlot * 2, count)
         getItemFromSlot(storageX, side, 1, count, toSlot, stopLevel)
@@ -375,8 +374,6 @@ function getItemFromSlot(storageX, side, fromSlot, count, toSlot, stopLevel)
 
     local remainedItem = {}
 
-    print(stopLevel,#storageX)
-    print(stopLevel and #storageX == stopLevel)
     if (#storageX > 0 and not (stopLevel and #storageX == stopLevel)) then
         remainedItem = getItemFromSlot(storageX:sub(1, #storageX - 1), tonumber(storageX:sub(#storageX, #storageX)), 1, count, toSlot)
     else
@@ -466,8 +463,7 @@ function getItem(id, damage, count, stopLevel)
     end
     for i = 1, #slots do
         local slot = slots[i]
-        print(stopLevel)
-        getItemFromStorage(slot.storage, slot.side, slot.slot, slot.storageType, slot.size, stopLevel)
+        getItemFromStorage(slot.storage, slot.side, slot.slot, slot.storageType, slot.size, nil, stopLevel) --todo investigate nil value
         local oldCountOfItems = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size
         itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size - slot.size
         itemsFromDb[1].count = itemsFromDb[1].count - slot.size
