@@ -202,8 +202,7 @@ function DurexDatabase:new()
         elseif (indexType == "STARTFROM") then
             local result = {}
             for k,v in pairs(indexValues) do
-                print(k)
-                if (self:isValid(k, searchValue)) then
+                if (self:isValid(k, searchValue, indexType)) then
                     table.insert(result, v)
                 end
             end
@@ -227,7 +226,6 @@ function DurexDatabase:new()
                     local indexedValues1 = serial.unserialize(file:read("*a"))
                     file:close()
                     local searchValues = self.parent:selectByIndex(indexedValues1, self.parent.query.fields[indexes[1]].value, self.parent:getIndexType(self.parent.query.fields[indexes[1]].operation))
-                    print(searchValue)
                     for i = 2, #indexes do
                         local file = io.open(self.parent.indexPath .. self.parent.query.fields[indexes[i]].column .. "." .. self.parent:getIndexType(self.parent.query.fields[indexes[i]].operation))
                         local tempIndexedValues = serial.unserialize(file:read("*a"))
