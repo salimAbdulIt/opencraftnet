@@ -169,20 +169,22 @@ function DurexDatabase:new()
 
     function obj:selectFromObject(object)
         object:init()
+        local filters = object:getFilters()
         local resultValues = {}
         if (object:getCount() == 0) then
             return resultValues
         end
 
-        while (self.query.skip > 0) do
-            self.query.skip = self.query.skip - 1
-            object:skip()
-        else
+        if (not filters) then
+            while (self.query.skip > 0) do
+                self.query.skip = self.query.skip - 1
+                object:skip()
+            end
+        end
 
         local value = object:next()
         repeat
             local isItemValid = true
-            local filters = object:getFilters()
             if (filters) then
                 for j, field in pairs(filters) do
                     if (not self:isValid(value[field.column], field.value, field.operation)) then
