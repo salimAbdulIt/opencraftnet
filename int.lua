@@ -370,7 +370,7 @@ function getItemFromSlot(storageX, side, fromSlot, count, toSlot, stopLevel)
         transferToSlot = toSlot
     end
     say('test')
-    if (stopLevel > #storageX) then
+    if (stopLevel and stopLevel > #storageX) then
         say('test2')
         transposerAddresses[storageX].transposer.transferItem(side,side,count,fromSlot, 1) --todo change 1 to toSlot
         say(side .. ' '.. side .. ' ' .. count .. ' '.. fromSlot)
