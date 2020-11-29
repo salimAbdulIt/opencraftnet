@@ -472,14 +472,19 @@ function getItem(id, damage, count, stopLevel)
             itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot] = nil
             local value = {}
             value.size = 0
-            if not availableSlotsFromDb[1].itemXdata[slot.storage] then availableSlotsFromDb[1].itemXdata[slot.storage] = {} end
-            if not availableSlotsFromDb[1].itemXdata[slot.storage][slot.side] then availableSlotsFromDb[1].itemXdata[slot.storage][slot.side] = {} end
+            if (not availableSlotsFromDb[1].itemXdata[slot.storage]) then
+                availableSlotsFromDb[1].itemXdata[slot.storage] = {}
+            end
+            if (not availableSlotsFromDb[1].itemXdata[slot.storage][slot.side]) then
+                availableSlotsFromDb[1].itemXdata[slot.storage][slot.side] = {}
+            end
             availableSlotsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot] = value
         end
     end
     db:execute("INSERT INTO ITEMS " .. getDbId(id, damage), itemsFromDb[1])
     db:execute("INSERT INTO ITEMS " .. id_of_available_slot, availableSlotsFromDb[1])
 end
+
 function transferItemTo(id, dmg, count, toAddress, toSide, toIndex)
     local sameAddressLetters = 1
 --    for i=1,string.len(fromAddress)  -- todo calculate sameAddressLetters
