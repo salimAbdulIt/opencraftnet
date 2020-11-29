@@ -374,6 +374,7 @@ function getItemFromSlot(storageX, side, fromSlot, count, toSlot, stopLevel)
 
     local remainedItem = {}
 
+    say(stopLevel .. ' ' .. storageX)
     if (#storageX > 0 and not (stopLevel and #storageX == stopLevel)) then
         remainedItem = getItemFromSlot(storageX:sub(1, #storageX - 1), tonumber(storageX:sub(#storageX, #storageX)), 1, count, toSlot)
     else
