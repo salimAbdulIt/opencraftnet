@@ -356,7 +356,7 @@ function getAvailableSlotsOfInputOutput()
 end
 
 function getItemFromStorage(storageX, side, fromSlot, storageType, count, toSlot, stopLevel)
-
+    print(stopLevel)
     if (storageType == 'drawer') then
         storageDrawersAddress.drawer.pushItem(storageDrawersAddress.chestSide, 1 + fromSlot * 2, count)
         getItemFromSlot(storageX, side, 1, count, toSlot, stopLevel)
@@ -466,6 +466,7 @@ function getItem(id, damage, count, stopLevel)
     end
     for i = 1, #slots do
         local slot = slots[i]
+        print(stopLevel)
         getItemFromStorage(slot.storage, slot.side, slot.slot, slot.storageType, slot.size, stopLevel)
         local oldCountOfItems = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size
         itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size - slot.size
