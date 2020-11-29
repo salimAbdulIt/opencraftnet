@@ -199,7 +199,7 @@ function DurexDatabase:new()
     function obj:selectByIndex(indexValues, searchValue, indexType)
         if (indexType == "EXACT") then
             return indexValues[searchValue]
-        else if (indexType == "STARTFROM") then
+        elseif (indexType == "STARTFROM") then
             local result = {}
             for k,v in pairs(indexValue) do
                 if (isValid(k, searchValue)) then
