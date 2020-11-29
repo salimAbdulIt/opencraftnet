@@ -348,7 +348,7 @@ function getAvailableSlotsOfInputOutput()
     local availableSlots = {}
     for k = 1, #itemsOfStorage do
         local v = itemsOfStorage[k]
-        if (v.name == "air") then
+        if (v.name == "minecraft:air") then
             table.insert(availableSlots, k)
         end
     end
