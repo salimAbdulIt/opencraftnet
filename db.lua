@@ -246,6 +246,7 @@ function DurexDatabase:new()
                             end
 
                             table.sort(searchValues, function(left, right)
+                               component.chat_box.say(left .. ' ' .. right)
                                 return tonumber(mapToIndex[left]) > tonumber(mapToIndex[right])
                             end)
 
@@ -448,7 +449,6 @@ function DurexDatabase:new()
             local result = self:starts_with(string.lower(value1), string.lower(value2))
             local a = 'false'
             if (result) then a = 'true' end
-            component.chat_box.say(value1 .. ' ' .. value2 .. ' ' .. a)
             return result
         end
     end
