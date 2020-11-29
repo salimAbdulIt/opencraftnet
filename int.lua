@@ -336,7 +336,11 @@ end
 
 function transferItemOut(storageX, side, fromSlot, count, toSlot)
     local storage = transposerAddresses[storageX]
-    storage.transposer.transferItem(side, storage.inputSide, count, fromSlot, toSlot)
+    if (toSlot) then
+        storage.transposer.transferItem(side, storage.inputSide, count, fromSlot, toSlot)
+    else
+        storage.transposer.transferItem(side, storage.inputSide, count, fromSlot)
+    end
 end
 
 function getAvailableSlotsOfInputOutput()
