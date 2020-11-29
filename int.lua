@@ -472,13 +472,13 @@ function getItem(id, damage, count, stopLevel)
     db:execute("INSERT INTO ITEMS " .. getDbId(id, damage), itemsFromDb[1])
 end
 function transferItemTo(id, dmg, count, toAddress, toSide, toIndex)
-    local sameAddressLetters = 0
-    for i=1,string.len(fromAddress) do
-        if (not (fromAddress:sub(i,i) == toAddress(i,i))) then
-            break
-        end
-        sameAddressLetters = i
-    end
+    local sameAddressLetters = 1
+--    for i=1,string.len(fromAddress)  -- todo calculate sameAddressLetters
+--        if (not (fromAddress:sub(i,i) == toAddress(i,i))) then
+--            break
+--        end
+--        sameAddressLetters = i
+--    end
     getItem(id, dmg, count, sameAddressLetters)
     transferItemBack(1, toAddress, toSide, toIndex, count, sameAddressLetters)
 
