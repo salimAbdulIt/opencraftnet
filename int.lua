@@ -85,7 +85,7 @@ end
 os.sleep(1)
 
 function isStorage(transposer)
-    return (transposer and (not storages[transposer]) or storages[transposer] == 'storage')
+    return (transposer and ((not storages[transposer]) or storages[transposer] == 'storage'))
 end
 
 function isRobot(transposer)
