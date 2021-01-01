@@ -246,6 +246,35 @@ function saveItems()
     file:close()
 end
 
+function compressRow(row)
+    if (not row.name == 'minecraft:air') then
+        return
+    end
+    for i, ix in pairs(row.itemXdata) do
+        for j, jx in pairs(row.itemXdata[i]) do
+            local cache = {}
+            for k, kx in pairs(row.itemXdata[i][j]) do
+                local key = serial.serialize(row.itemXdata[i][j][k])
+                if (not cache[key]) then cache[key] = {} end
+
+                table.insert(cache[key], k)
+            end
+            local tempValue = {}
+            for k, v in pairs(cache) do
+                local id = table.concat(v, ',')
+                tempValue[id] = row.itemXdata[i][j][v[1]]
+            end
+            row.itemXdata[i][j] = tempValue
+        end
+    end
+end
+
+function compressRows(rows)
+    for i = 1, #rows do
+        compressRow(rows[i])
+    end
+end
+
 function sinkItemsWithStorages()
     local allItems = db:execute("SELECT FROM ITEMS")
     for i = 1, #allItems do
@@ -327,7 +356,7 @@ function sinkItemsWithStorages()
             items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide][(i - 1) / 2] = itemXdata
         end
     end
-
+    compressRows(items)
     for k, v in pairs(items) do
         db:execute("INSERT INTO ITEMS " .. k, v)
     end
@@ -370,7 +399,7 @@ function getItemFromSlot(storageX, side, fromSlot, count, toSlot, stopLevel)
         transferToSlot = toSlot
     end
     if (stopLevel and stopLevel > #storageX) then
-        transposerAddresses[storageX].transposer.transferItem(side,side,count,fromSlot, 1) --todo change 1 to toSlot
+        transposerAddresses[storageX].transposer.transferItem(side, side, count, fromSlot, 1) --todo change 1 to toSlot
     else
         transferItemOut(storageX, side, fromSlot, count, transferToSlot)
     end
@@ -486,20 +515,20 @@ function getItem(id, damage, count, stopLevel)
         end
     end
     db:execute("INSERT INTO ITEMS " .. getDbId(id, damage), itemsFromDb[1])
+    compressRows(availableSlotsFromDb[1])
     db:execute("INSERT INTO ITEMS " .. id_of_available_slot, availableSlotsFromDb[1])
 end
 
 function transferItemTo(id, dmg, count, toAddress, toSide, toIndex)
     local sameAddressLetters = 1
---    for i=1,string.len(fromAddress)  -- todo calculate sameAddressLetters
---        if (not (fromAddress:sub(i,i) == toAddress(i,i))) then
---            break
---        end
---        sameAddressLetters = i
---    end
+    --    for i=1,string.len(fromAddress)  -- todo calculate sameAddressLetters
+    --        if (not (fromAddress:sub(i,i) == toAddress(i,i))) then
+    --            break
+    --        end
+    --        sameAddressLetters = i
+    --    end
     getItem(id, dmg, count, sameAddressLetters)
     transferItemBack(1, toAddress, toSide, toIndex, count, sameAddressLetters)
-
 end
 
 function transferItemBack(slot, address, side, index, count, level)
@@ -655,6 +684,7 @@ function pushItems(index, fromAddress)
     for i = 1, caret - 1 do
         itemsFromDb[1].itemXdata[availableSlots[i].storage][availableSlots[i].side][availableSlots[i].slot] = nil
     end
+    compressRows(itemsFromDb[1])
     db:execute("INSERT INTO ITEMS " .. id_of_available_slot, itemsFromDb[1])
 
     local itemsToSave = {}
@@ -792,8 +822,8 @@ function craftItem(name, damage, inCount, maxSize, receipt)
         for i = 1, 9, 1 do
             local itemId = receipt[i]
             if itemId ~= nil then
---                getItem(itemId.name, itemId.damage, n)
---                transferItemBack(1, robotAddress.address, robotAddress.outputSide, craftSlots[i], n, 0)
+                --                getItem(itemId.name, itemId.damage, n)
+                --                transferItemBack(1, robotAddress.address, robotAddress.outputSide, craftSlots[i], n, 0)
                 transferItemTo(itemId.name, itemId.damage, n, robotAddress.address, robotAddress.outputSide, craftSlots[i])
             end
         end
@@ -801,7 +831,7 @@ function craftItem(name, damage, inCount, maxSize, receipt)
         tunnel.send(64)
         os.sleep(1)
         getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', 64, nil, 1)
-        pushItems(1,"0")
+        pushItems(1, "0")
 
         inCount = inCount - n
     end
