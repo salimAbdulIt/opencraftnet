@@ -133,8 +133,7 @@ function DurexDatabase:new()
     function obj:updateIndexValues(oldItem, newItem, name)
         for index in (fs.list(self.indexPath)) do
             local file = io.open(self.indexPath .. index, "r")
-            local tempValue = file:read("*a")
-            local indexedValues = serial.unserialize(tempValue)
+            local indexedValues = serial.unserialize(file:read("*a"))
             if (not indexedValues) then
                 indexedValues = {}
             end
