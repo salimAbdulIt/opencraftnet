@@ -263,29 +263,31 @@ function compressRow(row)
             local tempValue = {}
             for k, v in pairs(cache) do
                 table.sort(v)
-                local finalIds
+                local finalIds = {}
                 local first
                 local last
                 for ind = 1, #v do
                     if (not first) then
                         first = v[ind]
-                    elseif (first + 1) == v[ind] then
+                        last = v[ind]
+                    elseif (last + 1) == v[ind] then
                         last = v[ind]
                     elseif (last and last - first > 1) then
                         table.insert(finalIds, first .. '-' .. last)
                         first = v[ind]
-                        last = nil
-                    elseif (not last) then
+                        last = v[ind]
+                    elseif (first == last) then
                         table.insert(finalIds, first)
                         first = v[ind]
+                        last = v[ind]
                     else
                         table.insert(finalIds, first)
                         table.insert(finalIds, last)
                         first = v[ind]
-                        last = nil
+                        last = v[ind]
                     end
                 end
-                if (first and not last) then
+                if (first == last) then
                     table.insert(finalIds, first)
                 elseif (last - first > 1) then
                     table.insert(finalIds, first .. '-' .. last)
