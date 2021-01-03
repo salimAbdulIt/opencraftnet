@@ -94,7 +94,7 @@ function DurexDatabase:new()
             file:close()
         end
         self:updateIndexValues(oldValue, self.query.value, self.query.id .. ".row")
-
+        oldValue = nil
         local file = io.open(self.dataPath .. self.query.id .. ".row", "w")
         file:write(serial.serialize(self.query.value))
         file:close()
@@ -208,9 +208,9 @@ function DurexDatabase:new()
             return indexValues[searchValue]
         elseif (indexType == "STARTFROM") then
             local result = {}
-            for k,v in pairs(indexValues) do
+            for k, v in pairs(indexValues) do
                 if (self:isValid(k, searchValue, indexType)) then
-                    for i,v1 in pairs(v) do
+                    for i, v1 in pairs(v) do
                         table.insert(result, v1)
                     end
                 end

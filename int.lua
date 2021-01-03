@@ -319,6 +319,7 @@ function sinkItemsWithStorages()
         end
         items[getDbId(v.name, v.damage)] = v
     end
+    allItems = nil
     for address, storage in pairs(storageAddresses) do
         if (transposerAddresses[storage.address].transposer.getInventorySize(storage.outputSide) ~= nil) then
             local itemsOfStorage = transposerAddresses[storage.address].transposer.getAllStacks(storage.outputSide).getAll()
