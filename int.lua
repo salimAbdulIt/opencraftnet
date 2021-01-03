@@ -268,24 +268,23 @@ function compressRow(row)
                 local last
                 for ind = 1, #v do
                     if (not first) then
-                        first = v[i]
-                    elseif (first + 1) == n[i] then
-                        last = n[i]
+                        first = v[ind]
+                    elseif (first + 1) == n[ind] then
+                        last = n[ind]
                     elseif (last and last - first > 1) then
                         table.insert(finalIds, first .. '-' .. last)
-                        first = n[i]
+                        first = n[ind]
                         last = nil
                     elseif (not last) then
                         table.insert(finalIds, first)
-                        first = n[i]
+                        first = n[ind]
                     else
                         table.insert(finalIds, first)
                         table.insert(finalIds, last)
-                        first = n[i]
+                        first = n[ind]
                         last = nil
                     end
                 end
-                say(first)
                 if (first and not last) then
                     table.insert(finalIds, first)
                 elseif (last - first > 1) then
