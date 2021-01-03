@@ -269,19 +269,19 @@ function compressRow(row)
                 for ind = 1, #v do
                     if (not first) then
                         first = v[ind]
-                    elseif (first + 1) == n[ind] then
-                        last = n[ind]
+                    elseif (first + 1) == v[ind] then
+                        last = v[ind]
                     elseif (last and last - first > 1) then
                         table.insert(finalIds, first .. '-' .. last)
-                        first = n[ind]
+                        first = v[ind]
                         last = nil
                     elseif (not last) then
                         table.insert(finalIds, first)
-                        first = n[ind]
+                        first = v[ind]
                     else
                         table.insert(finalIds, first)
                         table.insert(finalIds, last)
-                        first = n[ind]
+                        first = v[ind]
                         last = nil
                     end
                 end
