@@ -246,6 +246,30 @@ function saveItems()
     file:close()
 end
 
+function uncompressRow(row)
+    if (not (row.name == 'minecraft:air')) then
+        return
+    end
+    for i, ix in pairs(row.itemXdata) do
+        for j, jx in pairs(row.itemXdata[i]) do
+            for k, kx in pairs(row.itemXdata[i][j]) do
+                local cache = {}
+                for word in string.gmatch(k, '([^,]+)') do
+                    for word in string.gmatch(k, '([^-]+)') do
+                        table.insert(cache, word)
+                    end
+                end
+                if (#cache > 1) then
+                    for ind = 1,#cache do
+                        row.itemXdata[i][j][tonumber(cache[ind])] = kx
+                    end
+                    row.itemXdata[i][j][k] = nil
+                end
+            end
+        end
+    end
+end
+
 function compressRow(row)
     if (not (row.name == 'minecraft:air')) then
         return
@@ -516,6 +540,7 @@ end
 function getItem(id, damage, count, stopLevel)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(id, damage), nil)
     local availableSlotsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. id_of_available_slot, nil)
+    uncompressRow(availableSlotsFromDb[1])
     local slots = getItemsFromRow(itemsFromDb, count)
     if not slots then
         return
@@ -544,6 +569,7 @@ function getItem(id, damage, count, stopLevel)
         end
     end
     db:execute("INSERT INTO ITEMS " .. getDbId(id, damage), itemsFromDb[1])
+    compressRow(availableSlotsFromDb[1])
     db:execute("INSERT INTO ITEMS " .. id_of_available_slot, availableSlotsFromDb[1])
 end
 
@@ -648,6 +674,8 @@ local craftSlots = {
 
 function pushItems(index, fromAddress)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. id_of_available_slot, nil)
+    uncompressRow(itemsFromDb[1])
+
     local availableSlots = getItemsFromRow(itemsFromDb, nil)
     local items = {}
     local caret = 1
@@ -712,6 +740,7 @@ function pushItems(index, fromAddress)
     for i = 1, caret - 1 do
         itemsFromDb[1].itemXdata[availableSlots[i].storage][availableSlots[i].side][availableSlots[i].slot] = nil
     end
+    compressRow(itemsFromDb[1])
     db:execute("INSERT INTO ITEMS " .. id_of_available_slot, itemsFromDb[1])
 
     local itemsToSave = {}
