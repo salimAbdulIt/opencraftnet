@@ -250,6 +250,7 @@ function compressRow(row)
     if (not row.name == 'minecraft:air') then
         return
     end
+    say('test')
     for i, ix in pairs(row.itemXdata) do
         for j, jx in pairs(row.itemXdata[i]) do
             local cache = {}
