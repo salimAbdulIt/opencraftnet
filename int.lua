@@ -254,16 +254,18 @@ function uncompressRow(row)
         for j, jx in pairs(row.itemXdata[i]) do
             for k, kx in pairs(row.itemXdata[i][j]) do
                 local cache = {}
-                for word in string.gmatch(k, '([^,]+)') do
-                    for word in string.gmatch(k, '([^-]+)') do
-                        table.insert(cache, word)
+                if (type(k) == 'string') then
+                    for word in string.gmatch(k, '([^,]+)') do
+                        for word in string.gmatch(k, '([^-]+)') do
+                            table.insert(cache, word)
+                        end
                     end
-                end
-                if (#cache > 1) then
-                    for ind = 1,#cache do
-                        row.itemXdata[i][j][tonumber(cache[ind])] = kx
+                    if (#cache > 1) then
+                        for ind = 1, #cache do
+                            row.itemXdata[i][j][tonumber(cache[ind])] = kx
+                        end
+                        row.itemXdata[i][j][k] = nil
                     end
-                    row.itemXdata[i][j][k] = nil
                 end
             end
         end
