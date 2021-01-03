@@ -388,8 +388,8 @@ function sinkItemsWithStorages()
             items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide][(i - 1) / 2] = itemXdata
         end
     end
-    compressRows(items)
     for k, v in pairs(items) do
+        compressRow(v)
         db:execute("INSERT INTO ITEMS " .. k, v)
     end
 end
@@ -547,7 +547,6 @@ function getItem(id, damage, count, stopLevel)
         end
     end
     db:execute("INSERT INTO ITEMS " .. getDbId(id, damage), itemsFromDb[1])
-    compressRows(availableSlotsFromDb[1])
     db:execute("INSERT INTO ITEMS " .. id_of_available_slot, availableSlotsFromDb[1])
 end
 
@@ -716,7 +715,6 @@ function pushItems(index, fromAddress)
     for i = 1, caret - 1 do
         itemsFromDb[1].itemXdata[availableSlots[i].storage][availableSlots[i].side][availableSlots[i].slot] = nil
     end
-    compressRows(itemsFromDb[1])
     db:execute("INSERT INTO ITEMS " .. id_of_available_slot, itemsFromDb[1])
 
     local itemsToSave = {}
