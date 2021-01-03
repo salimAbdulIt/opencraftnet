@@ -285,6 +285,7 @@ function compressRow(row)
                         last = nil
                     end
                 end
+                say(first)
                 if (first and not last) then
                     table.insert(finalIds, first)
                 elseif (last - first > 1) then
@@ -298,12 +299,6 @@ function compressRow(row)
             end
             row.itemXdata[i][j] = tempValue
         end
-    end
-end
-
-function compressRows(rows)
-    for i = 1, #rows do
-        compressRow(rows[i])
     end
 end
 
