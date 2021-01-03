@@ -247,10 +247,10 @@ function saveItems()
 end
 
 function compressRow(row)
-    if (not row.name == 'minecraft:air') then
+    if (not (row.name == 'minecraft:air')) then
         return
     end
-    say('test')
+    say(row.name)
     for i, ix in pairs(row.itemXdata) do
         for j, jx in pairs(row.itemXdata[i]) do
             local cache = {}
