@@ -261,7 +261,38 @@ function compressRow(row)
             end
             local tempValue = {}
             for k, v in pairs(cache) do
-                local id = table.concat(v, ',')
+                table.sort(v)
+                local finalIds
+                local first
+                local last
+                for ind = 1, #v do
+                    if (not first) then
+                        first = v[i]
+                    elseif (first + 1) == n[i] then
+                        last = n[i]
+                    elseif (last and last - first > 1) then
+                        table.insert(finalIds, first .. '-' .. last)
+                        first = n[i]
+                        last = nil
+                    elseif (not last) then
+                        table.insert(finalIds, first)
+                        first = n[i]
+                    else
+                        table.insert(finalIds, first)
+                        table.insert(finalIds, last)
+                        first = n[i]
+                        last = nil
+                    end
+                end
+                if (first and not last) then
+                    table.insert(finalIds, first)
+                elseif (last - first > 1) then
+                    table.insert(finalIds, first .. '-' .. last)
+                else
+                    table.insert(finalIds, first)
+                    table.insert(finalIds, last)
+                end
+                local id = table.concat(finalIds, ',')
                 tempValue[id] = row.itemXdata[i][j][v[1]]
             end
             row.itemXdata[i][j] = tempValue
