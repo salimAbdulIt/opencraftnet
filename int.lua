@@ -256,8 +256,8 @@ function uncompressRow(row)
                 local cache = {}
                 if (type(k) == 'string') then
                     for word in string.gmatch(k, '([^,]+)') do
-                        for word in string.gmatch(k, '([^-]+)') do
-                            table.insert(cache, word)
+                        for word2 in string.gmatch(word, '([^-]+)') do
+                            table.insert(cache, word2)
                         end
                     end
                     if (#cache > 1) then
