@@ -246,96 +246,6 @@ function saveItems()
     file:close()
 end
 
-function uncompressRow(row)
-    if (not (row.name == 'minecraft:air')) then
-        return
-    end
-    for i, ix in pairs(row.itemXdata) do
-        for j, jx in pairs(row.itemXdata[i]) do
-            for k, kx in pairs(row.itemXdata[i][j]) do
-                local cache = {}
-                if (type(k) == 'string') then
-                    for word in string.gmatch(k, '([^,]+)') do
-                        local tmpTable = {}
-                        for word2 in string.gmatch(word, '([^-]+)') do
-                            table.insert(tmpTable, word2)
-                        end
-                        if (#tmpTable == 2) then
-                            for i = tmpTable[1], tmpTable[2] do
-                                table.insert(cache, i)
-                            end
-                        else
-                            table.insert(cache, tmpTable[1])
-                        end
-                    end
-                    if (#cache > 1) then
-                        for ind = 1, #cache do
-                            row.itemXdata[i][j][tonumber(cache[ind])] = kx
-                        end
-                        row.itemXdata[i][j][k] = nil
-                    end
-                end
-            end
-        end
-    end
-end
-
-function compressRow(row)
-    if (not (row.name == 'minecraft:air')) then
-        return
-    end
-    for i, ix in pairs(row.itemXdata) do
-        for j, jx in pairs(row.itemXdata[i]) do
-            local cache = {}
-            for k, kx in pairs(row.itemXdata[i][j]) do
-                local key = serial.serialize(row.itemXdata[i][j][k])
-                if (not cache[key]) then cache[key] = {} end
-
-                table.insert(cache[key], k)
-            end
-            local tempValue = {}
-            for k, v in pairs(cache) do
-                table.sort(v)
-                local finalIds = {}
-                local first
-                local last
-                for ind = 1, #v do
-                    if (not first) then
-                        first = v[ind]
-                        last = v[ind]
-                    elseif (last + 1) == v[ind] then
-                        last = v[ind]
-                    elseif (last and last - first > 1) then
-                        table.insert(finalIds, first .. '-' .. last)
-                        first = v[ind]
-                        last = v[ind]
-                    elseif (first == last) then
-                        table.insert(finalIds, first)
-                        first = v[ind]
-                        last = v[ind]
-                    else
-                        table.insert(finalIds, first)
-                        table.insert(finalIds, last)
-                        first = v[ind]
-                        last = v[ind]
-                    end
-                end
-                if (first == last) then
-                    table.insert(finalIds, first)
-                elseif (last - first > 1) then
-                    table.insert(finalIds, first .. '-' .. last)
-                else
-                    table.insert(finalIds, first)
-                    table.insert(finalIds, last)
-                end
-                local id = table.concat(finalIds, ',')
-                tempValue[id] = row.itemXdata[i][j][v[1]]
-            end
-            row.itemXdata[i][j] = tempValue
-        end
-    end
-end
-
 function sinkItemsWithStorages()
     local allItems = db:execute("SELECT FROM ITEMS")
     for i = 1, #allItems do
@@ -418,8 +328,8 @@ function sinkItemsWithStorages()
             items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide][(i - 1) / 2] = itemXdata
         end
     end
+
     for k, v in pairs(items) do
-        compressRow(v)
         db:execute("INSERT INTO ITEMS " .. k, v)
     end
 end
@@ -549,7 +459,6 @@ end
 function getItem(id, damage, count, stopLevel)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(id, damage), nil)
     local availableSlotsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. id_of_available_slot, nil)
-    uncompressRow(availableSlotsFromDb[1])
     local slots = getItemsFromRow(itemsFromDb, count)
     if not slots then
         return
@@ -578,7 +487,6 @@ function getItem(id, damage, count, stopLevel)
         end
     end
     db:execute("INSERT INTO ITEMS " .. getDbId(id, damage), itemsFromDb[1])
-    compressRow(availableSlotsFromDb[1])
     db:execute("INSERT INTO ITEMS " .. id_of_available_slot, availableSlotsFromDb[1])
 end
 
@@ -683,8 +591,6 @@ local craftSlots = {
 
 function pushItems(index, fromAddress)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. id_of_available_slot, nil)
-    uncompressRow(itemsFromDb[1])
-
     local availableSlots = getItemsFromRow(itemsFromDb, nil)
     local items = {}
     local caret = 1
@@ -749,7 +655,6 @@ function pushItems(index, fromAddress)
     for i = 1, caret - 1 do
         itemsFromDb[1].itemXdata[availableSlots[i].storage][availableSlots[i].side][availableSlots[i].slot] = nil
     end
-    compressRow(itemsFromDb[1])
     db:execute("INSERT INTO ITEMS " .. id_of_available_slot, itemsFromDb[1])
 
     local itemsToSave = {}

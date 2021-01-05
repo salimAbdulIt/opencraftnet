@@ -94,7 +94,7 @@ function DurexDatabase:new()
             file:close()
         end
         self:updateIndexValues(oldValue, self.query.value, self.query.id .. ".row")
-        oldValue = nil
+
         local file = io.open(self.dataPath .. self.query.id .. ".row", "w")
         file:write(serial.serialize(self.query.value))
         file:close()
