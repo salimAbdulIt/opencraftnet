@@ -67,7 +67,6 @@ function Serial:new()
 
     function obj:saveUnknownType(file, key, value)
         local valueType = type(value)
-        print(valueType)
         if (valueType == 'table') then
             self:saveTable(file, key, value)
         elseif (valueType == 'number') then
