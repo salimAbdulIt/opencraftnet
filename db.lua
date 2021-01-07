@@ -61,7 +61,6 @@ function DurexDatabase:new()
 
     function obj:initIndex()
         local indexedValues = {}
-        indexedValues[""] = {} --todo check if it needed
         local elements = fs.list(self.dataPath)
         for element in (elements) do
             local file = io.open(self.dataPath .. "/" .. element, "r")
@@ -138,6 +137,7 @@ function DurexDatabase:new()
             end
             if (oldItem) then
                 local indexedValue, value = self:indexValue(oldItem, name, index)
+                print(serial.serialize(indexedValues))
                 table.remove(indexedValues[indexedValue], self:tablefind(indexedValues[indexedValue], value))
             end
             if (newItem) then
