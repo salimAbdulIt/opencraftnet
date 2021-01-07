@@ -72,7 +72,7 @@ function DurexDatabase:new()
             table.insert(indexedValues[indexedValue], value)
             file:close()
         end
-        customSer:write(self.indexPath .. self.query.field .. "." .. self.query.indexType, indexedValues)
+        customSer:save(self.indexPath .. self.query.field .. "." .. self.query.indexType, indexedValues)
     end
 
     function obj:indexValue(value, pathToValue, key)
@@ -148,7 +148,7 @@ function DurexDatabase:new()
                 end
                 table.insert(indexedValues[indexedValue], value)
             end
-            customSer:write(self.indexPath .. index, indexedValues)
+            customSer:save(self.indexPath .. index, indexedValues)
         end
     end
 
