@@ -137,7 +137,6 @@ function DurexDatabase:new()
             end
             if (oldItem) then
                 local indexedValue, value = self:indexValue(oldItem, name, index)
-                print(serial.serialize(indexedValues))
                 table.remove(indexedValues[indexedValue], self:tablefind(indexedValues[indexedValue], value))
             end
             if (newItem) then
