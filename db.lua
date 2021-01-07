@@ -125,7 +125,7 @@ function DurexDatabase:new()
     function obj:clearIndexes()
         for index in (fs.list(self.indexPath)) do
             local file = io.open(self.indexPath .. index, "w")
-            file:write('{}')
+            file:write('')
             file:close()
         end
     end
@@ -136,7 +136,6 @@ function DurexDatabase:new()
             if (not indexedValues) then
                 indexedValues = {}
             end
-            file:close()
             if (oldItem) then
                 local indexedValue, value = self:indexValue(oldItem, name, index)
                 table.remove(indexedValues[indexedValue], self:tablefind(indexedValues[indexedValue], value))
