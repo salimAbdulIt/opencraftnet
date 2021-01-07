@@ -13,7 +13,7 @@ function Serial:new()
         end
         self.text = self.text .. line .. '\n'
         self.index = self.index + 1
-        if (force or self.index == 100) then
+        if (force or self.index == 200) then
             file:write(self.text)
             self.text = ''
             self.index = 0
