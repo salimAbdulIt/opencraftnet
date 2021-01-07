@@ -20,8 +20,12 @@ function Serial:new()
         end
     end
 
+    function obj:setIterator(file)
+        self.iterator = file:lines()
+    end
+
     function obj:readLine(file)
-        return file:read('*l')
+        return self.iterator()
     end
 
     function obj:save(filePath, value)
@@ -70,6 +74,7 @@ function Serial:new()
 
     function obj:read(filePath)
         local file = io.open(filePath, 'r')
+        self:setIterator(file)
         local result = self:readUnknownType(file, nil)
         file:close()
         return result
