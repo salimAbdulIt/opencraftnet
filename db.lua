@@ -1,6 +1,8 @@
 local fs = require("filesystem")
 local shell = require("shell")
 local serial = require("serialization")
+local customSer = require("serial")
+
 local component = require('component')
 DurexDatabase = {}
 function DurexDatabase:new()
@@ -62,17 +64,15 @@ function DurexDatabase:new()
         indexedValues[""] = {} --todo check if it needed
         local elements = fs.list(self.dataPath)
         for element in (elements) do
-            local file = io.open(self.dataPath .. "/" .. element, "r")
-            local indexedValue, value = self:indexValue(serial.unserialize(file:read("*a")), element, self.query.field .. '.' .. self.query.indexType)
+
+            local indexedValue, value = self:indexValue(customSer:read(self.dataPath .. "/" .. element), element, self.query.field .. '.' .. self.query.indexType)
             if (not indexedValues[indexedValue]) then
                 indexedValues[indexedValue] = {}
             end
             table.insert(indexedValues[indexedValue], value)
             file:close()
         end
-        local file = io.open(self.indexPath .. self.query.field .. "." .. self.query.indexType, "w")
-        file:write(serial.serialize(indexedValues))
-        file:close()
+        customSer:write(self.indexPath .. self.query.field .. "." .. self.query.indexType, indexedValues)
     end
 
     function obj:indexValue(value, pathToValue, key)
@@ -125,15 +125,14 @@ function DurexDatabase:new()
     function obj:clearIndexes()
         for index in (fs.list(self.indexPath)) do
             local file = io.open(self.indexPath .. index, "w")
-            file:write('')
+            file:write('{}')
             file:close()
         end
     end
 
     function obj:updateIndexValues(oldItem, newItem, name)
         for index in (fs.list(self.indexPath)) do
-            local file = io.open(self.indexPath .. index, "r")
-            local indexedValues = serial.unserialize(file:read("*a"))
+            local indexedValues = customSer:read(self.indexPath .. index)
             if (not indexedValues) then
                 indexedValues = {}
             end
@@ -142,7 +141,6 @@ function DurexDatabase:new()
                 local indexedValue, value = self:indexValue(oldItem, name, index)
                 table.remove(indexedValues[indexedValue], self:tablefind(indexedValues[indexedValue], value))
             end
-            file = io.open(self.indexPath .. index, "w")
             if (newItem) then
                 local indexedValue, value = self:indexValue(newItem, name, index)
                 if (not indexedValues[indexedValue]) then
@@ -150,8 +148,7 @@ function DurexDatabase:new()
                 end
                 table.insert(indexedValues[indexedValue], value)
             end
-            file:write(serial.serialize(indexedValues))
-            file:close()
+            customSer:write(self.indexPath .. index, indexedValues)
         end
     end
 
@@ -231,21 +228,19 @@ function DurexDatabase:new()
                 obj1.parent = parent
                 function obj1:init()
                     local indexes = self.parent:isIndexExist(self.parent.query.fields)
-                    local file = io.open(self.parent.indexPath .. self.parent.query.fields[indexes[1]].column .. "." .. self.parent:getIndexType(self.parent.query.fields[indexes[1]].operation))
-                    local indexedValues1 = serial.unserialize(file:read("*a"))
+                    local indexedValues1 = customSer:read(self.parent.indexPath .. self.parent.query.fields[indexes[1]].column .. "." .. self.parent:getIndexType(self.parent.query.fields[indexes[1]].operation))
                     file:close()
                     local searchValues = self.parent:selectByIndex(indexedValues1, self.parent.query.fields[indexes[1]].value, self.parent:getIndexType(self.parent.query.fields[indexes[1]].operation))
                     for i = 2, #indexes do
-                        local file = io.open(self.parent.indexPath .. self.parent.query.fields[indexes[i]].column .. "." .. self.parent:getIndexType(self.parent.query.fields[indexes[i]].operation))
-                        local tempIndexedValues = serial.unserialize(file:read("*a"))
+                        local tempIndexedValues = customSer:read(self.parent.indexPath .. self.parent.query.fields[indexes[i]].column .. "." .. self.parent:getIndexType(self.parent.query.fields[indexes[i]].operation))
                         file:close()
                         searchValues = self.parent:intersection(searchValues, tempIndexedValues[self.parent.query.fields[indexes[i]].value])
                     end
                     if (obj.query.orderBy) then
                         local file = io.open(self.parent.indexPath .. obj.query.orderBy .. ".EXACT")
                         if (file) then
-                            local tempIndexedValues = serial.unserialize(file:read("*a"))
                             file:close()
+                            local tempIndexedValues = customSer:read(self.parent.indexPath .. obj.query.orderBy .. ".EXACT")
                             local mapToIndex = {}
                             for k, v in pairs(tempIndexedValues) do
                                 for i = 1, #v do
@@ -261,9 +256,7 @@ function DurexDatabase:new()
                         else
                             local allValues = {}
                             for i = 1, #searchValues do
-                                file = io.open(self.parent.dataPath .. searchValues[i])
-                                local value = serial.unserialize(file:read("*a"))
-                                file:close()
+                                local value = customSer:read(self.parent.dataPath .. searchValues[i])
                                 table.insert(allValues, value)
                             end
 
@@ -326,8 +319,8 @@ function DurexDatabase:new()
                     if (self.parent.query.orderBy) then
                         local file = io.open(self.parent.indexPath .. self.parent.query.orderBy .. '.EXACT')
                         if (file) then
-                            local tempIndexedValues = serial.unserialize(file:read("*a"))
                             file:close()
+                            local tempIndexedValues = customSer:read(self.parent.indexPath .. self.parent.query.orderBy .. '.EXACT')
                             local sortedList = {}
                             for k, v in pairs(tempIndexedValues) do
                                 for i = 1, #v do
