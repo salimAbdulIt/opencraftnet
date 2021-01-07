@@ -7,18 +7,16 @@ function Serial:new()
     local obj = {}
 
     function obj:writeLine(file, line, force)
-        if (not force) then
-            if (not self.text) then
-                self.text = ''
-                self.index = 0
-            end
-            self.text = self.text .. line .. '\n'
-            self.index = self.index + 1
-            if (force or self.index == 30) then
-                file:write(self.text)
-                self.text = ''
-                self.index = 0
-            end
+        if (not self.text) then
+            self.text = ''
+            self.index = 0
+        end
+        self.text = self.text .. line .. '\n'
+        self.index = self.index + 1
+        if (force or self.index == 30) then
+            file:write(self.text)
+            self.text = ''
+            self.index = 0
         end
     end
 
