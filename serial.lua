@@ -6,8 +6,18 @@ function Serial:new()
 
     local obj = {}
 
-    function obj:writeLine(file, line)
-        file:write(line .. '\n')
+    function obj:writeLine(file, line, force)
+        if (not force) then
+            if (not self.text) then
+                self.text = ''
+                self.index = 0
+            end
+            self.text = self.text + line .. '\n'
+            self.index = self.index + 1
+            if (force or self.index == 30) then
+                file:write(self.text)
+            end
+        end
     end
 
     function obj:readLine(file)
@@ -88,7 +98,11 @@ function Serial:new()
             end
             self:saveUnknownType(file, k, v)
         end
-        self:writeLine(file, '}')
+        if (key) then
+            self:writeLine(file, '}')
+        else
+            self:writeLine(file, '}', true)
+        end
     end
 
     function obj:saveNumber(file, key, value)
