@@ -268,7 +268,7 @@ function uncompressRow(row)
                             table.insert(cache, tmpTable[1])
                         end
                     end
-                    if (#cache > 1) then
+                    if (#cache > 0) then
                         for ind = 1, #cache do
                             row.itemXdata[i][j][tonumber(cache[ind])] = kx
                         end
