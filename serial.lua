@@ -27,7 +27,7 @@ function Serial:new()
             self:readUnknownType(file, result)
             return result
         elseif (line == '}') then
-
+        elseif (line == '={') then
         else
             local words = {}
             for word in string.gmatch(line, '([^=]+)') do
