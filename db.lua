@@ -64,8 +64,8 @@ function DurexDatabase:new()
         indexedValues[""] = {} --todo check if it needed
         local elements = fs.list(self.dataPath)
         for element in (elements) do
-
-            local indexedValue, value = self:indexValue(customSer:read(self.dataPath .. "/" .. element), element, self.query.field .. '.' .. self.query.indexType)
+            local file = io.open(self.dataPath .. "/" .. element, "r")
+            local indexedValue, value = self:indexValue(serial.unserialize(file:read("*a")), element, self.query.field .. '.' .. self.query.indexType)
             if (not indexedValues[indexedValue]) then
                 indexedValues[indexedValue] = {}
             end
@@ -256,7 +256,9 @@ function DurexDatabase:new()
                         else
                             local allValues = {}
                             for i = 1, #searchValues do
-                                local value = customSer:read(self.parent.dataPath .. searchValues[i])
+                                file = io.open(self.parent.dataPath .. searchValues[i])
+                                local value = serial.unserialize(file:read("*a"))
+                                file:close()
                                 table.insert(allValues, value)
                             end
 
