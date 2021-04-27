@@ -24,13 +24,6 @@ if not fs.exists("/lib/inMemoryDb.lua") or alwaysUpdate then
     shell.execute("wget ".. proxy .. "https://gitlab.com/lfreew1ndl/opencraftnetoriginal/-/raw/dev/inMemoryDb.lua /lib/inMemoryDb.lua")
 end
 
-if not fs.exists("/lib/serial.lua") or alwaysUpdate then
-    if fs.exists("/lib/serial.lua") then
-        shell.execute("rm /lib/serial.lua")
-    end
-    shell.execute("wget ".. proxy .. "https://gitlab.com/lfreew1ndl/opencraftnetoriginal/-/raw/dev/serial.lua /lib/serial.lua")
-end
-
 
 if not fs.exists("/home/db") then
     shell.execute("mkdir db")

@@ -1,8 +1,6 @@
 local fs = require("filesystem")
 local shell = require("shell")
 local serial = require("serialization")
-local customSer = require("serial")
-
 local component = require('component')
 DurexDatabase = {}
 function DurexDatabase:new()
@@ -71,7 +69,9 @@ function DurexDatabase:new()
             table.insert(indexedValues[indexedValue], value)
             file:close()
         end
-        customSer:save(self.indexPath .. self.query.field .. "." .. self.query.indexType, indexedValues)
+        local file = io.open(self.indexPath .. self.query.field .. "." .. self.query.indexType, "w")
+        file:write(serial.serialize(indexedValues))
+        file:close()
     end
 
     function obj:indexValue(value, pathToValue, key)
@@ -145,14 +145,17 @@ function DurexDatabase:new()
 
     function obj:updateIndexValues(oldItem, newItem, name)
         for index in (fs.list(self.indexPath)) do
-            local indexedValues = customSer:read(self.indexPath .. index)
+            local file = io.open(self.indexPath .. index, "r")
+            local indexedValues = serial.unserialize(file:read("*a"))
             if (not indexedValues) then
                 indexedValues = {}
             end
+            file:close()
             if (oldItem) then
                 local indexedValue, value = self:indexValue(oldItem, name, index)
                 table.remove(indexedValues[indexedValue], self:tablefind(indexedValues[indexedValue], value))
             end
+            file = io.open(self.indexPath .. index, "w")
             if (newItem) then
                 local indexedValue, value = self:indexValue(newItem, name, index)
                 if (not indexedValues[indexedValue]) then
@@ -160,7 +163,8 @@ function DurexDatabase:new()
                 end
                 table.insert(indexedValues[indexedValue], value)
             end
-            customSer:save(self.indexPath .. index, indexedValues)
+            file:write(serial.serialize(indexedValues))
+            file:close()
         end
     end
 
@@ -240,17 +244,21 @@ function DurexDatabase:new()
                 obj1.parent = parent
                 function obj1:init()
                     local indexes = self.parent:isIndexExist(self.parent.query.fields)
-                    local indexedValues1 = customSer:read(self.parent.indexPath .. self.parent.query.fields[indexes[1]].column .. "." .. self.parent:getIndexType(self.parent.query.fields[indexes[1]].operation))
+                    local file = io.open(self.parent.indexPath .. self.parent.query.fields[indexes[1]].column .. "." .. self.parent:getIndexType(self.parent.query.fields[indexes[1]].operation))
+                    local indexedValues1 = serial.unserialize(file:read("*a"))
+                    file:close()
                     local searchValues = self.parent:selectByIndex(indexedValues1, self.parent.query.fields[indexes[1]].value, self.parent:getIndexType(self.parent.query.fields[indexes[1]].operation))
                     for i = 2, #indexes do
-                        local tempIndexedValues = customSer:read(self.parent.indexPath .. self.parent.query.fields[indexes[i]].column .. "." .. self.parent:getIndexType(self.parent.query.fields[indexes[i]].operation))
+                        local file = io.open(self.parent.indexPath .. self.parent.query.fields[indexes[i]].column .. "." .. self.parent:getIndexType(self.parent.query.fields[indexes[i]].operation))
+                        local tempIndexedValues = serial.unserialize(file:read("*a"))
+                        file:close()
                         searchValues = self.parent:intersection(searchValues, tempIndexedValues[self.parent.query.fields[indexes[i]].value])
                     end
                     if (obj.query.orderBy) then
                         local file = io.open(self.parent.indexPath .. obj.query.orderBy .. ".EXACT")
                         if (file) then
+                            local tempIndexedValues = serial.unserialize(file:read("*a"))
                             file:close()
-                            local tempIndexedValues = customSer:read(self.parent.indexPath .. obj.query.orderBy .. ".EXACT")
                             local mapToIndex = {}
                             for k, v in pairs(tempIndexedValues) do
                                 for i = 1, #v do
@@ -331,8 +339,8 @@ function DurexDatabase:new()
                     if (self.parent.query.orderBy) then
                         local file = io.open(self.parent.indexPath .. self.parent.query.orderBy .. '.EXACT')
                         if (file) then
+                            local tempIndexedValues = serial.unserialize(file:read("*a"))
                             file:close()
-                            local tempIndexedValues = customSer:read(self.parent.indexPath .. self.parent.query.orderBy .. '.EXACT')
                             local sortedList = {}
                             for k, v in pairs(tempIndexedValues) do
                                 for i = 1, #v do

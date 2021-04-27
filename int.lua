@@ -418,8 +418,8 @@ function sinkItemsWithStorages()
             items[id].itemXdata[storageDrawersAddress.address][storageDrawersAddress.outputSide][(i - 1) / 2] = itemXdata
         end
     end
+
     for k, v in pairs(items) do
-        compressRow(v)
         db:execute("INSERT INTO ITEMS " .. k, v)
     end
 end
@@ -549,7 +549,6 @@ end
 function getItem(id, damage, count, stopLevel)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. getDbId(id, damage), nil)
     local availableSlotsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. id_of_available_slot, nil)
-    uncompressRow(availableSlotsFromDb[1])
     local slots = getItemsFromRow(itemsFromDb, count)
     if not slots then
         return
@@ -578,7 +577,6 @@ function getItem(id, damage, count, stopLevel)
         end
     end
     db:execute("INSERT INTO ITEMS " .. getDbId(id, damage), itemsFromDb[1])
-    compressRow(availableSlotsFromDb[1])
     db:execute("INSERT INTO ITEMS " .. id_of_available_slot, availableSlotsFromDb[1])
 end
 
@@ -683,8 +681,6 @@ local craftSlots = {
 
 function pushItems(index, fromAddress)
     local itemsFromDb = db:execute("SELECT FROM ITEMS WHERE ID = " .. id_of_available_slot, nil)
-    uncompressRow(itemsFromDb[1])
-
     local availableSlots = getItemsFromRow(itemsFromDb, nil)
     local items = {}
     local caret = 1
@@ -749,7 +745,6 @@ function pushItems(index, fromAddress)
     for i = 1, caret - 1 do
         itemsFromDb[1].itemXdata[availableSlots[i].storage][availableSlots[i].side][availableSlots[i].slot] = nil
     end
-    compressRow(itemsFromDb[1])
     db:execute("INSERT INTO ITEMS " .. id_of_available_slot, itemsFromDb[1])
 
     local itemsToSave = {}
