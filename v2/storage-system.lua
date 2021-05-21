@@ -134,8 +134,8 @@ function StorageSystem:new()
                 availableSlotsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot] = value
             end
         end
-        db:execute("INSERT INTO ITEMS " .. self:getDbId(id, damage), itemsFromDb[1])
-        db:execute("INSERT INTO ITEMS " .. id_of_available_slot, availableSlotsFromDb[1])
+        self.db:insert(self:getDbId(id, damage), itemsFromDb[1])
+        self.db:insert(self.idOfAvailableSlot, availableSlotsFromDb[1])
     end
 
     function obj:sinkItemsWithStorages() -- todo scan one by one (I mean one chest per once)
