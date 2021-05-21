@@ -17,7 +17,7 @@ gpu.setResolution(80, 30)
 local page = 1
 local sizeOfPage = 26
 local items_on_the_screen = {}
-local findNameFilter
+local findNameFilter = ''
 
 function drawItems()
     items_on_the_screen = storageSystem:getAllItemsByLabel(findNameFilter, (page - 1) * sizeOfPage, sizeOfPage, "count")
@@ -101,7 +101,6 @@ function findByName()
 end
 
 drawInterface()
-drawItems()
 
 function isClicked(x1, y1, x2, y2, x, y)
     return (x >= x1 and y >= y1 and x <= x2 and y <= y2)
