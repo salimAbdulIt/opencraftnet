@@ -94,7 +94,7 @@ function StorageSystem:new()
 
     function obj:getAvailableSlotsOfInputOutput()
         local availableSlots = {}
-        local allStacks = transposers:getAllStacks("", 1)
+        local allStacks = self.transposers:getAllStacks("", 1)
         for i, item in pairs(allStacks) do
             if (item.name == 'minecraft:air') then
                 table.insert(availableSlots, item)
@@ -117,7 +117,7 @@ function StorageSystem:new()
         end
         for i = 1, #slots do
             local slot = slots[i]
-            transposers:transferItem(slot.storage, slot.side, slot.slot, "", 1, nil, slot.size)
+            self.transposers:transferItem(slot.storage, slot.side, slot.slot, "", 1, nil, slot.size)
             local oldCountOfItems = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size
             itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size - slot.size
             itemsFromDb[1].count = itemsFromDb[1].count - slot.size
