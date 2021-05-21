@@ -94,7 +94,7 @@ function StorageSystem:new()
 
     function obj:getAvailableSlotsOfInputOutput()
         local availableSlots = {}
-        local allStacks = self.transposers:getAllStacks("", 1)
+        local allStacks = self.transposers:getAllStacks("", 1).getAll()
         for i, item in pairs(allStacks) do
             if (item.name == 'minecraft:air') then
                 table.insert(availableSlots, item)
