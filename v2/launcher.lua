@@ -7,6 +7,8 @@ local utils = require('utils')
 
 local requiredDirectories = {}
 
+REPOSITORY = settings.REPOSITORY
+
 local libs = {
     {
         url = REPOSITORY .. "/v2/config/settings.lua",
