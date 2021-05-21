@@ -19,15 +19,15 @@ local libs = {
     {
         url = REPOSITORY .. "/v2/database.lua",
         path = "/lib/database.lua"
-    }
+    },
     {
         url = REPOSITORY .. "/v2/storage-system.lua",
         path = "/lib/storage-system.lua"
-    }
+    },
     {
         url = REPOSITORY .. "/v2/storage-interface.lua",
         path = "/home/storage-interface.lua"
-    }
+    },
     {
         url = REPOSITORY .. "/v2/transposers.lua",
         path = "/lib/transposers.lua"
