@@ -107,12 +107,13 @@ function Transposers:new()
         end
         local tempFromSide = fromSide
         local tempFromSlot = fromSlot
+        local someCheck = (#toAddress == sameAddressLetters and tostring(self.transposerAddresses[toAddress].side) == fromAddress:sub(#sameAddressLetters+1,#sameAddressLetters+1))
         if (#fromAddress > sameAddressLetters) then
-            self:transferItemOutside(fromAddress, fromSide, fromSlot, count, sameAddressLetters, #toAddress == sameAddressLetters and toSlot or nil)
+            self:transferItemOutside(fromAddress, fromSide, fromSlot, count, sameAddressLetters, someCheck and toSlot or nil)
             tempFromSide = tonumber(fromAddress:sub(sameAddressLetters + 1, sameAddressLetters + 1))
             tempFromSlot = 1
         end
-        if (#toAddress ~= sameAddressLetters) then
+        if (not someCheck) then
             self:transferItemInside(toAddress, toSide, toSlot, toAddress:sub(1, sameAddressLetters), tempFromSide, tempFromSlot, count)
         end
     end
