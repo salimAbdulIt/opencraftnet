@@ -127,8 +127,7 @@ function Transposers:new()
 
     function obj:getAllStacks(address, side)
         if (address) then
-            local storageTransposer = self.transposerAddresses[address].transposer;
-            return storageTransposer.transposer.getAllStacks(side)
+            return self.transposerAddresses[address].transposer.getAllStacks(side)
         else
         end
     end
