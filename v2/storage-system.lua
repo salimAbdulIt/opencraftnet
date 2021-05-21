@@ -139,7 +139,7 @@ function StorageSystem:new()
         end
         allItems = nil
         local storages = self.transposers:getAllStorages()
-        for i, address in pairs (storages) do
+        for address, storage in pairs (storages) do
             local itemsOfStorage = self.transposers:getAllStacks(address.address, address.side).getAll()
             local startIndex = 1
             if (storage.isUsedInTransfers) then

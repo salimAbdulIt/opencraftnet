@@ -68,19 +68,11 @@ function Transposers:new()
     end
 
     function obj:getAllTransposers()
-        local addresses = {}
-        for k, v in pairs(self.transposerAddresses) do
-            table.insert(addresses, k)
-        end
-        return addresses
+        return self.transposerAddresses
     end
 
     function obj:getAllStorages()
-        local addresses = {}
-        for k, v in pairs(self.storageAddresses) do
-            table.insert(addresses, k)
-        end
-        return addresses
+        return self.storageAddresses
     end
 
     function obj:transferItemOutside(fromAddress, fromSide, fromSlot, count, stopLevel, toSlot)
