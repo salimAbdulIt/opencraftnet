@@ -144,7 +144,7 @@ while true do
                             drawItems()
                             break
                         else
-                            getItem(id, damage, tonumber(str))
+                            storageSystem:getItem(id, damage, tonumber(str))
                             drawItems()
                             break
                         end
