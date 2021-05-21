@@ -3,6 +3,7 @@ local shell = require("shell")
 local unicode = require("unicode")
 local settings = require("settings")
 local computer = require('computer')
+local fs = require('filesystem')
 local utils = require('utils')
 
 local requiredDirectories = {}
@@ -41,6 +42,9 @@ local function initLauncher()
         shell.execute("md " .. requiredDirectories[i])
     end
     for i = 1, #libs do
+        if fs.exists(libs[i].path) then
+            shell.execute("rm " .. libs[i].path)
+        end
         utils.downloadFile(libs[i].url, libs[i].path)
     end
 end

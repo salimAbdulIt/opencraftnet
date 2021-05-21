@@ -228,7 +228,7 @@ while true do
         elseif (isClicked(3, 19, 21, 21, x, y)) then
             addCraft()
         elseif (isClicked(3, 15, 21, 17, x, y)) then
-            sinkItemsWithStorages()
+            storageSystem:sinkItemsWithStorages()
             drawInterface()
         elseif (isClicked(3, 11, 21, 13, x, y)) then
             drawInterface()

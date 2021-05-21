@@ -4,7 +4,7 @@ local shell = require('shell')
 local io = require('io')
 local fs = require("filesystem")
 require('transposers')
-require('db')
+require('database')
 local utils = require('utils')
 StorageSystem = {}
 function StorageSystem:new()
