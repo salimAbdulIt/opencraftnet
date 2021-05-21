@@ -92,21 +92,32 @@ function StorageSystem:new()
         return clause
     end
 
+    function obj:getAvailableSlotsOfInputOutput()
+        local availableSlots = {}
+        local allStacks = transposers:getAllStacks("", 1)
+        for i, item in pairs(allStacks) do
+            if (item.name == 'minecraft:air') then
+                table.insert(availableSlots, item)
+            end
+        end
+        return availableSlots
+    end
+
     function obj:getItem(id, damage, count, stopLevel)
-        local itemID = self.getDbId(id, damage)
+        local itemID = self:getDbId(id, damage)
         local itemsFromDb = self.db:select({ self:dbClause("ID", itemID, "=") })
         local availableSlotsFromDb = self.db:select({ self:dbClause("ID", self.idOfAvailableSlot, "=") })
-        local slots = getItemsFromRow(itemsFromDb, count)
+        local slots = self:getItemsFromRow(itemsFromDb, count)
         if not slots then
             return
         end
-        local availableSlots = getAvailableSlotsOfInputOutput()
+        local availableSlots = self:getAvailableSlotsOfInputOutput()
         if (#slots > #availableSlots) then
-            error("Not enough space")
+            error("Not enough space") --todo add notification allert
         end
         for i = 1, #slots do
             local slot = slots[i]
-            getItemFromStorage(slot.storage, slot.side, slot.slot, slot.storageType, slot.size, nil, stopLevel) --todo investigate nil value
+            transposers:transferItem(slot.storage, slot.side, slot.slot, "", 1, nil, slot.size)
             local oldCountOfItems = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size
             itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size - slot.size
             itemsFromDb[1].count = itemsFromDb[1].count - slot.size
@@ -123,7 +134,7 @@ function StorageSystem:new()
                 availableSlotsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot] = value
             end
         end
-        db:execute("INSERT INTO ITEMS " .. getDbId(id, damage), itemsFromDb[1])
+        db:execute("INSERT INTO ITEMS " .. self:getDbId(id, damage), itemsFromDb[1])
         db:execute("INSERT INTO ITEMS " .. id_of_available_slot, availableSlotsFromDb[1])
     end
 
@@ -135,7 +146,7 @@ function StorageSystem:new()
         end
         local items = {}
         for k, v in pairs(allItems) do
-            items[self.getDbId(v.name, v.damage)] = v
+            items[self:getDbId(v.name, v.damage)] = v
         end
         allItems = nil
         local storages = self.transposers:getAllStorages()
