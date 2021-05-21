@@ -154,7 +154,7 @@ function StorageSystem:new()
                    v.size = 0
                    v.maxSize = 0
                 end
-                local id = self.getDbId(v.name, v.damage)
+                local id = self:getDbId(v.name, v.damage)
                 if (not items[id]) then
                     local newItem = {}
                     newItem.name = v.name
