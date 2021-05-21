@@ -11,7 +11,6 @@ function Transposers:new()
     function obj:init()
         self.transposerAddresses = {}
         self.storageAddresses = {}
-        self.robotAddress = {}
         self:customizeStorages()
     end
 
@@ -52,10 +51,10 @@ function Transposers:new()
                                 self.storageAddresses[address1].address = address
                                 self.storageAddresses[address1].outputSide = outputSide
                                 self.storageAddresses[address1].inputSide = inputSide
-                                self.storageAddresses[address1].ignoreFirstSlot = false
+                                self.storageAddresses[address1].isUsedInTransfers = false
                                 if (self.transposerAddresses[address].transposer.transferItem(inputSide, outputSide, 64, 1, 1) ~= 0) then
                                     if (self:customizeStoragesRec(address .. outputSide, self.transposerAddresses[address].transposer.address)) then
-                                        self.storageAddresses[address1].ignoreFirstSlot = true
+                                        self.storageAddresses[address1].isUsedInTransfers = true
                                     end
                                     self.transposerAddresses[address].transposer.transferItem(outputSide, inputSide, 64, 1, 1)
                                 end
@@ -71,6 +70,14 @@ function Transposers:new()
     function obj:getAllTransposers()
         local addresses = {}
         for k, v in pairs(self.transposerAddresses) do
+            table.insert(addresses, k)
+        end
+        return addresses
+    end
+
+    function obj:getAllStorages()
+        local addresses = {}
+        for k, v in pairs(self.storageAddresses) do
             table.insert(addresses, k)
         end
         return addresses
@@ -121,6 +128,7 @@ function Transposers:new()
     function obj:getAllStacks(address, side)
         if (address) then
             local storageTransposer = self.transposerAddresses[address].transposer;
+            return storageTransposer.transposer.getAllStacks(side)
         else
         end
     end

@@ -138,48 +138,45 @@ function StorageSystem:new()
             items[self.getDbId(v.name, v.damage)] = v
         end
         allItems = nil
-        for address, storage in pairs(self.storageAddresses) do
-            if (self.transposerAddresses[storage.address].transposer.getInventorySize(storage.outputSide) ~= nil) then
-                local itemsOfStorage = self.transposerAddresses[storage.address].transposer.getAllStacks(storage.outputSide).getAll()
-                local startIndex = 1
-                if (storage.ignoreFirstSlot) then
-                    startIndex = 2
+        local storages = self.transposers:getAllStorages()
+        for address, storage in pairs (storages) do
+            local itemsOfStorage = self.transposers:getAllStacks(address.address, address.side).getAll()
+            local startIndex = 1
+            if (storage.isUsedInTransfers) then
+                startIndex = 2
+            end
+            for k = startIndex, #itemsOfStorage do -- remove +1 in case if u are using 1.12.2
+                local v = itemsOfStorage[k] -- remove -1 in case if u are using 1.12.2
+                if (not v or not next(v)) then
+                   v.name = 'minecraft:air'
+                   v.damage = 0
+                   v.label = 'minecraft:air'
+                   v.size = 0
+                   v.maxSize = 0
                 end
-                for k = startIndex, #itemsOfStorage do -- remove +1 in case if u are using 1.12.2
-                    local v = itemsOfStorage[k] -- remove -1 in case if u are using 1.12.2
-                    if (not v or not next(v)) then
-                        v.name = 'minecraft:air'
-                        v.damage = 0
-                        v.label = 'minecraft:air'
-                        v.size = 0
-                        v.maxSize = 0
-                    end
-                    local id = self.getDbId(v.name, v.damage)
-                    if (not items[id]) then
-
-                        local newItem = {}
-                        newItem.name = v.name
-                        newItem.damage = v.damage
-                        newItem.maxSize = v.maxSize
-                        newItem.label = v.label
-                        newItem.count = 0
-                        newItem.itemXdata = {}
-                        items[id] = newItem
-                    end
-                    items[id].maxSize = v.maxSize -- remove it
-                    items[id].count = items[id].count + v.size
-
-                    if (not items[id].itemXdata[storage.address]) then items[id].itemXdata[storage.address] = {} end
-                    if (not items[id].itemXdata[storage.address][storage.outputSide]) then items[id].itemXdata[storage.address][storage.outputSide] = {} end
-                    if (not items[id].itemXdata[storage.address][storage.outputSide][k]) then items[id].itemXdata[storage.address][storage.outputSide][k] = {} end
-
-                    local itemXdata = {}
-                    itemXdata.size = v.size
-                    items[id].itemXdata[storage.address][storage.outputSide][k] = itemXdata
+                local id = self.getDbId(v.name, v.damage)
+                if (not items[id]) then
+                    local newItem = {}
+                    newItem.name = v.name
+                    newItem.damage = v.damage
+                    newItem.maxSize = v.maxSize
+                    newItem.label = v.label
+                    newItem.count = 0
+                    newItem.itemXdata = {}
+                    items[id] = newItem
                 end
+                items[id].maxSize = v.maxSize -- remove it
+                items[id].count = items[id].count + v.size
+
+                if (not items[id].itemXdata[storage.address]) then items[id].itemXdata[storage.address] = {} end
+                if (not items[id].itemXdata[storage.address][storage.outputSide]) then items[id].itemXdata[storage.address][storage.outputSide] = {} end
+                if (not items[id].itemXdata[storage.address][storage.outputSide][k]) then items[id].itemXdata[storage.address][storage.outputSide][k] = {} end
+
+                local itemXdata = {}
+                itemXdata.size = v.size
+                items[id].itemXdata[storage.address][storage.outputSide][k] = itemXdata
             end
         end
-
         for k, v in pairs(items) do
             self.db:insert(k, v) --todo maybe do insert all or patches
         end
