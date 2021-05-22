@@ -206,7 +206,7 @@ function StorageSystem:new()
 
     function obj:cleanOutputStorage()
         local availableSlotsFromDb = self.db:select({ self:dbClause("ID", self.idOfAvailableSlot, "=") })
-        local availableSlots = getItemsFromRow(availableSlotsFromDb, nil)
+        local availableSlots = self:getItemsFromRow(availableSlotsFromDb, nil)
         local items = {}
         local caret = 1
         local itemsFromStorage = self.transposers:getAllStacks().getAll()
