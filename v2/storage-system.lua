@@ -180,13 +180,11 @@ function StorageSystem:new()
         end
     end
 
-    function obj:getNotFullSlots(name, damage, maxSize) --todo reuse getItemsFromRow
-        local itemsFromDb = self.db:select({ self:dbClause("ID", self:getDbId(name, damage), "=") })
+    function obj:getNotFullSlots(row) --todo reuse getItemsFromRow
         local returnList = {}
         if (not itemsFromDb[1]) then
             return returnList
         end
-        local row = itemsFromDb[1]
         for i, ix in pairs(row.itemXdata) do
             for j, jx in pairs(row.itemXdata[i]) do
                 for k, kx in pairs(row.itemXdata[i][j]) do
@@ -206,7 +204,7 @@ function StorageSystem:new()
 
     function obj:cleanOutputStorage()
         local availableSlotsFromDb = self.db:select({ self:dbClause("ID", self.idOfAvailableSlot, "=") })
-        local availableSlots = self:getItemsFromRow(availableSlotsFromDb, nil)
+        local availableSlots = self:getItemsFromRow(availableSlotsFromDb[1], nil)
         local items = {}
         local caret = 1
         local itemsFromStorage = self.transposers:getAllStacks("", 1).getAll()
