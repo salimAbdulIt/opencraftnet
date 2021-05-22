@@ -204,7 +204,7 @@ function StorageSystem:new()
         return returnList
     end
 
-    function cleanOutputStorage()
+    function obj:cleanOutputStorage()
         local availableSlotsFromDb = self.db:select({ self:dbClause("ID", self.idOfAvailableSlot, "=") })
         local availableSlots = getItemsFromRow(availableSlotsFromDb, nil)
         local items = {}
