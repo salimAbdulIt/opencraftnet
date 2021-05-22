@@ -212,13 +212,13 @@ function StorageSystem:new()
         local itemsFromStorage = self.transposers:getAllStacks().getAll()
         for i, item in pairs(itemsFromStorage) do
             if (item.size < item.maxSize) then
-                self:transposers:store("", 1, i, component.database.address, 1)
+                self.transposers:store("", 1, i, component.database.address, 1)
                 local notFullSlots = self:getNotFullSlots(tempItem.name, tempItem.damage, tempItem.maxSize)
                 for j = 1, #notFullSlots do
-                    if (self:transposers:compareStackToDatabase(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, component.database, 1, true)) then
-                        local notFullItemsSlot = self:transposers:getStackInSlot(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot)
+                    if (self.transposers:compareStackToDatabase(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, component.database, 1, true)) then
+                        local notFullItemsSlot = self.transposers:getStackInSlot(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot)
                         local count = tempItem.maxSize - notFullItemsSlot.size
-                        self:transposers:transferItem("", 1, i, notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, count)
+                        self.transposers:transferItem("", 1, i, notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, count)
                         notFullItemsSlot.size = notFullItemsSlot.size + count
                         table.insert(items, notFullItemsSlot)
                         item.size = item.size - count
@@ -231,7 +231,7 @@ function StorageSystem:new()
             if item.size > 0 then
                 local availableSlot = availableSlots[caret]
                 caret = caret + 1
-                self:transposers:transferItem("", 1, i, availableSlot.storage, availableSlot.side, availableSlot.slot, item.size)
+                self.transposers:transferItem("", 1, i, availableSlot.storage, availableSlot.side, availableSlot.slot, item.size)
                 item.storage = availableSlot.storage
                 item.side = availableSlot.side
                 item.slot = availableSlot.slot
