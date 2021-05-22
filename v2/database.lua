@@ -400,7 +400,10 @@ function DurexDatabase:new(tableName)
         local resultValue = {}
         local sortedValues = {}
         if (clauses and clauses[1].column == "ID") then
-            table.insert(resultValue, self:selectById(clauses[1].value))
+            local value = self:selectById(clauses[1].value)
+            if (value) then
+                table.insert(resultValue, value)
+            end
         elseif (self:isIndexExist(clauses)) then
             return self:selectFromObject(IndexedValuesIterator:new(self, clauses, orderBy), skip, limit)
         else
