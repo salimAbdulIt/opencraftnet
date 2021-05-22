@@ -14,6 +14,8 @@ function StorageSystem:new()
         self.db = DurexDatabase:new("ITEMS")
         self.transposers = Transposers:new()
         self.idOfAvailableSlot = 'minecraftair_0.0'
+        self.craftSlotsInChest = { 1, 2, 3, 13, 14, 15, 25, 26, 27 }
+        self.craftSlots = {[1] = 1, [2] = 2, [3] = 3, [4] = 5, [5] = 6, [6] = 7, [7] = 9, [8] = 10, [9] = 11, [0] = 13}
     end
 
     function obj:getAllItems(skip, limit, orderBy)
@@ -178,6 +180,44 @@ function StorageSystem:new()
         for k, v in pairs(items) do
             self.db:insert(k, v) --todo maybe do insert all or patches
         end
+    end
+
+    function obj:addCraft()
+        local receipt = {}
+        local allStacksFromStorage = self.transposers:getAllStacks("", 1).getAll()
+        for i = 1, 9 do
+            local tempItem = allStacksFromStorage[i]
+            if (tempItem) then
+                receipt[i] = {}
+                receipt[i].name = tempItem.name
+                receipt[i].damage = tempItem.damage
+                receipt[i].count = tempItem.size
+                self.transposers:transferItem("", 1, self.craftSlotsInChest[i], self.robotAddress.address, self.robotAddress.outputSide, self.craftSlots[i], 64)
+            end
+        end
+        tunnel.send(64)
+        os.sleep(1)
+        local craftedItem = self.transposers:getStackInSlot(self.robotAddress.address, self.robotAddress.outputSide, self.craftSlots[0])
+        if (craftedItem) then
+            receipt[0] = {}
+            receipt[0].name = craftedItem.name
+            receipt[0].damage = craftedItem.damage
+            receipt[0].count = craftedItem.size
+            local key = self:getDbId(receipt[0].name, receipt[0].damage)
+            local item = self.db:select({ self:dbClause("ID", key, "=") })[1]
+            if (not item) then
+                item = {}
+                item.name = craftedItem.name
+                item.damage = craftedItem.damage
+                item.maxSize = craftedItem.maxSize
+                item.label = craftedItem.label
+                item.count = 0
+                item.itemXdata = {}
+            end
+            item.receipt = receipt
+            self.db:insert(key, item)
+        end
+        self.transposers:transferItem(self.robotAddress.address, self.robotAddress.outputSide, self.craftSlots[0], "", 1, nil, 64)
     end
 
     function obj:getNotFullSlots(row) --todo reuse getItemsFromRow
