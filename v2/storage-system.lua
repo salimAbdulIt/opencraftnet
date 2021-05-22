@@ -215,7 +215,7 @@ function StorageSystem:new()
             if (item.size < item.maxSize) then
                 self.transposers:store("", 1, i, component.database.address, 1)
                 local itemsFromDb = self.db:select({ self:dbClause("ID", self:getDbId(item.name, item.damage), "=") })
-                local notFullSlots = self:getNotFullSlots(itemsFromDb)
+                local notFullSlots = self:getNotFullSlots(itemsFromDb[1])
                 for j = 1, #notFullSlots do
                     if (self.transposers:compareStackToDatabase(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, component.database.address, 1, true)) then
                         local count = item.maxSize - notFullSlots[j].size
