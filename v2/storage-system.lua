@@ -211,6 +211,9 @@ function StorageSystem:new()
         local caret = 1
         local itemsFromStorage = self.transposers:getAllStacks("", 1).getAll()
         for i, item in pairs(itemsFromStorage) do
+            if (item.name == "minecraft:air") then
+                break
+            end
             if (item.size < item.maxSize) then
                 self.transposers:store("", 1, i, component.database.address, 1)
                 local notFullSlots = self:getNotFullSlots(item.name, item.damage, item.maxSize)
@@ -226,7 +229,7 @@ function StorageSystem:new()
                             break
                         end
                     end
-                 end
+                end
             end
             if item.size > 0 then
                 local availableSlot = availableSlots[caret]
@@ -237,7 +240,7 @@ function StorageSystem:new()
                 item.slot = availableSlot.slot
                 table.insert(items, item)
             end
-         end
+        end
 
 
         for i = 1, caret - 1 do
