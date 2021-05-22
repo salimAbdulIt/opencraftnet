@@ -215,7 +215,7 @@ function StorageSystem:new()
                 self.transposers:store("", 1, i, component.database.address, 1)
                 local notFullSlots = self:getNotFullSlots(item.name, item.damage, item.maxSize)
                 for j = 1, #notFullSlots do
-                    if (self.transposers:compareStackToDatabase(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, component.database, 1, true)) then
+                    if (self.transposers:compareStackToDatabase(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, component.database.address, 1, true)) then
                         local notFullItemsSlot = self.transposers:getStackInSlot(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot)
                         local count = item.maxSize - notFullItemsSlot.size
                         self.transposers:transferItem("", 1, i, notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, count)
