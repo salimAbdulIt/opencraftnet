@@ -188,7 +188,7 @@ function StorageSystem:new()
         for i, ix in pairs(row.itemXdata) do
             for j, jx in pairs(row.itemXdata[i]) do
                 for k, kx in pairs(row.itemXdata[i][j]) do
-                    if (row.itemXdata[i][j][k].size < maxSize) then
+                    if (row.itemXdata[i][j][k].size < row.maxSize) then
                         local item = {}
                         item.storage = i
                         item.side = j
