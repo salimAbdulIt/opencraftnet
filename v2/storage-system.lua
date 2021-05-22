@@ -180,7 +180,7 @@ function StorageSystem:new()
         end
     end
 
-    function obj:getNotFullSlots(name, damage, maxSize)
+    function obj:getNotFullSlots(name, damage, maxSize) --todo reuse getItemsFromRow
         local itemsFromDb = self.db:select({ self:dbClause("ID", self:getDbId(name, damage), "=") })
         local returnList = {}
         if (not itemsFromDb[1]) then
@@ -216,14 +216,14 @@ function StorageSystem:new()
             end
             if (item.size < item.maxSize) then
                 self.transposers:store("", 1, i, component.database.address, 1)
-                local notFullSlots = self:getNotFullSlots(item.name, item.damage, item.maxSize)
+                local itemsFromDb = self.db:select({ self:dbClause("ID", self:getDbId(item.name, item.damage), "=") })
+                local notFullSlots = self:getNotFullSlots(itemsFromDb)
                 for j = 1, #notFullSlots do
                     if (self.transposers:compareStackToDatabase(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, component.database.address, 1, true)) then
-                        local notFullItemsSlot = self.transposers:getStackInSlot(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot)
-                        local count = item.maxSize - notFullItemsSlot.size
+                        local count = item.maxSize - notFullSlots[j].size
                         self.transposers:transferItem("", 1, i, notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, count)
-                        notFullItemsSlot.size = notFullItemsSlot.size + count
-                        table.insert(items, notFullItemsSlot)
+                        notFullSlots[j].size = notFullSlots[j].size + count
+                        table.insert(items, notFullSlots[j])
                         item.size = item.size - count
                         if (item.size <= 0) then
                             break
