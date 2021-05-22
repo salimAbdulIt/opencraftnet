@@ -180,7 +180,7 @@ function StorageSystem:new()
         end
     end
 
-    local function obj:getNotFullSlots(name, damage, maxSize)
+    function obj:getNotFullSlots(name, damage, maxSize)
         local itemsFromDb = self.db:select({ self:dbClause("ID", self:getDbId(name, damage), "=") })
         local returnList = {}
         if (not itemsFromDb[1]) then
