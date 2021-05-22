@@ -167,9 +167,6 @@ function Transposers:new()
         end
     end
 
-    function obj:getStackInSlot(address, side, slot)
-    end
-
     setmetatable(obj, self)
     obj:init()
     self.__index = self; return obj
