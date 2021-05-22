@@ -325,7 +325,7 @@ function DurexDatabase:new(tableName)
     function obj:selectById(id)
         local path = self.dataPath .. id .. ".row"
         if (not fs.exists(path)) then
-            return
+            return nil
         end
 
         local file = io.open(path, "r")
