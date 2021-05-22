@@ -97,7 +97,7 @@ function StorageSystem:new()
         local allStacks = self.transposers:getAllStacks("", 1).getAll()
         for i, item in pairs(allStacks) do
             if (item.name == 'minecraft:air') then
-                table.insert(availableSlots, item)
+                table.insert(availableSlots, i)
             end
         end
         return availableSlots

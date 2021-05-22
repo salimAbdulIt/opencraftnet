@@ -89,7 +89,11 @@ function Transposers:new()
         local storage = self.transposerAddresses[fromAddress]
         local tempFromSide = fromSide or storage.inputSide
         if (fromAddress == toAddress) then
-            storage.transposer.transferItem(tempFromSide, toSide, count, fromSlot, toSlot)
+            if (toSlot) then
+                storage.transposer.transferItem(tempFromSide, toSide, count, fromSlot, toSlot)
+            else
+                storage.transposer.transferItem(tempFromSide, toSide, count, fromSlot)
+            end
         else
             local tempToSide = tonumber(toAddress:sub(#fromAddress + 1, #fromAddress + 1))
             storage.transposer.transferItem(tempFromSide, tempToSide, count, fromSlot, 1)
