@@ -213,11 +213,11 @@ function StorageSystem:new()
         for i, item in pairs(itemsFromStorage) do
             if (item.size < item.maxSize) then
                 self.transposers:store("", 1, i, component.database.address, 1)
-                local notFullSlots = self:getNotFullSlots(tempItem.name, tempItem.damage, tempItem.maxSize)
+                local notFullSlots = self:getNotFullSlots(item.name, item.damage, item.maxSize)
                 for j = 1, #notFullSlots do
                     if (self.transposers:compareStackToDatabase(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, component.database, 1, true)) then
                         local notFullItemsSlot = self.transposers:getStackInSlot(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot)
-                        local count = tempItem.maxSize - notFullItemsSlot.size
+                        local count = item.maxSize - notFullItemsSlot.size
                         self.transposers:transferItem("", 1, i, notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, count)
                         notFullItemsSlot.size = notFullItemsSlot.size + count
                         table.insert(items, notFullItemsSlot)
