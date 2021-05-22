@@ -140,41 +140,45 @@ function StorageSystem:new()
         allItems = nil
         local storages = self.transposers:getAllStorages()
         for address, storage in pairs (storages) do
-            local itemsOfStorage = self.transposers:getAllStacks(address.address, address.side).getAll()
-            local startIndex = 1
-            if (storage.isUsedInTransfers) then
-                startIndex = 2
-            end
-            for k = startIndex, #itemsOfStorage do -- remove +1 in case if u are using 1.12.2
-                local v = itemsOfStorage[k] -- remove -1 in case if u are using 1.12.2
-                if (not v or not next(v)) then
-                   v.name = 'minecraft:air'
-                   v.damage = 0
-                   v.label = 'minecraft:air'
-                   v.size = 0
-                   v.maxSize = 0
+            if (storage.name == 'opencomputers:robot') then
+                self.robotAddress = address
+            else
+                local itemsOfStorage = self.transposers:getAllStacks(address.address, address.side).getAll()
+                local startIndex = 1
+                if (storage.isUsedInTransfers) then
+                    startIndex = 2
                 end
-                local id = self:getDbId(v.name, v.damage)
-                if (not items[id]) then
-                    local newItem = {}
-                    newItem.name = v.name
-                    newItem.damage = v.damage
-                    newItem.maxSize = v.maxSize
-                    newItem.label = v.label
-                    newItem.count = 0
-                    newItem.itemXdata = {}
-                    items[id] = newItem
+                for k = startIndex, #itemsOfStorage do -- remove +1 in case if u are using 1.12.2
+                    local v = itemsOfStorage[k] -- remove -1 in case if u are using 1.12.2
+                    if (not v or not next(v)) then
+                       v.name = 'minecraft:air'
+                       v.damage = 0
+                       v.label = 'minecraft:air'
+                       v.size = 0
+                       v.maxSize = 0
+                    end
+                    local id = self:getDbId(v.name, v.damage)
+                    if (not items[id]) then
+                        local newItem = {}
+                        newItem.name = v.name
+                        newItem.damage = v.damage
+                        newItem.maxSize = v.maxSize
+                        newItem.label = v.label
+                        newItem.count = 0
+                        newItem.itemXdata = {}
+                        items[id] = newItem
+                    end
+                    items[id].maxSize = v.maxSize -- remove it
+                    items[id].count = items[id].count + v.size
+
+                    if (not items[id].itemXdata[storage.address]) then items[id].itemXdata[storage.address] = {} end
+                    if (not items[id].itemXdata[storage.address][storage.outputSide]) then items[id].itemXdata[storage.address][storage.outputSide] = {} end
+                    if (not items[id].itemXdata[storage.address][storage.outputSide][k]) then items[id].itemXdata[storage.address][storage.outputSide][k] = {} end
+
+                    local itemXdata = {}
+                    itemXdata.size = v.size
+                    items[id].itemXdata[storage.address][storage.outputSide][k] = itemXdata
                 end
-                items[id].maxSize = v.maxSize -- remove it
-                items[id].count = items[id].count + v.size
-
-                if (not items[id].itemXdata[storage.address]) then items[id].itemXdata[storage.address] = {} end
-                if (not items[id].itemXdata[storage.address][storage.outputSide]) then items[id].itemXdata[storage.address][storage.outputSide] = {} end
-                if (not items[id].itemXdata[storage.address][storage.outputSide][k]) then items[id].itemXdata[storage.address][storage.outputSide][k] = {} end
-
-                local itemXdata = {}
-                itemXdata.size = v.size
-                items[id].itemXdata[storage.address][storage.outputSide][k] = itemXdata
             end
         end
         for k, v in pairs(items) do
@@ -192,12 +196,12 @@ function StorageSystem:new()
                 receipt[i].name = tempItem.name
                 receipt[i].damage = tempItem.damage
                 receipt[i].count = tempItem.size
-                self.transposers:transferItem("", 1, self.craftSlotsInChest[i], self.robotAddress.address, self.robotAddress.outputSide, self.craftSlots[i], 64)
+                self.transposers:transferItem("", 1, self.craftSlotsInChest[i], self.robotAddress.address, self.robotAddress.side, self.craftSlots[i], 64)
             end
         end
         tunnel.send(64)
         os.sleep(1)
-        local craftedItem = self.transposers:getStackInSlot(self.robotAddress.address, self.robotAddress.outputSide, self.craftSlots[0])
+        local craftedItem = self.transposers:getStackInSlot(self.robotAddress.address, self.robotAddress.side, self.craftSlots[0])
         if (craftedItem) then
             receipt[0] = {}
             receipt[0].name = craftedItem.name
@@ -217,7 +221,7 @@ function StorageSystem:new()
             item.receipt = receipt
             self.db:insert(key, item)
         end
-        self.transposers:transferItem(self.robotAddress.address, self.robotAddress.outputSide, self.craftSlots[0], "", 1, nil, 64)
+        self.transposers:transferItem(self.robotAddress.address, self.robotAddress.side, self.craftSlots[0], "", 1, nil, 64)
     end
 
     function obj:getNotFullSlots(row) --todo reuse getItemsFromRow
