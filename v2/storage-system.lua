@@ -182,7 +182,7 @@ function StorageSystem:new()
 
     function obj:getNotFullSlots(row) --todo reuse getItemsFromRow
         local returnList = {}
-        if (not itemsFromDb[1]) then
+        if (not row) then
             return returnList
         end
         for i, ix in pairs(row.itemXdata) do
