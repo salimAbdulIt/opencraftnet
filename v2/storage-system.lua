@@ -201,8 +201,7 @@ function StorageSystem:new()
         end
         component.tunnel.send(64)
         os.sleep(1)
-        local craftedItem = self.transposers:getStackInSlot(self.robotAddress.address, self.robotAddress.side, self.craftSlots[0])
-        print(self.robotAddress.address, self.robotAddress.side, self.craftSlots[0])
+        local craftedItem = self.transposers.getStackInSlot(self.robotAddress.address, self.robotAddress.side, self.craftSlots[0])
         os.sleep(3)
         if (craftedItem) then
             receipt[0] = {}
