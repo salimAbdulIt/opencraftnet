@@ -10,7 +10,7 @@ function Transposers:new()
 
     function obj:init()
         self.transposerAddresses = {}
-        self.storageAddresses = {}
+        self.storageAddresses = {} -- todo add "" as a storage
         self:customizeStorages()
     end
 

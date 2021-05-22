@@ -200,8 +200,9 @@ function StorageSystem:new()
             end
         end
         component.tunnel.send(64)
-        os.sleep(1)
+        os.sleep(2)
         local craftedItem = self.transposers:getStackInSlot(self.robotAddress.address, self.robotAddress.side, self.craftSlots[0])
+        print(self.transposers:getStackInSlot(self.robotAddress.address, self.robotAddress.side, self.craftSlots[0]))
         if (craftedItem) then
             receipt[0] = {}
             receipt[0].name = craftedItem.name
@@ -221,6 +222,7 @@ function StorageSystem:new()
             item.receipt = receipt
             self.db:insert(key, item)
         end
+        print(self.transposers:getStackInSlot(self.robotAddress.address, self.robotAddress.side, self.craftSlots[0]))
         self.transposers:transferItem(self.robotAddress.address, self.robotAddress.side, self.craftSlots[0], "", 1, nil, 64)
     end
 
