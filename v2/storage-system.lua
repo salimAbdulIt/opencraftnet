@@ -209,7 +209,7 @@ function StorageSystem:new()
         local availableSlots = self:getItemsFromRow(availableSlotsFromDb, nil)
         local items = {}
         local caret = 1
-        local itemsFromStorage = self.transposers:getAllStacks().getAll()
+        local itemsFromStorage = self.transposers:getAllStacks("", 1).getAll()
         for i, item in pairs(itemsFromStorage) do
             if (item.size < item.maxSize) then
                 self.transposers:store("", 1, i, component.database.address, 1)
