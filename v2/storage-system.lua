@@ -14,7 +14,7 @@ function StorageSystem:new()
         self.db = DurexDatabase:new("ITEMS")
         self.transposers = Transposers:new()
         self.idOfAvailableSlot = 'minecraftair_0.0'
-        self.craftSlotsInChest = { 1, 2, 3, 13, 14, 15, 25, 26, 27 }
+        self.craftSlotsInChest = { 1, 2, 3, 10, 11, 12, 19, 20, 21 }
         self.craftSlots = {[1] = 1, [2] = 2, [3] = 3, [4] = 5, [5] = 6, [6] = 7, [7] = 9, [8] = 10, [9] = 11, [0] = 13}
     end
 
@@ -199,7 +199,7 @@ function StorageSystem:new()
                 self.transposers:transferItem("", 1, self.craftSlotsInChest[i], self.robotAddress.address, self.robotAddress.side, self.craftSlots[i], 64)
             end
         end
-        tunnel.send(64)
+        component.tunnel.send(64)
         os.sleep(1)
         local craftedItem = self.transposers:getStackInSlot(self.robotAddress.address, self.robotAddress.side, self.craftSlots[0])
         if (craftedItem) then
