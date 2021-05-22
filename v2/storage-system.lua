@@ -44,44 +44,31 @@ function StorageSystem:new()
             for i, ix in pairs(row.itemXdata) do
                 for j, jx in pairs(row.itemXdata[i]) do
                     for k, kx in pairs(row.itemXdata[i][j]) do
-
-                        local usedCount = 0
-                        repeat
-                            local item = {}
-                            item.storage = i
-                            item.side = j
-                            item.slot = k
-                            item.storageType = row.itemXdata[i][j][k].storageType
-                            if (not count) then
-                                item.size = 0
-                            else
-                                local countOfItemsOnSlot = row.itemXdata[i][j][k].size - usedCount
-                                local flag = false
-                                if (countOfItemsOnSlot > row.maxSize) then
-                                    flag = true
-                                    countOfItemsOnSlot = row.maxSize
-                                end
-                                if (count > countOfItemsOnSlot) then
-                                    item.size = countOfItemsOnSlot
-                                    count = count - countOfItemsOnSlot
-                                else
-                                    item.size = count
-                                    count = 0
-                                end
-                            end
+                        local item = {}
+                        item.storage = i
+                        item.side = j
+                        item.slot = k
+                        item.storageType = row.itemXdata[i][j][k].storageType
+                        if (not count) then
+                            item.size = row.itemXdata[i][j][k].size
                             table.insert(returnList, item)
-                        until (not flag or not count or count == 0)
-                        if (count == 0) then
-                            return returnList
+                        else
+                            local countOfItemsOnSlot = row.itemXdata[i][j][k].size
+                            if (count > countOfItemsOnSlot) then
+                                item.size = countOfItemsOnSlot
+                                count = count - countOfItemsOnSlot
+                                table.insert(returnList, item)
+                            else
+                                item.size = count
+                                table.insert(returnList, item)
+                                return returnList
+                            end
                         end
                     end
                 end
             end
         end
-        if (not count) then
-            return returnList
-        end
-        return
+        return returnList
     end
 
     function obj:dbClause(fieldName, fieldValue, typeOfClause)
@@ -190,6 +177,120 @@ function StorageSystem:new()
         end
         for k, v in pairs(items) do
             self.db:insert(k, v) --todo maybe do insert all or patches
+        end
+    end
+
+    local function obj:getNotFullSlots(name, damage, maxSize)
+        local itemsFromDb = self.db:select({ self:dbClause("ID", self:getDbId(name, damage), "=") })
+        local returnList = {}
+        if (not itemsFromDb[1]) then
+            return returnList
+        end
+        local row = itemsFromDb[1]
+        for i, ix in pairs(row.itemXdata) do
+            for j, jx in pairs(row.itemXdata[i]) do
+                for k, kx in pairs(row.itemXdata[i][j]) do
+                    if (row.itemXdata[i][j][k].size < maxSize) then
+                        local item = {}
+                        item.storage = i
+                        item.side = j
+                        item.slot = k
+                        item.size = row.itemXdata[i][j][k].size
+                        table.insert(returnList, item)
+                    end
+                end
+            end
+        end
+        return returnList
+    end
+
+    function cleanOutputStorage()
+        local availableSlotsFromDb = self.db:select({ self:dbClause("ID", self.idOfAvailableSlot, "=") })
+        local availableSlots = getItemsFromRow(availableSlotsFromDb, nil)
+        local items = {}
+        local caret = 1
+        local itemsFromStorage = self.transposers:getAllStacks().getAll()
+        for i, item in pairs(itemsFromStorage) do
+            if (item.size < item.maxSize) then
+                self:transposers:store("", 1, i, component.database.address, 1)
+                local notFullSlots = self:getNotFullSlots(tempItem.name, tempItem.damage, tempItem.maxSize)
+                for j = 1, #notFullSlots do
+                    if (self:transposers:compareStackToDatabase(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, component.database, 1, true)) then
+                        local notFullItemsSlot = self:transposers:getStackInSlot(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot)
+                        local count = tempItem.maxSize - notFullItemsSlot.size
+                        self:transposers:transferItem("", 1, i, notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, count)
+                        notFullItemsSlot.size = notFullItemsSlot.size + count
+                        table.insert(items, notFullItemsSlot)
+                        item.size = item.size - count
+                        if (item.size <= 0) then
+                            break
+                        end
+                    end
+                 end
+            end
+            if item.size > 0 then
+                local availableSlot = availableSlots[caret]
+                caret = caret + 1
+                self:transposers:transferItem("", 1, i, availableSlot.storage, availableSlot.side, availableSlot.slot, item.size)
+                item.storage = availableSlot.storage
+                item.side = availableSlot.side
+                item.slot = availableSlot.slot
+                table.insert(items, item)
+            end
+         end
+
+
+        for i = 1, caret - 1 do
+            availableSlotsFromDb[1].itemXdata[availableSlots[i].storage][availableSlots[i].side][availableSlots[i].slot] = nil
+        end
+        self.db:insert(self.idOfAvailableSlot, availableSlotsFromDb[1])
+
+        local itemsToSave = {}
+        for i = 1, #items do
+            local id = getDbId(items[i].name, items[i].damage)
+
+            local itemToSave = itemsToSave[id]
+            if (itemToSave) then
+                local countToIncrease = items[i].size
+                if (not itemToSave.itemXdata[items[i].storage]) then itemToSave.itemXdata[items[i].storage] = {} end
+                if (not itemToSave.itemXdata[items[i].storage][items[i].side]) then itemToSave.itemXdata[items[i].storage][items[i].side] = {} end
+                if (not itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot]) then
+                    itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot] = {}
+                else
+                    countToIncrease = countToIncrease - itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot].size
+                end
+                itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot].size = items[i].size
+                itemToSave.count = itemToSave.count + countToIncrease
+            else
+                itemToSave = self.db:select({ self:dbClause("ID", id, "=") })[1]
+                local countToIncrease = items[i].size
+                if (not itemToSave) then
+                    itemToSave = {}
+                    itemToSave.count = 0
+                end
+                if (not itemToSave.itemXdata) then itemToSave.itemXdata = {} end
+                if (not itemToSave.itemXdata[items[i].storage]) then itemToSave.itemXdata[items[i].storage] = {} end
+                if (not itemToSave.itemXdata[items[i].storage][items[i].side]) then itemToSave.itemXdata[items[i].storage][items[i].side] = {} end
+                if (not itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot]) then
+                    itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot] = {}
+                else
+                    countToIncrease = countToIncrease - itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot].size
+                end
+
+                itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot].size = items[i].size
+                itemToSave.name = items[i].name
+                itemToSave.damage = items[i].damage
+                if (not itemToSave.label) then
+                    itemToSave.label = items[i].label
+                end
+                itemToSave.maxSize = items[i].maxSize
+                itemToSave.count = itemToSave.count + countToIncrease
+                itemsToSave[id] = itemToSave
+            end
+        end
+
+        for k, v in pairs(itemsToSave) do
+            self.db:insert(k, v)
         end
     end
 

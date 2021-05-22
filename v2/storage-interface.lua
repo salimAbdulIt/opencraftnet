@@ -118,7 +118,7 @@ while true do
             page = page + 1
             drawItems()
         elseif (isClicked(3, 23, 21, 25, x, y)) then
-            pushItems()
+            storageSystem:cleanOutputStorage()
             drawItems()
         elseif (isClicked(74, 3, 76, 2 + sizeOfPage, x, y)) then
             if (items_on_the_screen[y - 2]) then
