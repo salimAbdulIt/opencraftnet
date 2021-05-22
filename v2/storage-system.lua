@@ -221,6 +221,8 @@ function StorageSystem:new()
                         local count = item.maxSize - notFullSlots[j].size
                         self.transposers:transferItem("", 1, i, notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, count)
                         notFullSlots[j].size = notFullSlots[j].size + count
+                        notFullSlots[j].name = itemsFromDb[1].name
+                        notFullSlots[j].damage = itemsFromDb[1].damage
                         table.insert(items, notFullSlots[j])
                         item.size = item.size - count
                         if (item.size <= 0) then
