@@ -250,7 +250,7 @@ function StorageSystem:new()
 
         local itemsToSave = {}
         for i = 1, #items do
-            local id = getDbId(items[i].name, items[i].damage)
+            local id = self:getDbId(items[i].name, items[i].damage)
 
             local itemToSave = itemsToSave[id]
             if (itemToSave) then
