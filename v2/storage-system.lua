@@ -295,7 +295,7 @@ function StorageSystem:new()
     end
 
     function obj:craft(name, damage, requestedCount)
-        local craftedItem = self.db:select({ self:dbClause("ID", getDbId(name, damage), "=") })[1] --todo inline method and reuse previously selected data
+        local craftedItem = self.db:select({ self:dbClause("ID", self:getDbId(name, damage), "=") })[1] --todo inline method and reuse previously selected data
 
         if (not craftedItem) then
             say("I dont know this item" .. name .. ' ' .. damage)
@@ -313,7 +313,7 @@ function StorageSystem:new()
         local ok = true
 
         for itemId, nStacks in pairs(items) do
-            local item = self.db:select({ self:dbClause("ID", getDbId(itemId.name, itemId.damage)) })[1]
+            local item = self.db:select({ self:dbClause("ID", self:getDbId(itemId.name, itemId.damage)) })[1]
             if (not item) then
                 say("I dont know this item" .. itemId.name .. ' ' .. itemId.damage)
                 return false
