@@ -301,7 +301,6 @@ function StorageSystem:new()
             say("I dont know this item" .. name .. ' ' .. damage)
             return false
         end
-        deep = deep + 1
         local recipe = craftedItem.receipt
         if recipe == nil then
             say("I don't have receipt for " .. name .. ' ' .. damage)
@@ -335,7 +334,6 @@ function StorageSystem:new()
             else
             end
         end
-        deep = deep - 1
         return ok
     end
 
