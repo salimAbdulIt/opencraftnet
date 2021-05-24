@@ -191,7 +191,7 @@ function StorageSystem:new()
         local allStacksFromStorage = self.transposers:getAllStacks("", 1).getAll()
         for i = 1, 9 do
             local tempItem = allStacksFromStorage[i]
-            if (tempItem) then
+            if (tempItem and tempItem.name ~= "minecraft:air") then
                 receipt[i] = {}
                 receipt[i].name = tempItem.name
                 receipt[i].damage = tempItem.damage
