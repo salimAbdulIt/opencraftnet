@@ -180,7 +180,7 @@ while true do
                             drawItems()
                             break
                         else
-                            craft(id, damage, tonumber(str))
+                            storageSystem:craft(id, damage, tonumber(str))
                             drawItems()
                             break
                         end
