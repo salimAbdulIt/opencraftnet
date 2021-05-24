@@ -358,6 +358,7 @@ function StorageSystem:new()
                         notFullSlots[j].size = notFullSlots[j].size + count
                         notFullSlots[j].name = itemsFromDb[1].name
                         notFullSlots[j].damage = itemsFromDb[1].damage
+                        notFullSlots[j].maxSize = itemsFromDb[1].maxSize
                         table.insert(items, notFullSlots[j])
                         item.size = item.size - count
                         if (item.size <= 0) then
