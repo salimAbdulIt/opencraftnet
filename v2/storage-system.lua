@@ -313,7 +313,7 @@ function StorageSystem:new()
         local ok = true
 
         for itemId, nStacks in pairs(items) do
-            local item = self.db:select({ self:dbClause("ID", getDbId(itemId.name, itemId.damage) })[1]
+            local item = self.db:select({ self:dbClause("ID", getDbId(itemId.name, itemId.damage)) })[1]
             if (not item) then
                 say("I dont know this item" .. itemId.name .. ' ' .. itemId.damage)
                 return false
