@@ -294,7 +294,7 @@ function StorageSystem:new()
         return counts
     end
 
-    function:say(msg)
+    function obj:say(msg)
         print(msg)
         os.sleep(10)
     end
