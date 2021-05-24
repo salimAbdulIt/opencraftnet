@@ -246,6 +246,99 @@ function StorageSystem:new()
         return returnList
     end
 
+    function obj:craftItem(name, damage, inCount, maxSize, receipt)
+        local inStep = maxSize
+        while inCount > 0 do
+            local n = inStep
+            if inCount < n then
+                n = inCount
+            end
+            for i = 1, 9, 1 do
+                local itemId = receipt[i]
+                if itemId ~= nil then
+                    self.transposers:transferItem()
+                    local itemsFromDb = self.db:select({ self:dbClause("ID", itemID, "=") })
+                    local availableSlotsFromDb = self.db:select({ self:dbClause("ID", self.idOfAvailableSlot, "=") })
+                    transferItemTo(itemId.name, itemId.damage, n, robotAddress.address, robotAddress.outputSide, craftSlots[i])
+                end
+            end
+
+            tunnel.send(64)
+            os.sleep(1)
+            getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', 64, nil, 1)
+            pushItems(1, "0")
+
+            inCount = inCount - n
+        end
+        return true
+    end
+
+    function obj:countRecipeItems(recipe)
+        local counts = {}
+        for i = 1, 9 do
+            local id = recipe[i]
+            if id ~= nil then
+                local cnt
+                for k, v in pairs(counts) do
+                    if (id.name == k.name and id.damage == k.damage) then
+                        counts[k] = v + 1
+                        cnt = 1
+                        break
+                    end
+                end
+                if cnt == nil then
+                    counts[id] = 1
+                end
+            end
+        end
+        return counts
+    end
+
+    function obj:craft(name, damage, requestedCount)
+        local craftedItem = self.db:select({ self:dbClause("ID", getDbId(name, damage), "=") })[1] --todo inline method and reuse previously selected data
+
+        if (not craftedItem) then
+            say("I dont know this item" .. name .. ' ' .. damage)
+            return false
+        end
+        deep = deep + 1
+        local recipe = craftedItem.receipt
+        if recipe == nil then
+            say("I don't have receipt for " .. name .. ' ' .. damage)
+            return false
+        end
+        local items = self:countRecipeItems(recipe)
+        local n = math.ceil(requestedCount / recipe[0].count):: recount::
+        local maxSize = math.min(n, craftedItem.maxSize, math.floor(craftedItem.maxSize / recipe[0].count))
+        local ok = true
+
+        for itemId, nStacks in pairs(items) do
+            local item = self.db:select({ self:dbClause("ID", getDbId(itemId.name, itemId.damage) })[1]
+            if (not item) then
+                say("I dont know this item" .. itemId.name .. ' ' .. itemId.damage)
+                return false
+            end
+            local nedded = nStacks * n
+            local itemCount = item.count
+            if itemCount < nedded then
+                if not self:craft(item.name, item.damage, nedded - itemCount) then
+                    ok = false
+                    break
+                end
+                goto recount
+            end
+            maxSize = math.min(item.maxSize, maxSize)
+        end
+        if ok then
+            ok = self:craftItem(name, damage, n, maxSize, recipe)
+            if ok then
+            else
+            end
+        end
+        deep = deep - 1
+        return ok
+    end
+
     function obj:cleanOutputStorage()
         local availableSlotsFromDb = self.db:select({ self:dbClause("ID", self.idOfAvailableSlot, "=") })
         local availableSlots = self:getItemsFromRow(availableSlotsFromDb, nil)
