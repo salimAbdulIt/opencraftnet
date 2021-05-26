@@ -342,6 +342,7 @@ function StorageSystem:new()
             return
         end
         local items = {}
+        local caret = 1
         if (item.size < item.maxSize) then
             self.transposers:store(address, side, slot, component.database.address, 1)
             local itemsFromDb = self.db:select({ self:dbClause("ID", self:getDbId(item.name, item.damage), "=") })
