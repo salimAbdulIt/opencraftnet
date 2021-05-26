@@ -256,13 +256,13 @@ function StorageSystem:new()
             for i = 1, 9, 1 do
                 local itemId = receipt[i]
                 if itemId ~= nil then
-                    self:getItemTo(itemId.name, itemId.damage, n, robotAddress.address, robotAddress.outputSide, craftSlots[i])
+                    self:getItemTo(itemId.name, itemId.damage, n, self.robotAddress.address, self.robotAddress.outputSide, craftSlots[i])
                 end
             end
 
             tunnel.send(64)
             os.sleep(1)
-            self:moveItemIntoSystem(robotAddress.address, robotAddress.outputSide, craftSlots[0])
+            self:moveItemIntoSystem(self.robotAddress.address, self.robotAddress.outputSide, craftSlots[0])
 
             inCount = inCount - n
         end
@@ -437,37 +437,36 @@ function StorageSystem:new()
         local caret = 1
         local itemsFromStorage = self.transposers:getAllStacks("", 1).getAll()
         for i, item in pairs(itemsFromStorage) do
-            if (item.name == "minecraft:air") then
-                break
-            end
-            if (item.size < item.maxSize) then
-                self.transposers:store("", 1, i, component.database.address, 1)
-                local itemsFromDb = self.db:select({ self:dbClause("ID", self:getDbId(item.name, item.damage), "=") })
-                local notFullSlots = self:getNotFullSlots(itemsFromDb[1])
-                for j = 1, #notFullSlots do
-                    if (self.transposers:compareStackToDatabase(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, component.database.address, 1, true)) then
-                        local count = item.maxSize - notFullSlots[j].size
-                        self.transposers:transferItem("", 1, i, notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, count)
-                        notFullSlots[j].size = notFullSlots[j].size + count
-                        notFullSlots[j].name = itemsFromDb[1].name
-                        notFullSlots[j].damage = itemsFromDb[1].damage
-                        notFullSlots[j].maxSize = itemsFromDb[1].maxSize
-                        table.insert(items, notFullSlots[j])
-                        item.size = item.size - count
-                        if (item.size <= 0) then
-                            break
+            if (item.name ~= "minecraft:air") then
+                if (item.size < item.maxSize) then
+                    self.transposers:store("", 1, i, component.database.address, 1)
+                    local itemsFromDb = self.db:select({ self:dbClause("ID", self:getDbId(item.name, item.damage), "=") })
+                    local notFullSlots = self:getNotFullSlots(itemsFromDb[1])
+                    for j = 1, #notFullSlots do
+                        if (self.transposers:compareStackToDatabase(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, component.database.address, 1, true)) then
+                            local count = item.maxSize - notFullSlots[j].size
+                            self.transposers:transferItem("", 1, i, notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, count)
+                            notFullSlots[j].size = notFullSlots[j].size + count
+                            notFullSlots[j].name = itemsFromDb[1].name
+                            notFullSlots[j].damage = itemsFromDb[1].damage
+                            notFullSlots[j].maxSize = itemsFromDb[1].maxSize
+                            table.insert(items, notFullSlots[j])
+                            item.size = item.size - count
+                            if (item.size <= 0) then
+                                break
+                            end
                         end
                     end
                 end
-            end
-            if item.size > 0 then
-                local availableSlot = availableSlots[caret]
-                caret = caret + 1
-                self.transposers:transferItem("", 1, i, availableSlot.storage, availableSlot.side, availableSlot.slot, item.size)
-                item.storage = availableSlot.storage
-                item.side = availableSlot.side
-                item.slot = availableSlot.slot
-                table.insert(items, item)
+                if item.size > 0 then
+                    local availableSlot = availableSlots[caret]
+                    caret = caret + 1
+                    self.transposers:transferItem("", 1, i, availableSlot.storage, availableSlot.side, availableSlot.slot, item.size)
+                    item.storage = availableSlot.storage
+                    item.side = availableSlot.side
+                    item.slot = availableSlot.slot
+                    table.insert(items, item)
+                end
             end
         end
 
