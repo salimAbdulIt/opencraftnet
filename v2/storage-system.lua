@@ -341,6 +341,7 @@ function StorageSystem:new()
         if (item.name == "minecraft:air") then
             return
         end
+        local items = {}
         if (item.size < item.maxSize) then
             self.transposers:store(address, side, slot, component.database.address, 1)
             local itemsFromDb = self.db:select({ self:dbClause("ID", self:getDbId(item.name, item.damage), "=") })
