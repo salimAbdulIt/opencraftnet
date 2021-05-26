@@ -252,13 +252,13 @@ function StorageSystem:new()
             for i = 1, 9, 1 do
                 local itemId = receipt[i]
                 if itemId ~= nil then
-                    self:getItemTo(itemId.name, itemId.damage, n, self.robotAddress.address, self.robotAddress.outputSide, self.craftSlots[i])
+                    self:getItemTo(itemId.name, itemId.damage, n, self.robotAddress.address, self.robotAddress.side, self.craftSlots[i])
                 end
             end
 
             tunnel.send(64)
             os.sleep(1)
-            self:moveItemIntoSystem(self.robotAddress.address, self.robotAddress.outputSide, self.craftSlots[0])
+            self:moveItemIntoSystem(self.robotAddress.address, self.robotAddress.side, self.craftSlots[0])
 
             inCount = inCount - n
         end
