@@ -256,7 +256,7 @@ function StorageSystem:new()
                 end
             end
 
-            tunnel.send(64)
+            component.tunnel.send(64)
             os.sleep(1)
             self:moveItemIntoSystem(self.robotAddress.address, self.robotAddress.side, self.craftSlots[0])
 
