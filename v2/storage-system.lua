@@ -351,7 +351,7 @@ function StorageSystem:new()
                  if (self.transposers:compareStackToDatabase(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, component.database.address, 1, true)) then
                      local count = item.maxSize - notFullSlots[j].size
                      self.transposers:transferItem(address, side, slot, notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, count)
-                     notFullSlots[j].size = notFullSlots[j].size + count
+                     notFullSlots[j].size = notFullSlots[j].size + math.min(count, item.size)
                      notFullSlots[j].name = itemsFromDb[1].name
                      notFullSlots[j].damage = itemsFromDb[1].damage
                      notFullSlots[j].maxSize = itemsFromDb[1].maxSize
