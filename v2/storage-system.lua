@@ -343,7 +343,7 @@ function StorageSystem:new()
         local availableSlots = self:getItemsFromRow(availableSlotsFromDb, nil)
         local item = self.transposers:getStackInSlot(address, side, slot)
         if (item.name == "minecraft:air") then
-            break
+            return
         end
         if (item.size < item.maxSize) then
             self.transposers:store(address, side, slot, component.database.address, 1)
@@ -351,17 +351,18 @@ function StorageSystem:new()
             local notFullSlots = self:getNotFullSlots(itemsFromDb[1])
             for j = 1, #notFullSlots do
                  if (self.transposers:compareStackToDatabase(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, component.database.address, 1, true)) then
-                 local count = item.maxSize - notFullSlots[j].size
-                 self.transposers:transferItem(address, side, slot, notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, count)
-                 notFullSlots[j].size = notFullSlots[j].size + count
-                 notFullSlots[j].name = itemsFromDb[1].name
-                 notFullSlots[j].damage = itemsFromDb[1].damage
-                 notFullSlots[j].maxSize = itemsFromDb[1].maxSize
-                 table.insert(items, notFullSlots[j])
-                 item.size = item.size - count
-                 if (item.size <= 0) then
-                    break
-                 end
+                     local count = item.maxSize - notFullSlots[j].size
+                     self.transposers:transferItem(address, side, slot, notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, count)
+                     notFullSlots[j].size = notFullSlots[j].size + count
+                     notFullSlots[j].name = itemsFromDb[1].name
+                     notFullSlots[j].damage = itemsFromDb[1].damage
+                     notFullSlots[j].maxSize = itemsFromDb[1].maxSize
+                     table.insert(items, notFullSlots[j])
+                     item.size = item.size - count
+                     if (item.size <= 0) then
+                        break
+                     end
+                end
             end
         end
         if item.size > 0 then
