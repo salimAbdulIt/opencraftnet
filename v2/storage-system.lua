@@ -92,7 +92,7 @@ function StorageSystem:new()
         return availableSlots
     end
 
-    function obj:getItem(id, damage, count, stopLevel)
+    function obj:getItemTo(id, damage, count, addressTo, sideTo, slotTo)
         local itemID = self:getDbId(id, damage)
         local itemsFromDb = self.db:select({ self:dbClause("ID", itemID, "=") })
         local availableSlotsFromDb = self.db:select({ self:dbClause("ID", self.idOfAvailableSlot, "=") })
@@ -106,7 +106,7 @@ function StorageSystem:new()
         end
         for i = 1, #slots do
             local slot = slots[i]
-            self.transposers:transferItem(slot.storage, slot.side, slot.slot, "", 1, nil, slot.size)
+            self.transposers:transferItem(slot.storage, slot.side, slot.slot, addressTo, sideTo, slotTo, slot.size)
             local oldCountOfItems = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size
             itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size = itemsFromDb[1].itemXdata[slot.storage][slot.side][slot.slot].size - slot.size
             itemsFromDb[1].count = itemsFromDb[1].count - slot.size
@@ -125,6 +125,10 @@ function StorageSystem:new()
         end
         self.db:insert(self:getDbId(id, damage), itemsFromDb[1])
         self.db:insert(self.idOfAvailableSlot, availableSlotsFromDb[1])
+    end
+
+    function obj:getItem(id, damage, count)
+        getItemTo(id, damage, count, "", 1, nil)
     end
 
     function obj:sinkItemsWithStorages() -- todo scan one by one (I mean one chest per once)
@@ -247,26 +251,18 @@ function StorageSystem:new()
     end
 
     function obj:craftItem(name, damage, inCount, maxSize, receipt)
-        local inStep = maxSize
         while inCount > 0 do
-            local n = inStep
-            if inCount < n then
-                n = inCount
-            end
+            n = math.min(inCount, maxSize)
             for i = 1, 9, 1 do
                 local itemId = receipt[i]
                 if itemId ~= nil then
-                    self.transposers:transferItem()
-                    local itemsFromDb = self.db:select({ self:dbClause("ID", itemID, "=") })
-                    local availableSlotsFromDb = self.db:select({ self:dbClause("ID", self.idOfAvailableSlot, "=") })
-                    transferItemTo(itemId.name, itemId.damage, n, robotAddress.address, robotAddress.outputSide, craftSlots[i])
+                    self:getItemTo(itemId.name, itemId.damage, n, robotAddress.address, robotAddress.outputSide, craftSlots[i])
                 end
             end
 
             tunnel.send(64)
             os.sleep(1)
-            getItemFromStorage(robotAddress.address, robotAddress.outputSide, craftSlots[0], 'robot', 64, nil, 1)
-            pushItems(1, "0")
+            self:moveItemIntoSystem(robotAddress.address, robotAddress.outputSide, craftSlots[0])
 
             inCount = inCount - n
         end
@@ -340,6 +336,97 @@ function StorageSystem:new()
             end
         end
         return ok
+    end
+
+    function obj:moveItemIntoSystem(address, side, slot) -- todo remove duplicate code
+        local availableSlotsFromDb = self.db:select({ self:dbClause("ID", self.idOfAvailableSlot, "=") })
+        local availableSlots = self:getItemsFromRow(availableSlotsFromDb, nil)
+        local item = self.transposers:getStackInSlot(address, side, slot)
+        if (item.name == "minecraft:air") then
+            break
+        end
+        if (item.size < item.maxSize) then
+            self.transposers:store(address, side, slot, component.database.address, 1)
+            local itemsFromDb = self.db:select({ self:dbClause("ID", self:getDbId(item.name, item.damage), "=") })
+            local notFullSlots = self:getNotFullSlots(itemsFromDb[1])
+            for j = 1, #notFullSlots do
+                 if (self.transposers:compareStackToDatabase(notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, component.database.address, 1, true)) then
+                 local count = item.maxSize - notFullSlots[j].size
+                 self.transposers:transferItem(address, side, slot, notFullSlots[j].storage, notFullSlots[j].side, notFullSlots[j].slot, count)
+                 notFullSlots[j].size = notFullSlots[j].size + count
+                 notFullSlots[j].name = itemsFromDb[1].name
+                 notFullSlots[j].damage = itemsFromDb[1].damage
+                 notFullSlots[j].maxSize = itemsFromDb[1].maxSize
+                 table.insert(items, notFullSlots[j])
+                 item.size = item.size - count
+                 if (item.size <= 0) then
+                    break
+                 end
+            end
+        end
+        if item.size > 0 then
+            local availableSlot = availableSlots[caret]
+            caret = caret + 1
+            self.transposers:transferItem(address, side, slot, availableSlot.storage, availableSlot.side, availableSlot.slot, item.size)
+            item.storage = availableSlot.storage
+            item.side = availableSlot.side
+            item.slot = availableSlot.slot
+            table.insert(items, item)
+        end
+
+
+        for i = 1, caret - 1 do
+            availableSlotsFromDb[1].itemXdata[availableSlots[i].storage][availableSlots[i].side][availableSlots[i].slot] = nil
+        end
+        self.db:insert(self.idOfAvailableSlot, availableSlotsFromDb[1])
+
+        local itemsToSave = {}
+        for i = 1, #items do
+            local id = self:getDbId(items[i].name, items[i].damage)
+
+            local itemToSave = itemsToSave[id]
+            if (itemToSave) then
+                local countToIncrease = items[i].size
+                if (not itemToSave.itemXdata[items[i].storage]) then itemToSave.itemXdata[items[i].storage] = {} end
+                if (not itemToSave.itemXdata[items[i].storage][items[i].side]) then itemToSave.itemXdata[items[i].storage][items[i].side] = {} end
+                if (not itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot]) then
+                    itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot] = {}
+                else
+                    countToIncrease = countToIncrease - itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot].size
+                end
+                itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot].size = items[i].size
+                itemToSave.count = itemToSave.count + countToIncrease
+            else
+                itemToSave = self.db:select({ self:dbClause("ID", id, "=") })[1]
+                local countToIncrease = items[i].size
+                if (not itemToSave) then
+                    itemToSave = {}
+                    itemToSave.count = 0
+                end
+                if (not itemToSave.itemXdata) then itemToSave.itemXdata = {} end
+                if (not itemToSave.itemXdata[items[i].storage]) then itemToSave.itemXdata[items[i].storage] = {} end
+                if (not itemToSave.itemXdata[items[i].storage][items[i].side]) then itemToSave.itemXdata[items[i].storage][items[i].side] = {} end
+                if (not itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot]) then
+                    itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot] = {}
+                else
+                    countToIncrease = countToIncrease - itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot].size
+                end
+
+                itemToSave.itemXdata[items[i].storage][items[i].side][items[i].slot].size = items[i].size
+                itemToSave.name = items[i].name
+                itemToSave.damage = items[i].damage
+                if (not itemToSave.label) then
+                    itemToSave.label = items[i].label
+                end
+                itemToSave.maxSize = items[i].maxSize
+                itemToSave.count = itemToSave.count + countToIncrease
+                itemsToSave[id] = itemToSave
+            end
+        end
+
+        for k, v in pairs(itemsToSave) do
+            self.db:insert(k, v)
+        end
     end
 
     function obj:cleanOutputStorage()
