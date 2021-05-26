@@ -100,10 +100,6 @@ function StorageSystem:new()
         if not slots then
             return
         end
-        local availableSlots = self:getAvailableSlotsOfInputOutput()
-        if (#slots > #availableSlots) then
-            error("Not enough space") --todo add notification allert
-        end
         for i = 1, #slots do
             local slot = slots[i]
             self.transposers:transferItem(slot.storage, slot.side, slot.slot, addressTo, sideTo, slotTo, slot.size)
@@ -128,7 +124,7 @@ function StorageSystem:new()
     end
 
     function obj:getItem(id, damage, count)
-        getItemTo(id, damage, count, "", 1, nil)
+        self:getItemTo(id, damage, count, "", 1, nil)
     end
 
     function obj:sinkItemsWithStorages() -- todo scan one by one (I mean one chest per once)
