@@ -40,6 +40,10 @@ local libs = {
         path = "/lib/unit.lua"
     },
     {
+        url = REPOSITORY .. "/v2/libs/debugUtils.lua",
+        path = "/lib/debugUtils.lua"
+    },
+    {
         url = REPOSITORY .. "/v2/transposers.lua",
         path = "/lib/transposers.lua"
     }
