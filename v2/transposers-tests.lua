@@ -2,7 +2,7 @@ local fs = require('filesystem')
 local shell = require('shell')
 local unit = require('unit')
 local utils = require('utils')
-local debugUtils = require('utils')
+local debugUtils = require('debugUtils')
 local component = require('component')
 local debug = component.debug
 require('transposers')
