@@ -25,7 +25,7 @@ local chests = {
 }
 local function init()
     local world = debug.getWorld(0)
-    for i, chest in pairs(chests)
+    for i, chest in pairs(chests) do
         world.setBlock(chest.x + interfaceCoords.x, chest.y + interfaceCoords.y, chest.z + interfaceCoords.z, chestName, chestDmg)
     end
 end
