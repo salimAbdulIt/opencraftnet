@@ -32,6 +32,10 @@ local libs = {
         path = "/home/storage-interface.lua"
     },
     {
+        url = REPOSITORY .. "/v2/transposers-tests.lua",
+        path = "/home/transposers-tests.lua"
+    },
+    {
         url = REPOSITORY .. "/v2/transposers.lua",
         path = "/lib/transposers.lua"
     }
