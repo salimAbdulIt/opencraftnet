@@ -21,7 +21,7 @@ local chests = {
    {"x": -1,"y":-3,"z":0},
    {"x": 3,"y":-3,"z":0},
    {"x": -3,"y":-3,"z":0},
-   {"x": 2,"y":-2,"z":0},
+   {"x": 2,"y":-2,"z":0}
 }
 local function init()
     local world = debug.getWorld(0)
