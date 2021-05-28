@@ -47,11 +47,19 @@ end
 
 function Tests:customizeStorages()
     -- init
-    debugUtils.insertItem(interfaceCoords.x, interfaceCoords.y, interfaceCoords.z, 1, "minecraft:diamond", 0, nil , 1)
+    debugUtils.insertItem(interfaceCoords.x, interfaceCoords.y, interfaceCoords.z, 1, "minecraft:diamond", 0, '{display:{Name:"Durex77"}}' , 1)
     -- execute
-
+    transposers:customizeStorages()
     -- assert
-
+    local allTransposers = transposers:getAllTransposers()
+    for i, transposerConfig in pairs(transposers)
+        local componentAddress = debugUtils.getOCComponentAddress(transposerConfig.x, transposerConfig.y, transposerConfig.z)
+        unit.assertValue(componentAddress, allTransposers[transposerConfig.address].transposer.address)
+    end
 end
 
 init()
+
+unit.runTests(Tests, beforeTest)
+
+
