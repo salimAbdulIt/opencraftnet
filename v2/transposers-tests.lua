@@ -51,7 +51,7 @@ function Tests:customizeStorages()
     -- execute
     transposers:customizeStorages()
     -- assert
-    unit.assertValue("minecraft:diamond", debugUtils.getItem(ic.x, ic.y, ic.z, 0).id)
+    unit.assertValue("minecraft:diamond", debugUtils.getItem(ic.x, ic.y, ic.z, 1).id)
     debugUtils.removeItem(ic.x, ic.y, ic.z, 0)
     local allTransposers = transposers:getAllTransposers()
     for i, tc in pairs(transposersConfig) do
