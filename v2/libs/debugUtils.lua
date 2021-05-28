@@ -27,7 +27,7 @@ utils.getItem = function(x, y, z, slot)
     if nbt.value['Items'] then
         local inventory = nbt.value['Items'].value
         for num, item in ipairs(inventory) do
-            if item.value.Slot.value == slot then
+            if item.value.Slot.value == slot-1 then
                 local itemToReturn = {}
                 for k,v in pairs(item.value) do
                     itemToReturn[k] = v.value
