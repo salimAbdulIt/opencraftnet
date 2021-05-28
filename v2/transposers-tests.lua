@@ -53,7 +53,7 @@ function Tests:customizeStorages()
     -- assert
     local allTransposers = transposers:getAllTransposers()
     for i, transposerConfig in pairs(transposersConfig) do
-        local componentAddress = debugUtils.getOCComponentAddress(transposerConfig.x, transposerConfig.y, transposerConfig.z)
+        local componentAddress = debugUtils.getOCComponentAddress(transposerConfig.x + interfaceCoords.x, transposerConfig.y + interfaceCoords.y, transposerConfig.z + interfaceCoords.z)
         unit.assertValue(componentAddress, allTransposers[transposerConfig.address].transposer.address)
     end
 end
