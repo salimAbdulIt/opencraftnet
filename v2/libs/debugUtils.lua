@@ -9,7 +9,17 @@ utils.setBlock = function(x, y, z, id, dmg)
 end
 
 utils.insertItem = function(x, y, z, slot, id, dmg, nbt, count)
+    for i=1,slot-1 do
+        world.insertItem(id, 64, dmg, nbt, x, y, z, 1)
+    end
     world.insertItem(id, count, dmg, nbt, x, y, z, 1)
+    for i=1,slot-1 do
+        world.removeItem(x, y, z, i-1)
+    end
+end
+
+utils.removeItem = function(x, y, z, slot)
+    world.removeItem(x, y, z, slot)
 end
 
 utils.getItem = function(x, y, z, slot)
@@ -18,7 +28,11 @@ utils.getItem = function(x, y, z, slot)
         local inventory = nbt.value['Items'].value
         for num, item in ipairs(inventory) do
             if item.value.Slot.value == slot then
-                return item
+                local itemToReturn = {}
+                for k,v in pairs(item.value) do
+                    itemToReturn[k] = v.value
+                end
+                return itemToReturn
             end
         end
     end

@@ -10,7 +10,7 @@ require('transposers')
 local transposers = Transposers:new()
 local Tests = {}
 
-local interfaceCoords = {["x"]=558, ["y"]=7, ["z"]=624}
+local ic = {["x"]=558, ["y"]=7, ["z"]=624}
 local chestName = "minecraft:chest"
 local chestDmg = 0
 local transposerName = "opencomputers:transposer"
@@ -38,23 +38,37 @@ local transposersConfig = {
 
 local function init()
     for i, chest in pairs(chests) do
-        debugUtils.setBlock(chest.x + interfaceCoords.x, chest.y + interfaceCoords.y, chest.z + interfaceCoords.z, chestName, chestDmg)
+        debugUtils.setBlock(chest.x + ic.x, chest.y + ic.y, chest.z + ic.z, chestName, chestDmg)
     end
     for i, transposer in pairs(transposersConfig) do
-        debugUtils.setBlock(transposer.x + interfaceCoords.x, transposer.y + interfaceCoords.y, transposer.z + interfaceCoords.z, transposerName, transposerDmg)
+        debugUtils.setBlock(transposer.x + ic.x, transposer.y + ic.y, transposer.z + ic.z, transposerName, transposerDmg)
     end
 end
 
 function Tests:customizeStorages()
     -- init
-    debugUtils.insertItem(interfaceCoords.x, interfaceCoords.y, interfaceCoords.z, 1, "minecraft:diamond", 0, '{display:{Name:"Durex77"}}' , 1)
+    debugUtils.insertItem(ic.x, ic.y, ic.z, 1, "minecraft:diamond", 0, '{display:{Name:"Durex77"}}' , 1)
     -- execute
     transposers:customizeStorages()
     -- assert
+    unit.assertValue("minecraft:diamond", debugUtils.getItem(ic.x, ic.y, ic.z, 0).id
+    debugUtils.removeItem(ic.x, ic.y, ic.z, 0)
     local allTransposers = transposers:getAllTransposers()
-    for i, transposerConfig in pairs(transposersConfig) do
-        local componentAddress = debugUtils.getOCComponentAddress(transposerConfig.x + interfaceCoords.x, transposerConfig.y + interfaceCoords.y, transposerConfig.z + interfaceCoords.z)
-        unit.assertValue(componentAddress, allTransposers[transposerConfig.address].transposer.address)
+    for i, tc in pairs(transposersConfig) do
+        local componentAddress = debugUtils.getOCComponentAddress(tc.x + ic.x, tc.y + ic.y, tc.z + ic.z)
+        unit.assertValue(componentAddress, allTransposers[tc.address].transposer.address)
+    end
+
+    local allStorages = transposers:getAllStorages()
+    for i, cc in pairs(chests) do
+        local key = {}
+        key.address = cc.address
+        key.side = cc.side
+        unit.assertValue("minecraft:chest", allStorages[key].name)
+
+--         debugUtils.insertItem(ic.x + cc.x, ic.y + cc.y, ic.z + cc.z, 1, "minecraft:diamond", 0, nil , 1)
+--         unit.assertValue("minecraft:diamond", allTransposers[tc.address].transposer.address)
+--         debugUtils.removeItem(ic.x + cc.x, ic.y + cc.y, ic.z + cc.z, 1)
     end
 end
 
