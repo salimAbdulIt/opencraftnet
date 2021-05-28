@@ -52,7 +52,7 @@ function Tests:customizeStorages()
     transposers:customizeStorages()
     -- assert
     unit.assertValue("minecraft:diamond", debugUtils.getItem(ic.x, ic.y, ic.z, 1).id)
-    debugUtils.removeItem(ic.x, ic.y, ic.z, 0)
+    debugUtils.removeItem(ic.x, ic.y, ic.z, 1)
     local allTransposers = transposers:getAllTransposers()
     for i, tc in pairs(transposersConfig) do
         local componentAddress = debugUtils.getOCComponentAddress(tc.x + ic.x, tc.y + ic.y, tc.z + ic.z)
