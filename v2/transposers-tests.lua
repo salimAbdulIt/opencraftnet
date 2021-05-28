@@ -66,7 +66,7 @@ function Tests:customizeStorages()
     for key, chest in pairs(allStorages) do
         local chestInConfig = false
         for i, cc in pairs(chests) do
-            if (cc.address == key.address && cc.side == key.side) then
+            if (cc.address == key.address and cc.side == key.side) then
                 unit.assertValue("minecraft:chest", chest.name)
                 chestInConfig = true
             end
