@@ -28,7 +28,7 @@ local chests = {
    {["x"]=-2,["y"]=-2,["z"]=0, ["address"]="04",["side"]=1}
 }
 
-local transposers = {
+local transposersConfig = {
    {["x"]=0, ["y"]=-1,["z"]=0,["address"]=""   },
    {["x"]=0, ["y"]=-3,["z"]=0,["address"]="0"  },
    {["x"]=2, ["y"]=-3,["z"]=0,["address"]="05" },
@@ -40,7 +40,7 @@ local function init()
     for i, chest in pairs(chests) do
         debugUtils.setBlock(chest.x + interfaceCoords.x, chest.y + interfaceCoords.y, chest.z + interfaceCoords.z, chestName, chestDmg)
     end
-    for i, transposer in pairs(transposers) do
+    for i, transposer in pairs(transposersConfig) do
         debugUtils.setBlock(transposer.x + interfaceCoords.x, transposer.y + interfaceCoords.y, transposer.z + interfaceCoords.z, transposerName, transposerDmg)
     end
 end
@@ -52,7 +52,7 @@ function Tests:customizeStorages()
     transposers:customizeStorages()
     -- assert
     local allTransposers = transposers:getAllTransposers()
-    for i, transposerConfig in pairs(transposers) do
+    for i, transposerConfig in pairs(transposersConfig) do
         local componentAddress = debugUtils.getOCComponentAddress(transposerConfig.x, transposerConfig.y, transposerConfig.z)
         unit.assertValue(componentAddress, allTransposers[transposerConfig.address].transposer.address)
     end
