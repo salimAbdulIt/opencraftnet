@@ -62,7 +62,7 @@ function Tests:customizeStorages()
     local allStorages = transposers:getAllStorages()
     local countOfChests = 0
     for k, v in pairs(allStorages) do countOfChests = countOfChests + 1 end
-    unit.assertValue(countOfChests, #chests)
+    unit.assertValue(#chests, countOfChests)
     for i, cc in pairs(chests) do
         local key = {}
         key.address = cc.address
