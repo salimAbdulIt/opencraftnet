@@ -25,6 +25,16 @@ function Transposers:new()
         for k, v in pairs(component.list('transposer')) do
             self.tempTransposers[k] = component.proxy(k)
         end
+        local address1 = {}
+        address1.address = ""
+        address1.side = 1
+        self.storageAddresses[address1] = {}
+        self.storageAddresses[address1].address = ""
+        self.storageAddresses[address1].outputSide = 1
+        self.storageAddresses[address1].inputSide = 0
+        self.storageAddresses[address1].isUsedInTransfers = false
+        self.storageAddresses[address1].name = self.transposerAddresses[""].transposer.getInventoryName(1)
+        self.storageAddresses[address1].size = self.transposerAddresses[""].transposer.getInventorySize(outputSide)
         self:customizeStoragesRec("", -1)
     end
 
