@@ -48,7 +48,7 @@ function Transposers:new()
                         self.storageAddresses[address1].inputSide = 0
                         self.storageAddresses[address1].isUsedInTransfers = false
                         self.storageAddresses[address1].name = self.transposerAddresses[""].transposer.getInventoryName(1)
-                        self.storageAddresses[address1].size = self.transposerAddresses[""].transposer.getInventorySize(outputSide)
+                        self.storageAddresses[address1].size = self.transposerAddresses[""].transposer.getInventorySize(1)
                     end
                     for outputSide = 0, 5 do
                         if (inputSide ~= outputSide) then
