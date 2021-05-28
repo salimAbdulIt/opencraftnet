@@ -63,11 +63,15 @@ function Tests:customizeStorages()
     local countOfChests = 0
     for k, v in pairs(allStorages) do countOfChests = countOfChests + 1 end
     unit.assertValue(#chests, countOfChests)
-    for i, cc in pairs(chests) do
-        local key = {}
-        key.address = cc.address
-        key.side = cc.side
-        unit.assertValue("minecraft:chest", allStorages[key].name)
+    for key, chest in pairs(allStorages) do
+        local chestInConfig = false
+        for i, cc in pairs(chests) do
+            if (cc.address == key.address && cc.side == key.side) then
+                unit.assertValue("minecraft:chest", chest.name)
+                chestInConfig = true
+            end
+        end
+        unit.assertTrue(chestInConfig)
 
 --         debugUtils.insertItem(ic.x + cc.x, ic.y + cc.y, ic.z + cc.z, 1, "minecraft:diamond", 0, nil , 1)
 --         unit.assertValue("minecraft:diamond", allTransposers[tc.address].transposer.address)
