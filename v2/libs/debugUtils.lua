@@ -14,7 +14,7 @@ utils.insertItem = function(x, y, z, slot, id, dmg, nbt, count)
     end
     world.insertItem(id, count, dmg, nbt, x, y, z, 1)
     for i=1,slot-1 do
-        world.removeItem(x, y, z, i-1)
+        world.removeItem(x, y, z, i)
     end
 end
 
