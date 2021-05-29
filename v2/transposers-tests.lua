@@ -72,13 +72,19 @@ function Tests:customizeStorages()
             end
         end
         unit.assertTrue(chestInConfig)
-
 --         debugUtils.insertItem(ic.x + cc.x, ic.y + cc.y, ic.z + cc.z, 1, "minecraft:diamond", 0, nil , 1)
 --         unit.assertValue("minecraft:diamond", allTransposers[tc.address].transposer.address)
 --         debugUtils.removeItem(ic.x + cc.x, ic.y + cc.y, ic.z + cc.z, 1)
     end
 end
 
+function initTransposers()
+
+end
+
+function Tests:transferItem()
+    initTransposers()
+end
 init()
 
 unit.runTests(Tests, beforeTest)
