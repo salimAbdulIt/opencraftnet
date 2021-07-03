@@ -79,11 +79,28 @@ function Tests:customizeStorages()
 end
 
 function initTransposers()
-
+    transposers.transposerAddresses = {["041"]={inputSide=0},[""]={inputSide=1},["04"]={inputSide=5},["0"]={inputSide=1},["05"]={inputSide=4}}
+    for i,tc in pairs(transposersConfig)
+        transposers.transposerAddresses[tc.address].transposer = component.proxy(debugUtils.getOCComponentAddress(tc.x + ic.x, tc.y + ic.y, tc.z + ic.z)
+    end
+    transposers.storageAddresses = {[{address="04",side=1}]={isUsedInTransfers=false,outputSide=1,size=27.0,name="minecraft:chest",address="04",inputSide=5},[{address="04",side=4}]={isUsedInTransfers=false,outputSide=4,size=27.0,name="minecraft:chest",address="04",inputSide=5},[{address="",side=1}]={isUsedInTransfers=false,outputSide=1,size=27.0,name="minecraft:chest",address="",inputSide=0},[{address="",side=0}]={isUsedInTransfers=true,outputSide=0,size=27.0,name="minecraft:chest",address="",inputSide=1},[{address="0",side=4}]={isUsedInTransfers=true,outputSide=4,size=27.0,name="minecraft:chest",address="0",inputSide=1},[{address="05",side=1}]={isUsedInTransfers=false,outputSide=1,size=27.0,name="minecraft:chest",address="05",inputSide=4},[{address="05",side=5}]={isUsedInTransfers=false,outputSide=5,size=27.0,name="minecraft:chest",address="05",inputSide=4},[{address="",side=5}]={isUsedInTransfers=false,outputSide=5,size=27.0,name="minecraft:chest",address="",inputSide=1},[{address="0",side=5}]={isUsedInTransfers=true,outputSide=5,size=27.0,name="minecraft:chest",address="0",inputSide=1}}
 end
 
 function Tests:transferItem()
+    -- init
     initTransposers()
+    for i, cc in pairs(chests) do
+
+--             unit.assertTrue(chestInConfig)
+        debugUtils.insertItem(ic.x + cc.x, ic.y + cc.y, ic.z + cc.z, 2, "minecraft:diamond", 0, nil , 2)
+        unit.assertValue("minecraft:diamond", debugUtils.getItem(ic.x + cc.x, ic.y + cc.y, ic.z + cc.z, 2).id)
+        transposers:transferItem()
+        --         debugUtils.removeItem(ic.x + cc.x, ic.y + cc.y, ic.z + cc.z, 1)
+        end
+    debugUtils.insertItem(ic.x, ic.y, ic.z, 1, "minecraft:diamond", 0, '{display:{Name:"Durex77"}}' , 1)
+
+    -- assert
+
 end
 init()
 
