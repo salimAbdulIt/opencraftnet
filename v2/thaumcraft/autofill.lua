@@ -7,7 +7,7 @@ require('transposers')
 
 local utils = require('utils')
 local Lists = require('lists')
-StorageSystem = {}
+ThaumAutofill = {}
 
 function ThaumAutofill:new()
     local obj = {}
