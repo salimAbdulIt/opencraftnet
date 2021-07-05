@@ -36,6 +36,7 @@ function ThaumAutofill:new()
         for i, item in pairs(items) do
             local itemsFromChest = groupedItems[item["name"] .. ':' .. item["damage"]]
             for j=1,item["count"] do
+                print(j,item["count"])
                 self.transposers:transferItem("", 1, itemsFromChest[1].index, self.pedestals[pedestalsIndex].address, self.pedestals[pedestalsIndex].outputSide, 1, 1)
                 pedestalsIndex = pedestalsIndex + 1
                 itemsFromChest[1].size = itemsFromChest[1].size - 1
@@ -74,4 +75,4 @@ local coal = {}
 coal.name = 'minecraft:coal'
 coal.damage = 0
 coal.count = 10
-autofill:fill({diamond})
+autofill:fill({diamond, coal})
