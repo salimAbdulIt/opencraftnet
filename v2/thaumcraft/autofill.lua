@@ -25,7 +25,7 @@ function ThaumAutofill:new()
             local key = item["name"] .. ':' .. item["damage"]
             local itemFromChest = groupedItems[key]
 
-            if (not itemFromChest or itemFromChest.size < item.count) then
+            if (not itemFromChest[i] or itemFromChest[i].size < item.count) then
                 error("dont have item")
             end
         end
