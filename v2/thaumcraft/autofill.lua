@@ -15,7 +15,7 @@ function ThaumAutofill:new()
     function obj:isItemsInStorage(storage, items)
         local combinedItems = {}
         for item in (items) do
-            combinedItems
+            --combinedItems
         end
     end
 
