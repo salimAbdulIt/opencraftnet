@@ -66,6 +66,7 @@ function ThaumAutofill:new()
 end
 
 local autofill = ThaumAutofill:new()
+local diamond = {}
 diamond.name = 'minecraft:diamond'
 diamond.damage = 0
 diamond.count = 1
