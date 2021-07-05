@@ -35,7 +35,11 @@ function ThaumAutofill:new()
         for i, item in pairs(items) do
             local itemsFromChest = groupedItems[item["name"] .. ':' .. item["damage"]]
             for j=1,item["count"] do
-                self.transposers:transferItem("", 1, itemsFromChest[j].index, self.pedestals[i].address, self.pedestals[i].outputSide, 1)
+                self.transposers:transferItem("", 1, itemsFromChest[j].index, self.pedestals[i].address, self.pedestals[i].outputSide, 1, 1)
+                itemsFromChest[1].count = itemsFromChest[1].count - 1
+                if (itemsFromChest[1].count == 0) then
+                    table.remove(itemsFromChest,1)
+                end
             end
         end
     end
@@ -62,5 +66,10 @@ local autofill = ThaumAutofill:new()
 local diamond = {}
 diamond.name = 'minecraft:diamond'
 diamond.damage = 0
-diamond.count = 1
+diamond.count = 5
+
+local coal = {}
+coal.name = 'minecraft:coal'
+coal.damage = 0
+coal.count = 10
 autofill:fill({diamond})
