@@ -52,7 +52,7 @@ function ThaumAutofill:new()
         local groupedItems = ListStream
             :new(itemsInStorage)
             :map(function(element, index) { if (element) then element.index = index end return element end })
-            :filter(function(element) return (element))
+            :filter(function(element) return (element) end)
             :groupBy(function(element) return element["name"] .. ':' .. element["damage"], element end)
 
         self:checkIfResourcesAvailable(items, groupedItems)
