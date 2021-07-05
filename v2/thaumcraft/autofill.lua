@@ -21,7 +21,7 @@ function ThaumAutofill:new()
     end
 
     function obj:checkIfResourcesAvailable(items, groupedItems)
-        for item,i in pairs (items) do
+        for i, item in pairs (items) do
             local key = item["name"] .. ':' .. item["damage"]
             local itemFromChest = groupedItems[key]
 
@@ -32,7 +32,7 @@ function ThaumAutofill:new()
     end
 
     function obj:pushItems(items, groupedItems)
-        for item, i in pairs(items) do
+        for i, item in pairs(items) do
             local itemsFromChest = groupedItems[item["name"] .. ':' .. item["damage"]]
             for j=1,item["count"] do
                 self.transposers:transferItem("", 1, itemFromChest[j].index, self.pedestals[i].address, self.pedestals[i].outputSide, 1)
