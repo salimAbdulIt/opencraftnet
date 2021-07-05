@@ -51,7 +51,7 @@ function ThaumAutofill:new()
         local itemsInStorage = self.transposers:getAllStacks("", 1).getAll()
         local groupedItems = ListStream
             :new(itemsInStorage)
-            :map(function(element, index) { if (element) then element.index = index end return element })
+            :map(function(element, index) { if (element) then element.index = index end return element end })
             :filter(function(element) return (element))
             :groupBy(function(element) return element["name"] .. ':' .. element["damage"], element end)
 
