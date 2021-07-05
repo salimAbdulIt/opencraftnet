@@ -36,8 +36,8 @@ function ThaumAutofill:new()
             local itemsFromChest = groupedItems[item["name"] .. ':' .. item["damage"]]
             for j=1,item["count"] do
                 self.transposers:transferItem("", 1, itemsFromChest[j].index, self.pedestals[i].address, self.pedestals[i].outputSide, 1, 1)
-                itemsFromChest[1].count = itemsFromChest[1].count - 1
-                if (itemsFromChest[1].count == 0) then
+                itemsFromChest[1].size = itemsFromChest[1].size - 1
+                if (itemsFromChest[1].size == 0) then
                     table.remove(itemsFromChest,1)
                 end
             end
