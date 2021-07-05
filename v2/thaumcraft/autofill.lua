@@ -39,7 +39,12 @@ function ThaumAutofill:new()
     end
 
     function obj:pushItems(items, groupedItems)
-        transposers:
+        for item, i in pairs(items) do
+            local itemsFromChest = groupedItems[item["name"] .. ':' .. item["damage"]]
+            for j=1,item["count"] do
+                self.transposers:transferItem("", 1, itemFromChest[j].index, self.pedestals[i].address, self.pedestals[i].outputSide, 1)
+            end
+        end
     end
 
     function obj:fill(items)
