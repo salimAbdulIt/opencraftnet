@@ -32,10 +32,12 @@ function ThaumAutofill:new()
     end
 
     function obj:pushItems(items, groupedItems)
+        local pedestalsIndex = 1
         for i, item in pairs(items) do
             local itemsFromChest = groupedItems[item["name"] .. ':' .. item["damage"]]
             for j=1,item["count"] do
-                self.transposers:transferItem("", 1, itemsFromChest[1].index, self.pedestals[i].address, self.pedestals[i].outputSide, 1, 1)
+                self.transposers:transferItem("", 1, itemsFromChest[1].index, self.pedestals[pedestalsIndex].address, self.pedestals[pedestalsIndex].outputSide, 1, 1)
+                pedestalsIndex = pedestalsIndex + 1
                 itemsFromChest[1].size = itemsFromChest[1].size - 1
                 if (itemsFromChest[1].size == 0) then
                     table.remove(itemsFromChest,1)
