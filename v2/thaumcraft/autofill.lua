@@ -12,13 +12,6 @@ ThaumAutofill = {}
 function ThaumAutofill:new()
     local obj = {}
 
-    function obj:isItemsInStorage(storage, items)
-        local combinedItems = {}
-        for item in (items) do
-            --combinedItems
-        end
-    end
-
     function obj:init()
         self.transposers = Transposers:new()
         self.pedestals = ListStream
@@ -28,7 +21,7 @@ function ThaumAutofill:new()
     end
 
     function obj:checkIfResourcesAvailable(items, groupedItems)
-        for item in (items) do
+        for item,i in pairs (items) do
             local key = item["name"] .. ':' .. item["damage"]
             local itemFromChest = groupedItems[key]
 
