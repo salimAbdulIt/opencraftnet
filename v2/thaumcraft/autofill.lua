@@ -35,11 +35,7 @@ function ThaumAutofill:new()
         for i, item in pairs(items) do
             local itemsFromChest = groupedItems[item["name"] .. ':' .. item["damage"]]
             for j=1,item["count"] do
-                print(itemFromChest)
-                print(#itemFromChest)
-                print(#itemFromChest[1])
-                print(#itemFromChest[1].index)
-                self.transposers:transferItem("", 1, itemFromChest[j].index, self.pedestals[i].address, self.pedestals[i].outputSide, 1)
+                self.transposers:transferItem("", 1, itemsFromChest[j].index, self.pedestals[i].address, self.pedestals[i].outputSide, 1)
             end
         end
     end
