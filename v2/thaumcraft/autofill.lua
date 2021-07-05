@@ -64,3 +64,9 @@ function ThaumAutofill:new()
     obj:init()
     self.__index = self; return obj
 end
+
+local autofill = ThaumAutofill:new()
+diamond.name = 'minecraft:diamond'
+diamond.damage = 0
+diamond.count = 1
+autofill:fill({diamond})
