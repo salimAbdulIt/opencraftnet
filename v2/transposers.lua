@@ -44,10 +44,10 @@ function Transposers:new()
                         address1.side = 1
                         self.storageAddresses[address1] = {}
                         self.storageAddresses[address1].address = ""
-                        self.storageAddresses[address1].outputSide = 1
-                        self.storageAddresses[address1].inputSide = 0
+                        self.storageAddresses[address1].outputSide = 0
+                        self.storageAddresses[address1].inputSide = 1
                         self.storageAddresses[address1].isUsedInTransfers = false
-                        self.storageAddresses[address1].name = self.transposerAddresses[""].transposer.getInventoryName(1)
+--                         self.storageAddresses[address1].name = self.transposerAddresses[""].transposer.getInventoryName(1) -- 1.12.2
                         self.storageAddresses[address1].size = self.transposerAddresses[""].transposer.getInventorySize(1)
                     end
                     for outputSide = 0, 5 do
@@ -64,7 +64,7 @@ function Transposers:new()
                                 self.storageAddresses[address1].outputSide = outputSide
                                 self.storageAddresses[address1].inputSide = inputSide
                                 self.storageAddresses[address1].isUsedInTransfers = false
-                                self.storageAddresses[address1].name = self.transposerAddresses[address].transposer.getInventoryName(outputSide)
+--                                 self.storageAddresses[address1].name = self.transposerAddresses[address].transposer.getInventoryName(outputSide) -- 1.12.2
                                 self.storageAddresses[address1].size = outputSideInventorySize
                                 if (self.transposerAddresses[address].transposer.transferItem(inputSide, outputSide, 64, 1, 1) ~= 0) then
                                     if (self:customizeStoragesRec(address .. outputSide, self.transposerAddresses[address].transposer.address)) then
@@ -138,7 +138,20 @@ function Transposers:new()
 
     function obj:getAllStacks(address, side)
         if (address) then
-            return self.transposerAddresses[address].transposer.getAllStacks(side)
+            if (self.transposerAddresses[address].transposer.getAllStacks) then
+                return self.transposerAddresses[address].transposer.getAllStacks(side)
+            else
+                local proxy = {}
+                function proxy.getAll()
+                    local result = {}
+                    for i=1,self.transposerAddresses[address].transposer.getInventorySize(1) do
+                        local item = self.transposerAddresses[address].transposer.getStackInSlot(side, i)
+                        result[i] = item
+                    end
+                    return result
+                end
+                return proxy
+            end
         else
         end
     end
