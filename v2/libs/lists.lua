@@ -37,7 +37,7 @@ end
 
 function ListStream:new(array)
     local obj = {}
-    obj.array = array or {})
+    obj.array = array or {}
 
     function obj:filter(filterFunction)
         local newList = {}
