@@ -37,7 +37,7 @@ end
 
 function ListStream:new(array)
     local obj = {}
-    obj.array = serial.unserialize(serial.serialize(array or {}))
+    obj.array = array or {})
 
     function obj:filter(filterFunction)
         local newList = {}
@@ -52,10 +52,11 @@ function ListStream:new(array)
     end
 
     function obj:map(mapFunction)
+        local newList = {}
         for i=1,#self.array do
-            self.array[i] = mapFunction(self.array[i], i)
+            newList[i] = mapFunction(self.array[i], i)
         end
-
+        obj.array = newList
         return self
     end
 
