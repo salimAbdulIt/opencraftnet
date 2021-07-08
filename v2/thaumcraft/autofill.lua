@@ -69,10 +69,10 @@ local autofill = ThaumAutofill:new()
 local diamond = {}
 diamond.name = 'minecraft:diamond'
 diamond.damage = 0
-diamond.count = 5
+diamond.count = 2
 
 local coal = {}
 coal.name = 'minecraft:coal'
 coal.damage = 0
-coal.count = 10
+coal.count = 1
 autofill:fill({diamond, coal})
