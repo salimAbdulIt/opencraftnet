@@ -23,9 +23,12 @@ function ThaumAutofill:new()
     function obj:checkIfResourcesAvailable(items, groupedItems)
         for i, item in pairs (items) do
             local key = item["name"] .. ':' .. item["damage"]
-            local itemFromChest = groupedItems[key]
+            local count = ListStream
+                :new(groupedItems[key])
+                :map(function (element) return element.size end)
+                :sum()
 
-            if (not itemFromChest[1] or itemFromChest[1].size < item.count) then
+            if (count < item.count) then
                 error("dont have item")
             end
         end

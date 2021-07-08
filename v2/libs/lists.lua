@@ -37,7 +37,7 @@ end
 
 function ListStream:new(array)
     local obj = {}
-    obj.array = array
+    obj.array = array or {}
 
     function obj:filter(filterFunction)
         local newList = {}
@@ -84,6 +84,14 @@ function ListStream:new(array)
         local result = self.array[1]
         for i=2,#self.array do
             result = reduceFunction(result, self.array[i])
+        end
+        return result
+    end
+
+    function obj:sum()
+        local result = 0
+        for i=1,#self.array do
+            result = result + self.array[i]
         end
         return result
     end
