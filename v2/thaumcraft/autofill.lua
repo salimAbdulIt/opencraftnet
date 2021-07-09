@@ -17,7 +17,7 @@ function ThaumAutofill:new()
         self.centerAddress = "333"
         self.centerPedestal = ListStream
             :new(self.transposers:getAllStorages())
-            :filter(function (element) print(element.address) return element end)
+--             :filter(function (element) print(element.address) return element end)
             :filter(function (element) return element.outputSide == 1 end)
             :filter(function (element) return element.address == self.centerAddress end)
             :getFirst()
