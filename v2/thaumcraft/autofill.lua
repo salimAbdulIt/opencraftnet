@@ -6,7 +6,7 @@ local fs = require("filesystem")
 require('transposers')
 
 local utils = require('utils')
-local Lists = require('lists')
+require('lists')
 ThaumAutofill = {}
 
 function ThaumAutofill:new()
