@@ -49,7 +49,6 @@ function ThaumAutofill:new()
 
             if (i == 1) then
                 self.transposers:transferItem("", 1, itemsFromChest[1].index, self.centerPedestal.address, self.centerPedestal.outputSide, 1, 1)
-                pedestalsIndex = pedestalsIndex + 1
                 itemsFromChest[1].size = itemsFromChest[1].size - 1
                 if (itemsFromChest[1].size == 0) then
                     table.remove(itemsFromChest,1)
