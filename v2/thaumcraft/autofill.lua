@@ -14,9 +14,17 @@ function ThaumAutofill:new()
 
     function obj:init()
         self.transposers = Transposers:new()
+        self.centerAddress = "333"
+        self.centerPedestal = ListStream
+            :new(self.transposers:getAllStorages())
+            :filter(function (element) return element.outputSide == 1 end)
+            :filter(function (element) return element.address == self.centerAddress end)
+            :getFirst()
+
         self.pedestals = ListStream
             :new(self.transposers:getAllStorages())
             :filter(function (element) return element.outputSide == 1 end)
+            :filter(function (element) return element.address ~= self.centerAddress end)
             :toArray()
     end
 
@@ -38,13 +46,22 @@ function ThaumAutofill:new()
         local pedestalsIndex = 1
         for i, item in pairs(items) do
             local itemsFromChest = groupedItems[item["name"] .. ':' .. item["damage"]]
-            for j=1,item["count"] do
-                print(j,item["count"])
-                self.transposers:transferItem("", 1, itemsFromChest[1].index, self.pedestals[pedestalsIndex].address, self.pedestals[pedestalsIndex].outputSide, 1, 1)
+
+            if (i == 1) then
+                self.transposers:transferItem("", 1, itemsFromChest[1].index, self.centerPedestal.address, self.centerPedestal.outputSide, 1, 1)
                 pedestalsIndex = pedestalsIndex + 1
                 itemsFromChest[1].size = itemsFromChest[1].size - 1
                 if (itemsFromChest[1].size == 0) then
                     table.remove(itemsFromChest,1)
+                end
+            else
+                for j=1,item["count"] do
+                    self.transposers:transferItem("", 1, itemsFromChest[1].index, self.pedestals[pedestalsIndex].address, self.pedestals[pedestalsIndex].outputSide, 1, 1)
+                    pedestalsIndex = pedestalsIndex + 1
+                    itemsFromChest[1].size = itemsFromChest[1].size - 1
+                    if (itemsFromChest[1].size == 0) then
+                        table.remove(itemsFromChest,1)
+                    end
                 end
             end
         end
@@ -77,5 +94,5 @@ diamond.count = 1
 local coal = {}
 coal.name = 'minecraft:coal'
 coal.damage = 0
-coal.count = 1
+coal.count = 15
 autofill:fill({diamond, coal})

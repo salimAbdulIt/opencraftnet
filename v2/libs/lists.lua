@@ -101,6 +101,10 @@ function ListStream:new(array)
         return self.array
     end
 
+    function obj:getFirst()
+        return self.array[0]
+    end
+
     setmetatable(obj, self)
     self.__index = self; return obj
 end
