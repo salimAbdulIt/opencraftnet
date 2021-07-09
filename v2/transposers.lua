@@ -3,6 +3,7 @@ local serial = require('serialization')
 local shell = require('shell')
 local io = require('io')
 local fs = require("filesystem")
+local utils = require("utils")
 
 Transposers = {}
 function Transposers:new()
@@ -19,13 +20,46 @@ function Transposers:new()
         return self.revercedAddresses[address]
     end
 
+    function obj:saveConfiguration()
+        local configToSave = {}
+        configToSave.transposers = {}
+        configToSave.storages = self.storageAddresses
+
+        for address, transposerConfig in pairs(self.transposers) do
+            local tempConfig = {}
+            tempConfig.transposerAddress = transposerConfig.transposer.address
+            tempConfig.inputSide = transposerConfig.inputSide
+            configToSave.transposers[address] = tempConfig
+        end
+
+        utils.writeObjectToFile("transposers.cfg", configToSave) -- todo move to config
+    end
+
+
+    function obj:loadConfig()
+        local config = utils.readObjectFromFile("transposers.cfg")
+
+        self.storageAddresses = config.storages
+        for address, tempConfig in pairs(self.transposers) do
+            local transposerConfig = {}
+            transposerConfig.inputSide =  tempConfig.inputSide
+            transposerConfig.transposer =  component.proxy(tempConfig.transposerAddress)
+            self.transposers[address] = transposerConfig
+        end
+    end
+
     function obj:customizeStorages()
         self.tempTransposers = {}
         self.storageAddresses = {}
         for k, v in pairs(component.list('transposer')) do
             self.tempTransposers[k] = component.proxy(k)
         end
-        self:customizeStoragesRec("", -1)
+        if (fs.exists("transposers.cfg") then
+            self:loadConfig()
+        else
+            self:customizeStoragesRec("", -1)
+            self:saveConfiguration()
+        end
     end
 
     function obj:customizeStoragesRec(address, lastOutputTransposer)

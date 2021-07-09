@@ -18,6 +18,12 @@ utils.readFromFile = function(filepath)
     return value
 end
 
+utils.writeObjectToFile = function(filepath, object)
+    local file = io.open(filepath, 'w')
+    file:write(serial.serialize(object))
+    file:close()
+end
+
 utils.readObjectFromFile = function(filepath)
     local file = io.open(filepath, 'r')
     local value = serial.unserialize(file:read("*a"))
