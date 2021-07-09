@@ -25,7 +25,7 @@ function Transposers:new()
         configToSave.transposers = {}
         configToSave.storages = self.storageAddresses
 
-        for address, transposerConfig in pairs(self.transposers) do
+        for address, transposerConfig in pairs(self.transposerAddresses) do
             local tempConfig = {}
             tempConfig.transposerAddress = transposerConfig.transposer.address
             tempConfig.inputSide = transposerConfig.inputSide
@@ -40,11 +40,11 @@ function Transposers:new()
         local config = utils.readObjectFromFile("transposers.cfg")
 
         self.storageAddresses = config.storages
-        for address, tempConfig in pairs(self.transposers) do
+        for address, tempConfig in pairs(config.transposers) do
             local transposerConfig = {}
             transposerConfig.inputSide =  tempConfig.inputSide
             transposerConfig.transposer =  component.proxy(tempConfig.transposerAddress)
-            self.transposers[address] = transposerConfig
+            self.transposerAddresses[address] = transposerConfig
         end
     end
 
