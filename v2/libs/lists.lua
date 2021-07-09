@@ -102,7 +102,7 @@ function ListStream:new(array)
     end
 
     function obj:getFirst()
-        return self.array[0]
+        return self.array[1]
     end
 
     setmetatable(obj, self)
