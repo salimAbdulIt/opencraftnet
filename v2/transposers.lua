@@ -54,7 +54,7 @@ function Transposers:new()
         for k, v in pairs(component.list('transposer')) do
             self.tempTransposers[k] = component.proxy(k)
         end
-        if (fs.exists("transposers.cfg") then
+        if (fs.exists("transposers.cfg")) then
             self:loadConfig()
         else
             self:customizeStoragesRec("", -1)
