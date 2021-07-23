@@ -178,7 +178,7 @@ function Transposers:new()
                 local proxy = {}
                 function proxy.getAll()
                     local result = {}
-                    for i=1,self.transposerAddresses[address].transposer.getInventorySize(1) do
+                    for i=1,self.transposerAddresses[address].transposer.getInventorySize(side) do
                         local item = self.transposerAddresses[address].transposer.getStackInSlot(side, i)
                         result[i] = item
                     end
