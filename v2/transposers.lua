@@ -180,6 +180,14 @@ function Transposers:new()
                     local result = {}
                     for i=1,self.transposerAddresses[address].transposer.getInventorySize(side) do
                         local item = self.transposerAddresses[address].transposer.getStackInSlot(side, i)
+                        if (not item) then
+                            item = {}
+                            item.name = 'minecraft:air'
+                            item.damage = 0
+                            item.label = 'minecraft:air'
+                            item.size = 0
+                            item.maxSize = 0
+                        end
                         result[i] = item
                     end
                     return result
