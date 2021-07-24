@@ -13,6 +13,12 @@ function StorageSystem:new()
     function obj:init()
         self.db = DurexDatabase:new("ITEMS")
         self.transposers = Transposers:new()
+        local storages = self.transposers:getAllStorages()
+        for address, storage in pairs (storages) do
+            if (storage.size == 82) then
+                self.robotAddress = address
+            end
+        end
         self.idOfAvailableSlot = 'minecraftair_0'
         self.craftSlotsInChest = { 1, 2, 3, 10, 11, 12, 19, 20, 21 }
         self.craftSlots = {[1] = 5, [2] = 6, [3] = 7, [4] = 9, [5] = 10, [6] = 11, [7] = 13, [8] = 14, [9] = 15, [0] = 17}
