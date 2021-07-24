@@ -142,7 +142,7 @@ function StorageSystem:new()
         for address, storage in pairs (storages) do
             if (storage.name == 'opencomputers:robot') then
                 self.robotAddress = address
-            else
+            elseif (not (storage.address == "" and storage.side == 1))
                 local itemsOfStorage = self.transposers:getAllStacks(address.address, address.side).getAll()
                 local startIndex = 1
                 if (storage.isUsedInTransfers) then
