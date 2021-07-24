@@ -140,7 +140,7 @@ function StorageSystem:new()
         allItems = nil
         local storages = self.transposers:getAllStorages()
         for address, storage in pairs (storages) do
-            if (storage.name == 'opencomputers:robot') then
+            if (storage.size == 82) then
                 self.robotAddress = address
             elseif (not (address.address == "" and address.side == 1)) then
                 local itemsOfStorage = self.transposers:getAllStacks(address.address, address.side).getAll()
