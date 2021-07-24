@@ -196,7 +196,7 @@ function StorageSystem:new()
         local receipt = {}
         local allStacksFromStorage = self.transposers:getAllStacks("", 1).getAll()
         for i = 1, 9 do
-            local tempItem = allStacksFromStorage[i]
+            local tempItem = allStacksFromStorage[self.craftSlotsInChest[i]]
             if (tempItem and tempItem.name ~= "minecraft:air") then
                 receipt[i] = {}
                 receipt[i].name = tempItem.name
