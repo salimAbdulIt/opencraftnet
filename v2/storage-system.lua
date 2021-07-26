@@ -293,20 +293,29 @@ function StorageSystem:new()
     end
 
     function obj:say(msg)
-        print(msg)
-        os.sleep(10)
+        if (component.isAvailable('chat_box')) then
+            component.chat_box.setName('Storage')
+            component.chat_box.say(msg)
+        else
+            print(msg)
+        end
     end
 
     function obj:craft(name, damage, requestedCount)
+        self:craftRec(name, damage, requestedCount)
+        obj:getItem(name, damage, requestedCount)
+    end
+
+    function obj:craftRec(name, damage, requestedCount)
         local craftedItem = self.db:select({ self:dbClause("ID", self:getDbId(name, damage), "=") })[1] --todo inline method and reuse previously selected data
 
         if (not craftedItem) then
-            self:say("I dont know this item" .. name .. ' ' .. damage)
+            self:say("Нету вещи " .. name .. ' ' .. damage)
             return false
         end
         local recipe = craftedItem.receipt
         if recipe == nil then
-            self:say("I don't have receipt for " .. name .. ' ' .. damage)
+            self:say("Нету вещи " .. craftedItem.label)
             return false
         end
         local items = self:countRecipeItems(recipe)
@@ -317,13 +326,13 @@ function StorageSystem:new()
         for itemId, nStacks in pairs(items) do
             local item = self.db:select({ self:dbClause("ID", self:getDbId(itemId.name, itemId.damage)) })[1]
             if (not item) then
-                self:say("I dont know this item" .. itemId.name .. ' ' .. itemId.damage)
+                self:say("Нету вещи " .. item.label)
                 return false
             end
             local nedded = nStacks * n
             local itemCount = item.count
             if itemCount < nedded then
-                if not self:craft(item.name, item.damage, nedded - itemCount) then
+                if not self:craftRec(item.name, item.damage, nedded - itemCount) then
                     ok = false
                     break
                 end
