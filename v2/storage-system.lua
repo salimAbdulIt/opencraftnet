@@ -127,10 +127,11 @@ function StorageSystem:new()
         end
         self.db:insert(self:getDbId(id, damage), itemsFromDb[1])
         self.db:insert(self.idOfAvailableSlot, availableSlotsFromDb[1])
+        return itemsFromDb[1]
     end
 
     function obj:getItem(id, damage, count)
-        self:getItemTo(id, damage, count, "", 1, nil)
+        return self:getItemTo(id, damage, count, "", 1, nil)
     end
 
     function obj:sinkItemsWithStorages() -- todo scan one by one (I mean one chest per once)
@@ -303,7 +304,8 @@ function StorageSystem:new()
 
     function obj:craft(name, damage, requestedCount)
         self:craftRec(name, damage, requestedCount)
-        obj:getItem(name, damage, requestedCount)
+        local item = obj:getItem(name, damage, requestedCount)
+        self:say("§6Крафт завершен §c" .. item.label)
     end
 
     function obj:craftRec(name, damage, requestedCount)
