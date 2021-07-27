@@ -303,9 +303,11 @@ function StorageSystem:new()
     end
 
     function obj:craft(name, damage, requestedCount)
-        self:craftRec(name, damage, requestedCount)
-        local item = obj:getItem(name, damage, requestedCount)
-        self:say("§6Крафт завершен §c" .. item.label)
+        local isCrafted = self:craftRec(name, damage, requestedCount)
+        if (isCrafted) then
+            local item = obj:getItem(name, damage, requestedCount)
+            self:say("§6Крафт завершен §c" .. item.label)
+        end
     end
 
     function obj:craftRec(name, damage, requestedCount)
