@@ -17,6 +17,8 @@ function StorageSystem:new()
         for address, storage in pairs (storages) do
             if (storage.size == 82) then
                 self.robotAddress = address
+            elseif (storage.size == 81) then
+                self.outputAddress = address
             end
         end
         self.idOfAvailableSlot = 'minecraftair_0'
