@@ -149,6 +149,8 @@ function StorageSystem:new()
         for address, storage in pairs (storages) do
             if (storage.size == 82) then
                 self.robotAddress = address
+            elseif (storage.size == 81) then
+                self.outputAddress = address
             elseif (not (address.address == "" and address.side == 1)) then
                 local itemsOfStorage = self.transposers:getAllStacks(address.address, address.side).getAll()
                 local startIndex = 1
@@ -305,7 +307,7 @@ function StorageSystem:new()
     function obj:craft(name, damage, requestedCount)
         local isCrafted = self:craftRec(name, damage, requestedCount)
         if (isCrafted) then
-            local item = obj:getItem(name, damage, requestedCount)
+            local item = obj:self:getItemTo(name, damage, requestedCount, self.outputAddress.address, self.outputAddress.side, nil))
             self:say("§6Крафт завершен §c" .. item.label)
         end
     end
