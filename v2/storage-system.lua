@@ -24,7 +24,7 @@ function StorageSystem:new()
         self.outputAddress.side = 1
         self.idOfAvailableSlot = 'minecraftair_0.0'
         self.craftSlotsInChest = { 1, 2, 3, 13, 14, 15, 25, 26, 27 }
-        self.craftSlots = {[1] = 5, [2] = 6, [3] = 7, [4] = 9, [5] = 10, [6] = 11, [7] = 13, [8] = 14, [9] = 15, [0] = 17}
+        self.craftSlots = {[1] = 1, [2] = 2, [3] = 3, [4] = 5, [5] = 6, [6] = 7, [7] = 9, [8] = 10, [9] = 11, [0] = 13}
     end
 
     function obj:getAllItems(skip, limit, orderBy)
