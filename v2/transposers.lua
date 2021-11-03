@@ -100,7 +100,8 @@ function Transposers:new()
                                 self.storageAddresses[address1].isUsedInTransfers = false
 --                                 self.storageAddresses[address1].name = self.transposerAddresses[address].transposer.getInventoryName(outputSide) -- 1.12.2
                                 self.storageAddresses[address1].size = outputSideInventorySize
-                                if (self.transposerAddresses[address].transposer.transferItem(inputSide, outputSide, 64, 1, 1)) then
+                                local countOfTransferredItems = self.transposerAddresses[address].transposer.transferItem(inputSide, outputSide, 64, 1, 1)
+                                if (countOfTransferredItems and countOfTransferredItems > 0) then
                                     if (self:customizeStoragesRec(address .. outputSide, self.transposerAddresses[address].transposer.address)) then
                                         self.storageAddresses[address1].isUsedInTransfers = true
                                     end
