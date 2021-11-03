@@ -309,7 +309,6 @@ function StorageSystem:new()
         local isCrafted = self:craftRec(name, damage, requestedCount)
         if (isCrafted) then
             local item = self:getItemTo(name, damage, requestedCount, self.outputAddress.address, self.outputAddress.side, nil)
-            self:say("§6Крафт завершен §c" .. item.label)
         end
     end
 
