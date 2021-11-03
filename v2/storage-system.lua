@@ -15,12 +15,13 @@ function StorageSystem:new()
         self.transposers = Transposers:new()
         local storages = self.transposers:getAllStorages()
         for address, storage in pairs (storages) do
-            if (storage.size == 82) then
+            if (storage.size == 48) then
                 self.robotAddress = address
-            elseif (storage.size == 81) then
-                self.outputAddress = address
             end
         end
+        self.outputAddress = {}
+        self.outputAddress.address = ""
+        self.outputAddress.side = 1
         self.idOfAvailableSlot = 'minecraftair_0.0'
         self.craftSlotsInChest = { 1, 2, 3, 13, 14, 15, 25, 26, 27 }
         self.craftSlots = {[1] = 5, [2] = 6, [3] = 7, [4] = 9, [5] = 10, [6] = 11, [7] = 13, [8] = 14, [9] = 15, [0] = 17}
@@ -149,10 +150,8 @@ function StorageSystem:new()
         allItems = nil
         local storages = self.transposers:getAllStorages()
         for address, storage in pairs (storages) do
-            if (storage.size == 82) then
+            if (storage.size == 48) then
                 self.robotAddress = address
-            elseif (storage.size == 81) then
-                self.outputAddress = address
             elseif (not (address.address == "" and address.side == 1)) then
                 local itemsOfStorage = self.transposers:getAllStacks(address.address, address.side).getAll()
                 local startIndex = 1
