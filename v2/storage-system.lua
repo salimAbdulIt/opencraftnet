@@ -316,12 +316,12 @@ function StorageSystem:new()
         local craftedItem = self.db:select({ self:dbClause("ID", self:getDbId(name, damage), "=") })[1] --todo inline method and reuse previously selected data
 
         if (not craftedItem) then
-            self:say("§6Нету вещи §c" .. name .. ' ' .. damage)
+            self:say("§6Dont have item §c" .. name .. ' ' .. damage)
             return false
         end
         local recipe = craftedItem.receipt
         if recipe == nil then
-            self:say("§6Нету вещи §c" .. craftedItem.label)
+            self:say("§6Dont have item §c" .. craftedItem.label)
             return false
         end
         local items = self:countRecipeItems(recipe)
@@ -332,7 +332,7 @@ function StorageSystem:new()
         for itemId, nStacks in pairs(items) do
             local item = self.db:select({ self:dbClause("ID", self:getDbId(itemId.name, itemId.damage)) })[1]
             if (not item) then
-                self:say("§6Нету вещи §c" .. item.label)
+                self:say("§6Dont have item §c" .. item.label)
                 return false
             end
             local nedded = nStacks * n
