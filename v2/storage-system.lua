@@ -1,11 +1,6 @@
 local component = require('component')
-local serial = require('serialization')
-local shell = require('shell')
-local io = require('io')
-local fs = require("filesystem")
 require('transposers')
 require('database')
-local utils = require('utils')
 StorageSystem = {}
 function StorageSystem:new()
     local obj = {}

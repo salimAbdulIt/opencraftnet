@@ -1,6 +1,5 @@
 local utils = {}
-local component = require("component")
-local serial = require("serialization")
+local serializable = require("serializable")
 local shell = require("shell")
 local io = require('io')
 local filesystem = require("filesystem")
@@ -19,16 +18,11 @@ utils.readFromFile = function(filepath)
 end
 
 utils.writeObjectToFile = function(filepath, object)
-    local file = io.open(filepath, 'w')
-    file:write(serial.serialize(object))
-    file:close()
+    serializable.serializeToFile(object, filepath)
 end
 
 utils.readObjectFromFile = function(filepath)
-    local file = io.open(filepath, 'r')
-    local value = serial.unserialize(file:read("*a"))
-    file:close()
-    return value
+    return serializable.unserializeFromFile(filepath)
 end
 
 return utils

@@ -1,7 +1,4 @@
 local component = require('component')
-local serial = require('serialization')
-local shell = require('shell')
-local io = require('io')
 local fs = require("filesystem")
 local utils = require("utils")
 

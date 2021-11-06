@@ -1,11 +1,7 @@
 local component = require("component")
-local computer = require("computer")
 local event = require("event")
 local term = require("term")
-local shell = require("shell")
-local fs = require("filesystem")
 local unicode = require("unicode")
-local serial = require("serialization")
 local gpu = component.gpu
 
 require("storage-system")

@@ -1,7 +1,6 @@
 local fs = require("filesystem")
 local shell = require("shell")
 local serial = require("serialization")
-local component = require('component')
 
 local IndexedValuesIterator = {}
 function IndexedValuesIterator:new(parent, clauses, orderBy)
