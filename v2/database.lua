@@ -1,6 +1,7 @@
 local fs = require("filesystem")
 local shell = require("shell")
 local serial = require("serialization")
+local utils = require("utils")
 
 local IndexedValuesIterator = {}
 function IndexedValuesIterator:new(parent, clauses, orderBy)
@@ -12,21 +13,15 @@ function IndexedValuesIterator:new(parent, clauses, orderBy)
     function obj1:init()
         self.isContainceKeys = true
         local indexes = self.parent:isIndexExist(clauses)
-        local file = io.open(self.parent.indexPath .. clauses[indexes[1]].column .. "." .. self.parent:getIndexType(clauses[indexes[1]].operation))
-        local indexedValues1 = serial.unserialize(file:read("*a"))
-        file:close()
+        local indexedValues1 = utils.readObjectFromFile(self.parent.indexPath .. clauses[indexes[1]].column .. "." .. self.parent:getIndexType(clauses[indexes[1]].operation))
         local searchValues = self.parent:selectByIndex(indexedValues1, clauses[indexes[1]].value, self.parent:getIndexType(clauses[indexes[1]].operation))
         for i = 2, #indexes do
-            local file = io.open(self.parent.indexPath .. clauses[indexes[i]].column .. "." .. self.parent:getIndexType(clauses[indexes[i]].operation))
-            local tempIndexedValues = serial.unserialize(file:read("*a"))
-            file:close()
+            local tempIndexedValues = utils.readObjectFromFile(self.parent.indexPath .. clauses[indexes[i]].column .. "." .. self.parent:getIndexType(clauses[indexes[i]].operation))
             searchValues = self.parent:intersection(searchValues, tempIndexedValues[clauses[indexes[i]].value])
         end
         if (orderBy) then
-            local file = io.open(self.parent.indexPath .. orderBy .. ".EXACT") --todo use already loaded index
-            if (file) then
-                local tempIndexedValues = serial.unserialize(file:read("*a"))
-                file:close()
+            if (fs.exists(self.parent.indexPath .. orderBy .. '.EXACT')) then
+                local tempIndexedValues =  utils.readObjectFromFile(self.parent.indexPath .. orderBy .. '.EXACT')
                 local mapToIndex = {}
                 for k, v in pairs(tempIndexedValues) do
                     for i = 1, #v do
@@ -42,9 +37,7 @@ function IndexedValuesIterator:new(parent, clauses, orderBy)
             else
                 local allValues = {}
                 for i = 1, #searchValues do
-                    file = io.open(self.parent.dataPath .. searchValues[i])
-                    local value = serial.unserialize(file:read("*a"))
-                    file:close()
+                    local value = utils.readObjectFromFile(self.parent.dataPath .. searchValues[i])
                     table.insert(allValues, value)
                 end
 
@@ -67,9 +60,7 @@ function IndexedValuesIterator:new(parent, clauses, orderBy)
             if (not idOfValue) then
                 return
             end
-            local file = io.open(self.parent.dataPath .. idOfValue)
-            local value = serial.unserialize(file:read("*a"))
-            file:close()
+            local value = utils.readObjectFromFile(self.parent.dataPath .. idOfValue)
             return value
         else
             local value = self.searchValues[self.index]
@@ -104,10 +95,8 @@ function ValuesIterator:new(parent, clauses, orderBy)
     function obj1:init()
         local searchValues = {}
         if (orderBy) then
-            local file = io.open(self.parent.indexPath .. orderBy .. '.EXACT')
-            if (file) then
-                local tempIndexedValues = serial.unserialize(file:read("*a"))
-                file:close()
+            if (fs.exists(self.parent.indexPath .. orderBy .. '.EXACT')) then
+                local tempIndexedValues = utils.readObjectFromFile(self.parent.indexPath .. orderBy .. '.EXACT')
                 local sortedList = {}
                 for k, v in pairs(tempIndexedValues) do
                     for i = 1, #v do
@@ -128,9 +117,7 @@ function ValuesIterator:new(parent, clauses, orderBy)
                 self.isContainceKeys = true
             else
                 for item in (fs.list(self.parent.dataPath)) do
-                    file = io.open(self.parent.dataPath .. item)
-                    local tempValue = serial.unserialize(file:read("*a"))
-                    file:close()
+                    local tempValue = utils.readObjectFromFile(self.parent.dataPath .. item)
                     table.insert(searchValues, tempValue)
                 end
                 table.sort(searchValues, function(left, right)
@@ -157,9 +144,7 @@ function ValuesIterator:new(parent, clauses, orderBy)
             if (not idOfValue) then
                 return
             end
-            local file = io.open(self.parent.dataPath .. idOfValue)
-            local value = serial.unserialize(file:read("*a"))
-            file:close()
+            local value = utils.readObjectFromFile(self.parent.dataPath .. idOfValue)
             return value
         else
             local value = self.searchValues[self.index]
@@ -225,17 +210,13 @@ function DurexDatabase:new(tableName)
         local indexedValues = {}
         local elements = fs.list(self.dataPath)
         for element in (elements) do
-            local file = io.open(self.dataPath .. "/" .. element, "r")
-            local indexedValue, value = self:indexValue(serial.unserialize(file:read("*a")), element, field .. '.' .. indexType)
+            local indexedValue, value = self:indexValue(utils.readObjectFromFile(self.dataPath .. "/" .. element), element, field .. '.' .. indexType)
             if (not indexedValues[indexedValue]) then
                 indexedValues[indexedValue] = {}
             end
             table.insert(indexedValues[indexedValue], value)
-            file:close()
         end
-        local file = io.open(self.indexPath .. field .. "." .. indexType, "w")
-        file:write(serial.serialize(indexedValues))
-        file:close()
+        utils.writeObjectToFile(self.indexPath .. field .. "." .. indexType, indexedValues)
     end
 
     function obj:intersection(n, m)
@@ -266,15 +247,11 @@ function DurexDatabase:new(tableName)
     function obj:insert(id, value)
         local oldValue;
         if (fs.exists(self.dataPath .. id .. ".row")) then
-            local file = io.open(self.dataPath .. id .. ".row", "r")
-            oldValue = serial.unserialize(file:read("*a"))
-            file:close()
+            oldValue = utils.readObjectFromFile(self.dataPath .. id .. ".row")
         end
         self:updateIndexValues(oldValue, value, id .. ".row")
         oldValue = nil
-        local file = io.open(self.dataPath .. id .. ".row", "w")
-        file:write(serial.serialize(value))
-        file:close()
+        utils.writeObjectToFile(self.dataPath .. id .. ".row", value)
     end
 
     function obj:insertAll(id, values) -- todo realize
@@ -290,25 +267,20 @@ function DurexDatabase:new(tableName)
 
     function obj:clearIndexes()
         for index in (fs.list(self.indexPath)) do
-            local file = io.open(self.indexPath .. index, "w")
-            file:write('')
-            file:close()
+            utils.writeObjectToFile(self.indexPath .. index, {})
         end
     end
 
     function obj:updateIndexValues(oldItem, newItem, name)
         for index in (fs.list(self.indexPath)) do
-            local file = io.open(self.indexPath .. index, "r")
-            local indexedValues = serial.unserialize(file:read("*a"))
+            local indexedValues = utils.readObjectFromFile(self.indexPath .. index)
             if (not indexedValues) then
                 indexedValues = {}
             end
-            file:close()
             if (oldItem) then
                 local indexedValue, value = self:indexValue(oldItem, name, index)
                 table.remove(indexedValues[indexedValue], self:tablefind(indexedValues[indexedValue], value))
             end
-            file = io.open(self.indexPath .. index, "w")
             if (newItem) then
                 local indexedValue, value = self:indexValue(newItem, name, index)
                 if (not indexedValues[indexedValue]) then
@@ -316,8 +288,7 @@ function DurexDatabase:new(tableName)
                 end
                 table.insert(indexedValues[indexedValue], value)
             end
-            file:write(serial.serialize(indexedValues))
-            file:close()
+            utils.writeObjectToFile(self.indexPath .. index, indexedValues)
         end
     end
 
@@ -327,10 +298,7 @@ function DurexDatabase:new(tableName)
             return nil
         end
 
-        local file = io.open(path, "r")
-        local data = serial.unserialize(file:read("*a"))
-        file:close()
-        return data
+        return utils.readObjectFromFile(path)
     end
 
     function obj:selectFromObject(object, skip, limit)

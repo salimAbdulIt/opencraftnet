@@ -29,12 +29,12 @@ function Transposers:new()
             configToSave.transposers[address] = tempConfig
         end
 
-        utils.writeObjectToFile("transposers.cfg", configToSave) -- todo move to config
+        utils.writeObjectToFile("home/transposers.cfg", configToSave) -- todo move to config
     end
 
 
     function obj:loadConfig()
-        local config = utils.readObjectFromFile("transposers.cfg")
+        local config = utils.readObjectFromFile("home/transposers.cfg")
 
         self.storageAddresses = config.storages
         for address, tempConfig in pairs(config.transposers) do
