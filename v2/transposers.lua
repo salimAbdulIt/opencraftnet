@@ -29,12 +29,12 @@ function Transposers:new()
             configToSave.transposers[address] = tempConfig
         end
 
-        utils.writeObjectToFile("home/transposers.cfg", configToSave) -- todo move to config
+        utils.writeObjectToFile("/home/transposers.cfg", configToSave) -- todo move to config
     end
 
 
     function obj:loadConfig()
-        local config = utils.readObjectFromFile("home/transposers.cfg")
+        local config = utils.readObjectFromFile("/home/transposers.cfg")
 
         self.storageAddresses = config.storages
         for address, tempConfig in pairs(config.transposers) do
@@ -51,7 +51,7 @@ function Transposers:new()
         for k, v in pairs(component.list('transposer')) do
             self.tempTransposers[k] = component.proxy(k)
         end
-        if (fs.exists("home/transposers.cfg")) then
+        if (fs.exists("/home/transposers.cfg")) then
             self:loadConfig()
         else
             self:customizeStoragesRec("", -1)
