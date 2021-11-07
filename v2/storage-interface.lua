@@ -16,7 +16,11 @@ local items_on_the_screen = {}
 local findNameFilter = ''
 
 function drawItems()
-    items_on_the_screen = storageSystem:getAllItemsByLabel(findNameFilter, (page - 1) * sizeOfPage, sizeOfPage, "count")
+    if (findNameFilter and unicode.len(findNameFilter) > 0) then
+        items_on_the_screen = storageSystem:getAllItemsByLabel(findNameFilter, (page - 1) * sizeOfPage, sizeOfPage, "count")
+    else
+        items_on_the_screen = storageSystem:getAllItems((page - 1) * sizeOfPage, sizeOfPage, "count")
+    end
     gpu.setBackground(0x111111)
     gpu.fill(23, 3, 56, 27, ' ')
     for i = 1, #items_on_the_screen do
