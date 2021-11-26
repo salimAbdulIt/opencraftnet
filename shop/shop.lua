@@ -1,5 +1,7 @@
 local component = require('component')
 local forms = require("forms") -- подключаем библиотеку
+local gpu = component.gpu
+gpu.setResolution(80,25)
 require("shopService")
 local shopService = ShopService:new()
 
@@ -271,7 +273,7 @@ function createOreExchangerForm()
     return ShopForm
 end
 
-function autoryze(nick)
+function autorize(nick)
     nickname = nick
     isAutorized = true
     MainForm:setActive()
