@@ -1,7 +1,7 @@
 local component = require('component')
 local forms = require("forms") -- подключаем библиотеку
 local gpu = component.gpu
-gpu.setResolution(80,25)
+gpu.setResolution(80, 25)
 require("shopService")
 local shopService = ShopService:new()
 
@@ -279,19 +279,20 @@ function autorize(nick)
     isAutorized = true
     MainForm:setActive()
 end
+
 AutorizationForm = createAutorizationForm()
 
 GarbageForm = createGarbageForm()
 BuyShopForm = createBuyShopForm()
 OreExchangerForm = createOreExchangerForm()
 
+
+local Event1 = AutorizationForm:addEvent("player_on", function(e, p)
+    if (p) then
+        autorize(p)
+    end
+end)
+
 forms.run(AutorizationForm) --запускаем gui
 
-
-local Event1=AutorizationForm:addEvent("player_on", function(tbl)
-    print(tbl)
-    for k,v in pairs(tbl) do
-        print(k,v)
-        end
-end)
 
