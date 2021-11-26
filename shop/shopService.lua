@@ -9,11 +9,19 @@ function ShopService:new()
     end
 
     function obj:getBalance(nick)
-        return 1000
+        local itemsFromDb = self.db:select({ self:dbClause("ID", nick, "=") })
+        if (itemsFromDb[1]) then
+            return itemsFromDb[1].balance
+        end
+        return 0
     end
 
     function obj:getItemCount(nick)
-        return 100
+        local itemsFromDb = self.db:select({ self:dbClause("ID", nick, "=") })
+        if (itemsFromDb[1]) then
+            return itemsFromDb[1].itemCount
+        end
+        return 0
     end
 
 
