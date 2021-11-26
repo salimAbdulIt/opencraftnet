@@ -288,11 +288,10 @@ OreExchangerForm = createOreExchangerForm()
 forms.run(AutorizationForm) --запускаем gui
 
 
-while true do
-    if AutorizationForm:isActive() then
-        local e, p, a, _, _ = event.pull('player_on')
-        if (p) then
-            autorize(p)
+local Event1=AutorizationForm:addEvent("player_on", function(tbl)
+    print(tbl)
+    for k,v in pairs(tbl) do
+        print(k,v)
         end
-    end
-end
+end)
+
