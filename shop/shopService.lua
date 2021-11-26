@@ -1,5 +1,5 @@
 local component = require('component')
---require('database')
+require('database')
 ShopService = {}
 function ShopService:new()
     local obj = {}

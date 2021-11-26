@@ -1,6 +1,7 @@
 local component = require('component')
 local forms = require("forms") -- подключаем библиотеку
-local shopService = require("shopService")
+require("shopService")
+local shopService = ShopService:new()
 
 local GarbageForm
 local MainForm
