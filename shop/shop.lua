@@ -1,5 +1,6 @@
 local component = require('component')
 local forms = require("forms") -- подключаем библиотеку
+local shopService = require("shopService")
 
 local GarbageForm
 local MainForm
@@ -8,6 +9,7 @@ local BuyShopForm
 local OreExchangerForm
 
 local nickname = ""
+local isAutorized = false
 
 function createNumberEditForm(callback, form, buttonText)
     local itemCounterNumberForm = forms:addForm()
@@ -106,7 +108,7 @@ function createGarbageForm()
     return ShopForm
 end
 
-function createMainForm()
+function createMainForm(nick)
     local MainForm = forms.addForm()
     MainForm.border = 1
     local shopNameLabel = MainForm:addLabel(33, 1, " Legend Shop ")
@@ -119,10 +121,10 @@ function createMainForm()
     frameBalance.H = 7
 
     MainForm:addLabel(5, 4, "Ваш ник: ")
-    MainForm:addLabel(27, 4, "Durex77")
+    MainForm:addLabel(27, 4, nick)
 
     MainForm:addLabel(5, 6, "Баланс: ")
-    MainForm:addLabel(27, 6, "1000000")
+    MainForm:addLabel(27, 6, shopService:getBalance(nick))
 
     local sellButton = MainForm:addButton(60, 5, " Выход ", function()
         AutorizationForm:setActive()
@@ -145,7 +147,7 @@ function createMainForm()
     withdrawButton.W = 20
 
     MainForm:addLabel(5, 8, "Количество предметов: ")
-    MainForm:addLabel(27, 8, "100")
+    MainForm:addLabel(27, 8, shopService:getItemCount(nick))
 
     local withdrawButton = MainForm:addButton(36, 8, "Забрать предметы", function()
         GarbageForm:setActive()
@@ -189,39 +191,39 @@ function createBuyShopForm()
     local buyButton3 = BuyShopForm:addLabel(23, 4, " █  █ █  █ █▀▄ █▄▄█ █  █ █▀▄ █▄▄█ ")
     local buyButton4 = BuyShopForm:addLabel(23, 5, " ▀  ▀ ▀▀▀▀ ▀ ▀ ▄▄▄█ ▀  ▀ ▀ ▀ ▀  ▀ ")
 
-    local categoryButton1 = BuyShopForm:addButton(5, 9,  " Minecraft ")
+    local categoryButton1 = BuyShopForm:addButton(5, 9, " Minecraft ")
     categoryButton1.W = 23
     categoryButton1.H = 3
-    local categoryButton1 = BuyShopForm:addButton(29, 9,  " Industrial Craft 2 ")
+    local categoryButton1 = BuyShopForm:addButton(29, 9, " Industrial Craft 2 ")
     categoryButton1.W = 24
     categoryButton1.H = 3
     local categoryButton1 = BuyShopForm:addButton(54, 9, " Applied Energistics 2 ")
     categoryButton1.W = 23
     categoryButton1.H = 3
 
-    local categoryButton1 = BuyShopForm:addButton(5, 13,  " Forestry ")
+    local categoryButton1 = BuyShopForm:addButton(5, 13, " Forestry ")
     categoryButton1.W = 23
     categoryButton1.H = 3
-    local categoryButton1 = BuyShopForm:addButton(29, 13,  " Зачарованные книги ")
+    local categoryButton1 = BuyShopForm:addButton(29, 13, " Зачарованные книги ")
     categoryButton1.W = 24
     categoryButton1.H = 3
     local categoryButton1 = BuyShopForm:addButton(54, 13, " Draconic Evolution ")
     categoryButton1.W = 23
     categoryButton1.H = 3
 
-    local categoryButton1 = BuyShopForm:addButton(5, 17,  " Thermal Expansion ")
+    local categoryButton1 = BuyShopForm:addButton(5, 17, " Thermal Expansion ")
     categoryButton1.W = 23
     categoryButton1.H = 3
-    local categoryButton1 = BuyShopForm:addButton(29, 17,  " Скоро ")
+    local categoryButton1 = BuyShopForm:addButton(29, 17, " Скоро ")
     categoryButton1.W = 24
     categoryButton1.H = 3
     categoryButton1.fontColor = 0xaaaaaa
-    categoryButton1.color  = 0x000000
+    categoryButton1.color = 0x000000
     local categoryButton1 = BuyShopForm:addButton(54, 17, " Скоро ")
     categoryButton1.W = 23
     categoryButton1.H = 3
     categoryButton1.fontColor = 0xaaaaaa
-    categoryButton1.color  = 0x000000
+    categoryButton1.color = 0x000000
 
     local shopBackButton = BuyShopForm:addButton(3, 23, " Назад ", function()
         MainForm:setActive()
@@ -268,11 +270,26 @@ function createOreExchangerForm()
     return ShopForm
 end
 
+function autoryze(nick)
+    nickname = nick
+    isAutorized = true
+    MainForm:setActive()
+end
+
 GarbageForm = createGarbageForm()
 MainForm = createMainForm()
 AutorizationForm = createAutorizationForm()
 BuyShopForm = createBuyShopForm()
 OreExchangerForm = createOreExchangerForm()
 
-
 forms.run(AutorizationForm) --запускаем gui
+
+
+while true do
+    if nickname == nil then
+        local e, p, a, _, _ = event.pull('player_on')
+        if (p) then
+            autorize(p)
+        end
+    end
+end
