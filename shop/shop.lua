@@ -274,7 +274,7 @@ function createOreExchangerForm()
 end
 
 function autorize(nick)
-    MainForm = createMainForm()
+    MainForm = createMainForm(nick)
     nickname = nick
     isAutorized = true
     MainForm:setActive()
