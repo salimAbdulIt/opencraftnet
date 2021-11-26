@@ -8,6 +8,14 @@ function ShopService:new()
         self.db = DurexDatabase:new("USERS")
     end
 
+    function obj:dbClause(fieldName, fieldValue, typeOfClause)
+        local clause = {}
+        clause.column = fieldName
+        clause.value = fieldValue
+        clause.operation = typeOfClause
+        return clause
+    end
+
     function obj:getBalance(nick)
         local itemsFromDb = self.db:select({ self:dbClause("ID", nick, "=") })
         if (itemsFromDb[1]) then
