@@ -293,6 +293,10 @@ local Event1 = AutorizationForm:addEvent("player_on", function(e, p)
     end
 end)
 
+local Event1 = AutorizationForm:addEvent("player_off", function(e, p)
+    AutorizationForm:setActive()
+end)
+
 forms.run(AutorizationForm) --запускаем gui
 
 
