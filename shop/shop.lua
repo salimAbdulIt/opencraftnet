@@ -274,14 +274,14 @@ function createOreExchangerForm()
 end
 
 function autorize(nick)
+    MainForm = createMainForm()
     nickname = nick
     isAutorized = true
     MainForm:setActive()
 end
+AutorizationForm = createAutorizationForm()
 
 GarbageForm = createGarbageForm()
-MainForm = createMainForm()
-AutorizationForm = createAutorizationForm()
 BuyShopForm = createBuyShopForm()
 OreExchangerForm = createOreExchangerForm()
 
@@ -289,7 +289,7 @@ forms.run(AutorizationForm) --запускаем gui
 
 
 while true do
-    if nickname == nil then
+    if AutorizationForm:isActive() then
         local e, p, a, _, _ = event.pull('player_on')
         if (p) then
             autorize(p)
