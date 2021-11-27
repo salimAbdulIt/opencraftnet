@@ -20,9 +20,7 @@ itemService.giveCurrency = function(currency, count)
         local executed, result = pcall(function()
             return meInterface.exportItem({ id = currency.name, dmg = currency.damage }, "UP", (count - sum) < 64 and (count - sum) or 64).size
         end)
-        print(executed)
-        print(result)
-        sum = sum + result.size
+        sum = sum + result
         if (result.size == 0) then
             return sum
         end
