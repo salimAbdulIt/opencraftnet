@@ -135,6 +135,7 @@ function createMainForm(nick)
 
     local itemCounterNumberSelectDepositBalanceForm = createNumberEditForm(function(count)
         shopService:depositMoney(nick, count)
+        MainForm = createMainForm(nick)
         MainForm:setActive()
     end, MainForm, "Пополнить")
 
