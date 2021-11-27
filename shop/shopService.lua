@@ -58,6 +58,28 @@ function ShopService:new()
         return false
     end
 
+    function obj:depositMoney(nick, count)
+        local playerDataList = self.db:select({ self:dbClause("ID", nick, "=") })
+        local playerData
+        if (not playerDataList or not playerDataList[1]) then
+            playerData = {}
+            playerData.balance = 0
+            playerData.itemCount = 0
+        else
+            playerData = playerDataList[1]
+        end
+
+        if (playerData.balance < count) then
+            return false, "Не хватает денег на счету"
+        end
+        if (itemUtils.giveMoney(count)) then
+            playerData.balance = playerData.balance - count
+            self.db:insert(nick, playerData)
+            return true, playerData.balance
+        end
+        return false
+    end
+
 
     setmetatable(obj, self)
     obj:init()

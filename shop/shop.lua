@@ -139,7 +139,11 @@ function createMainForm(nick)
         MainForm:setActive()
     end, MainForm, "Пополнить")
 
-    local itemCounterNumberSelectWithdrawBalanceForm = createNumberEditForm(function() end, MainForm, "Снять")
+    local itemCounterNumberSelectWithdrawBalanceForm = createNumberEditForm(function(count)
+        shopService:withdrawMoney(nick, count)
+        MainForm = createMainForm(nick)
+        MainForm:setActive()
+    end, MainForm, "Снять")
 
     local depositButton = MainForm:addButton(36, 4, "Пополнить баланс ", function()
         itemCounterNumberSelectDepositBalanceForm:setActive()
