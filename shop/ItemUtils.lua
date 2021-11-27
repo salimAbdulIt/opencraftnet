@@ -19,6 +19,9 @@ end
 
 itemService.giveMoney = function(money)
     local itemCount = money / 1000
+    if (itemCount ~= math.floor(itemCount)) then
+        return false
+    end
     while itemCount > 0 do
         local executed, g = pcall(function()
             return meInterface.exportItem({ id = CURRENCY.name, dmg = CURRENCY.gamage }, "UP", itemCount < 64 and itemCount or 64).size
