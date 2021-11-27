@@ -8,8 +8,7 @@ local itemService = {}
 
 local CURRENCY = {
     name = nil,
-    id = nil,
-    dmg = nil
+    damage = nil
 }
 
 local containerSize = 40
@@ -32,7 +31,7 @@ itemService.takeMoney = function(money)
     local sum = 0
     for i = 1, containerSize do
         local item = component.pim.getStackInSlot(i)
-        if item and not item.nbt_hash and item.id == CURRENCY.id and item.dmg == CURRENCY.dmg then
+        if item and not item.nbt_hash and item.id == CURRENCY.name and item.dmg == CURRENCY.damage then
             sum = sum + component.pim.pushItem(0, i, money - sum)
         end
     end
