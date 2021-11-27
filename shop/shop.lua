@@ -15,7 +15,9 @@ local OreExchangerForm
 local nickname = ""
 local isAutorized = false
 
-local oreExchangerCfg = utils.readObjectFromFile("home/config/oreExchanger.cfg")
+local translations = {
+    ["minecraft:iron_ingot:0"] = "Железный слиток"
+}
 
 function createNumberEditForm(callback, form, buttonText)
     local itemCounterNumberForm = forms:addForm()
@@ -75,26 +77,19 @@ function createGarbageForm()
 
     local shopNameLabel = ShopForm:addLabel(35, 4, " Корзина ")
     local shopCountLabel = ShopForm:addLabel(4, 6, " Наименование                                                Количество")
-
     local itemList = ShopForm:addList(5, 7, function()
     end)
-    itemList:insert("Алмаз                                                       100 шт")
-    itemList:insert("Железо                                                      122 шт")
-    itemList:insert("Квант шлем                                                  154 шт")
-    itemList:insert("Светопыль                                                   123 шт")
-    itemList:insert("Булыжник                                                    1003 шт")
-    itemList:insert("Палка ебалка                                                100234 шт")
-    itemList:insert("Чтото типо того                                             122 шт")
-    itemList:insert("ТОп пчела                                                   1 шт")
-    itemList:insert("Хмель                                                       100 шт")
-    itemList:insert("Бутылка                                                     100 шт")
-    itemList:insert("Дилдак                                                      100 шт")
-    itemList:insert("Жопа зеза                                                   100 шт")
-    itemList:insert("Потроха луфа                                                100 шт")
-    itemList:insert("Пизда ская                                                  100 шт")
-    itemList:insert("Пизда ская                                                  100 шт")
-    itemList:insert("Пизда ская                                                  100 шт")
-    itemList:insert("Пизда ская                                                  100 шт")
+
+    local items = shopService:getItems(nickname)
+    for i = 1, #items do
+        local name = translations[items[i].id .. ":" .. items[i].dmg]
+        for i = 1, 70 - string.len(name) do
+            name = name .. ' '
+        end
+        name = name .. items[i].count .. " шт"
+
+        itemList:insert(name, items[i])
+    end
     itemList.border = 0
     itemList.W = 70
     itemList.H = 15
@@ -262,26 +257,36 @@ function createOreExchangerForm()
     local itemList = ShopForm:addList(5, 7, function()
     end)
 
-    for i,itemConfig in pairs(oreExchangerCfg) do
-        local name = itemConfig.label
-        for i=1, 58 - string.len(name) do
+    local oreExchangeList = shopService:getOreExchangeList()
+
+    for i = 1, #oreExchangeList do
+        local name = oreExchangeList[i].label
+        for i = 1, 68 - string.len(name) do
             name = name .. ' '
         end
-        name = name .. itemConfig.fromCount .. 'к' .. itemConfig.toCount
-        itemList:insert(name, itemConfig)
+        name = name .. oreExchangeList[i].fromCount .. 'к' .. oreExchangeList[i].toCount
+
+        itemList:insert(name, oreExchangeList[i])
     end
     itemList.border = 0
     itemList.W = 70
     itemList.H = 15
     itemList.fontColor = 0xFF8F00
 
-    local itemCounterNumberSelectForm = createNumberEditForm(function() end, ShopForm, "Обменять")
+    local itemCounterNumberSelectForm = createNumberEditForm(function(count)
+        shopService:exchangeOre(nickname, itemList.items[itemList.index], count)
+        MainForm = createMainForm(nickname)
+        MainForm:setActive()
+    end, ShopForm, "Обменять")
 
     local shopBackButton = ShopForm:addButton(3, 23, " Назад ", function()
+        MainForm = createMainForm(nickname)
         MainForm:setActive()
     end)
     local shopWithdrawAllButton = ShopForm:addButton(67, 23, " Обменять все ")
-    local shopWithdrawButton = ShopForm:addButton(54, 23, " Обменять ", function() itemCounterNumberSelectForm:setActive() end)
+    local shopWithdrawButton = ShopForm:addButton(54, 23, " Обменять ", function()
+        itemCounterNumberSelectForm:setActive()
+    end)
     shopBackButton.H = 1
     shopBackButton.W = 9
     return ShopForm

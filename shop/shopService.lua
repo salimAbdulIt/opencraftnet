@@ -7,6 +7,8 @@ function ShopService:new()
     local obj = {}
 
     function obj:init()
+        self.oreExchangeList = utils.readObjectFromFile("home/config/oreExchanger.cfg")
+
         self.db = DurexDatabase:new("USERS")
         self.currencies = {}
         self.currencies[1] = {}
@@ -40,34 +42,39 @@ function ShopService:new()
         return clause
     end
 
+    function obj:getOreExchangeList()
+        return self.oreExchangeList
+    end
+
     function obj:getBalance(nick)
-        local itemsFromDb = self.db:select({ self:dbClause("ID", nick, "=") })
-        if (itemsFromDb[1]) then
-            return itemsFromDb[1].balance
+        local playerData = self:getPlayerData(nick)
+        if (playerData) then
+            return playerData.balance
         end
         return 0
     end
 
     function obj:getItemCount(nick)
-        local itemsFromDb = self.db:select({ self:dbClause("ID", nick, "=") })
-        if (itemsFromDb[1]) then
-            return itemsFromDb[1].itemCount
+        local playerData = self:getPlayerData(nick)
+        if (playerData) then
+            return #playerData.items
         end
         return 0
+    end
+
+    function obj:getItems(nick)
+        local playerData = self:getPlayerData(nick)
+        if (playerData) then
+            return playerData.items
+        end
+        return {}
     end
 
     function obj:depositMoney(nick, count)
         local countOfMoney = itemUtils.takeMoney(count)
         if (countOfMoney > 0) then
-            local playerDataList = self.db:select({ self:dbClause("ID", nick, "=") })
-            local playerData
-            if (not playerDataList or not playerDataList[1]) then
-                playerData = {}
-                playerData.balance = 0
-                playerData.itemCount = 0
-            else
-                playerData = playerDataList[1]
-            end
+            local playerData = self:getPlayerData(nick)
+
             playerData.balance = playerData.balance + countOfMoney
             self.db:insert(nick, playerData)
             return true, playerData.balance
@@ -76,15 +83,7 @@ function ShopService:new()
     end
 
     function obj:withdrawMoney(nick, count)
-        local playerDataList = self.db:select({ self:dbClause("ID", nick, "=") })
-        local playerData
-        if (not playerDataList or not playerDataList[1]) then
-            playerData = {}
-            playerData.balance = 0
-            playerData.itemCount = 0
-        else
-            playerData = playerDataList[1]
-        end
+        local playerData = self:getPlayerData(nick)
 
         if (playerData.balance < count) then
             return false, "Не хватает денег на счету"
@@ -92,6 +91,44 @@ function ShopService:new()
         local countOfMoney = itemUtils.giveMoney(count)
         if (countOfMoney > 0) then
             playerData.balance = playerData.balance - countOfMoney
+            self.db:insert(nick, playerData)
+            return true, playerData.balance
+        end
+        return false
+    end
+
+    function obj:getPlayerData(nick)
+        local playerDataList = self.db:select({ self:dbClause("ID", nick, "=") })
+        local playerData
+        if (not playerDataList or not playerDataList[1]) then
+            playerData = {}
+            playerData.balance = 0
+            playerData.items = {}
+        else
+            playerData = playerDataList[1]
+        end
+        return playerData
+    end
+
+    function obj:exchangeOre(nick, itemConfig, count)
+        local countOfItems = itemUtils.takeItem(itemConfig.fromId, itemConfig.fromDmg, count)
+        if (countOfItems > 0) then
+            local playerData = self:getPlayerData(nick)
+            local itemAlreadyInFile = false
+            for i=1, #playerData.items do
+                local item = playerData.items[i]
+                if (item.id == itemConfig.toId and item.dmg == itemConfig.toDmg) then
+                    item.count = item.count + countOfItems
+                    itemAlreadyInFile = true
+                end
+            end
+            if (not itemAlreadyInFile) then
+                local item = {}
+                item.id = itemConfig.toId
+                item.dmg = itemConfig.toDmg
+                item.count = countOfItems
+                table.insert(playerData.items, item)
+            end
             self.db:insert(nick, playerData)
             return true, playerData.balance
         end
