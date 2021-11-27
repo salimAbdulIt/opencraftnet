@@ -137,6 +137,7 @@ function ShopService:new()
             if (item.count == 0) then
                 table.remove(playerData.items, i)
                 i = i - 1
+                break
             end
         end
 
@@ -162,8 +163,48 @@ function ShopService:new()
     --        self.db:insert(nick, playerData)
     --    end
 
-    function obj:exchangeOre(nick, itemConfig, count)
-        local countOfItems = itemUtils.takeItem(itemConfig.fromId, itemConfig.fromDmg, count)
+    function obj:exchangeOre(nick)
+        local items = {}
+        for i, itemConfig in pairs(self.oreExchangeList) do
+            local item = {}
+            item.id = itemConfig.fromId
+            item.dmg = itemConfig.fromDmg
+            table.insert(items, item)
+        end
+        local itemsTaken = itemUtils.takeItems(items)
+
+        local playerData = self:getPlayerData(nick)
+        for i, item in pairs(itemsTaken) do
+            local itemCfg
+            for j, itemConfig in pairs(self.oreExchangeList) do
+                local item = {}
+                if (item.id == itemConfig.fromId and item.dmg == itemConfig.fromDmg) then
+                    itemCfg = itemConfig
+                end
+            end
+            local itemAlreadyInFile = false
+            for i = 1, #playerData.items do
+                local itemP = playerData.items[i]
+                if (itemP.id == itemCfg.toId and itemP.dmg == itemCfg.toDmg) then
+                    itemP.count = itemP.count + item.count * itemCfg.toCount / itemCfg.fromCount
+                    itemAlreadyInFile = true
+                    break
+                end
+            end
+            if (not itemAlreadyInFile) then
+                local item = {}
+                item.id = itemCfg.toId
+                item.dmg = itemCfg.toDmg
+                item.count = item.count * itemCfg.toCount / itemCfg.fromCount
+                table.insert(playerData.items, item)
+            end
+        end
+        self.db:insert(nick, playerData)
+        return false
+    end
+
+    function obj:exchangeAllOres(nick, itemConfig, count)
+        local countOfItems = itemUtils.takeItems(itemConfig.fromId, itemConfig.fromDmg, count)
         if (countOfItems > 0) then
             local playerData = self:getPlayerData(nick)
             local itemAlreadyInFile = false

@@ -79,6 +79,33 @@ itemService.takeItem = function(id, dmg, count)
     return sum
 end
 
+itemService.takeItems = function(items)
+    local sumList = {}
+    for i = 1, containerSize do
+        local item = component.pim.getStackInSlot(i)
+        for j,itemCfg in pairs(items) do
+            if item and not item.nbt_hash and item.id == itemCfg.id and item.dmg == itemCfg.dmg then
+                local sum = component.pim.pushItem("DOWN", i, item.count)
+                for k=1,#sumList do
+                    if (sumList[k].id == itemCfg.id and sumList[k].dmg == itemCfg.dmg) then
+                        sumList[k].count = sumList[k].count + sum
+                        sum = 0
+                        break
+                    end
+                end
+                if (sum > 0) then
+                    local sumElement = {}
+                    sumElement.id = itemCfg.id
+                    sumElement.dmg = itemCfg.dmg
+                    sumElement.count = sum
+                end
+                break
+            end
+        end
+    end
+    return sumList
+end
+
 itemService.takeMoney = function(money)
     local itemCount = money / 1000
     if (itemCount ~= math.floor(itemCount)) then
