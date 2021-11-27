@@ -31,9 +31,9 @@ end
 itemService.takeMoney = function(money)
     local sum = 0
     for i = 1, containerSize do
-        local item = casino.container.getStackInSlot(i)
+        local item = component.pim.getStackInSlot(i)
         if item and not item.nbt_hash and item.id == CURRENCY.id and item.dmg == CURRENCY.dmg then
-            sum = sum + casino.container.pushItem(0, i, money - sum)
+            sum = sum + component.pim.pushItem(0, i, money - sum)
         end
     end
     if sum < money then
