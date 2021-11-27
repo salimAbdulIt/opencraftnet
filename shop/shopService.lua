@@ -136,7 +136,7 @@ function ShopService:new()
             for i=1, #playerData.items do
                 local item = playerData.items[i]
                 if (item.id == itemConfig.toId and item.dmg == itemConfig.toDmg) then
-                    item.count = item.count + countOfItems
+                    item.count = item.count + countOfItems * itemConfig.toCount / itemConfig.fromCount
                     itemAlreadyInFile = true
                 end
             end
