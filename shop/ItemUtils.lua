@@ -6,15 +6,26 @@ local meInterface = component.me_interface
 
 local itemService = {}
 
-local CURRENCY = {
-    name = nil,
-    damage = nil
-}
+local CURRENCIES = {}
 
 local containerSize = 40
 
-itemService.setCurrency = function(currency)
-    CURRENCY = currency
+itemService.setCurrency = function(currencies)
+    CURRENCIES = currencies
+end
+
+itemService.giveCurrency = function(currency, count)
+    local sum = 0
+    while count > sum do
+        local executed, result = pcall(function()
+            return meInterface.exportItem({ id = currency.name, dmg = currency.damage }, "UP", (count - sum) < 64 and (count - sum) or 64).size
+        end)
+        sum = sum + result.size
+        if (result.size == 0) then
+            return sum
+        end
+    end
+    return sum
 end
 
 itemService.giveMoney = function(money)
@@ -22,29 +33,73 @@ itemService.giveMoney = function(money)
     if (itemCount ~= math.floor(itemCount)) then
         return false
     end
-    while itemCount > 0 do
-        local executed, g = pcall(function()
-            return meInterface.exportItem({ id = CURRENCY.name, dmg = CURRENCY.gamage }, "UP", itemCount < 64 and itemCount or 64).size
-        end)
-        itemCount = itemCount - (itemCount < 64 and itemCount or 64)
+    
+    local sum = 0
+
+    local currency1kk = math.floor(itemCount / 1000)
+    local currenct1kkGiven = itemService.giveCurrency(CURRENCIES[4].item, currency1kk)
+    itemCount = itemCount - currenct1kkGiven * 1000
+    sum = sum + currenct1kkGiven * 1000
+
+    local currency100k = math.floor(itemCount / 100)
+    local currenct100kGiven = itemService.giveCurrency(CURRENCIES[3].item, currency100k)
+    itemCount = itemCount - currenct100kGiven * 100
+    sum = sum + currenct100kGiven * 100
+
+    local currency10k = math.floor(itemCount / 10)
+    local currenct10kGiven = itemService.giveCurrency(CURRENCIES[2].item, currency10k)
+    itemCount = itemCount - currenct10kGiven * 10
+    sum = sum + currenct10kGiven * 10
+
+    local currency1k = math.floor(itemCount)
+    local currenct1kGiven = itemService.giveCurrency(CURRENCIES[1].item, currency1k)
+    itemCount = itemCount - currenct1kGiven
+    sum = sum + currenct1kGiven
+
+    return sum
+end
+
+itemService.takeCurrency = function(currency, count)
+    if (count == 0) then
+        return 0
     end
-    return true
+    local sum = 0
+    for i = 1, containerSize do
+        local item = component.pim.getStackInSlot(i)
+        if item and not item.nbt_hash and item.id == currency.name and item.dmg == currency.damage then
+            sum = sum + component.pim.pushItem("DOWN", i, count)
+        end
+    end
+    return sum
 end
 
 itemService.takeMoney = function(money)
     local itemCount = money / 1000
+    if (itemCount ~= math.floor(itemCount)) then
+        return false
+    end
     local sum = 0
-    for i = 1, containerSize do
-        local item = component.pim.getStackInSlot(i)
-        if item and not item.nbt_hash and item.id == CURRENCY.name and item.dmg == CURRENCY.damage then
-            sum = sum + component.pim.pushItem("DOWN", i, itemCount - sum)
-        end
-    end
-    if sum < itemCount then
-        itemService.giveMoney(sum)
-        return false, "Нужно " .. CURRENCY.name .. " x" .. itemCount
-    end
-    return true
+    local currency1kk = math.floor(itemCount / 1000)
+    local currenct1kkTook = itemService.takeCurrency(CURRENCIES[4].item, currency1kk)
+    sum = sum + currenct1kkTook * 1000
+    itemCount = itemCount - currenct1kkTook * 1000
+
+    local currency100k = math.floor(itemCount / 100)
+    local currenct100kTook = itemService.takeCurrency(CURRENCIES[3].item, currency100k)
+    sum = sum + currenct100kTook * 100
+    itemCount = itemCount - currenct100kTook * 100
+
+    local currency10k = math.floor(itemCount / 10)
+    local currenct10kTook = itemService.takeCurrency(CURRENCIES[2].item, currency10k)
+    sum = sum + currenct10kTook * 10
+    itemCount = itemCount - currenct10kTook * 10
+
+    local currency1k = math.floor(itemCount)
+    local currenct1kTook = itemService.takeCurrency(CURRENCIES[1].item, currency1k)
+    sum = sum + currenct1kTook
+    itemCount = itemCount - currenct1kTook
+
+    return sum * 1000
 end
 
 itemService.rewardItem = function(id, dmg, count)

@@ -13,7 +13,23 @@ function ShopService:new()
         self.currencies[1].item = component.database.get(1)
         self.currencies[1].dbSlot = 1
         self.currencies[1].money = 1000
-        itemUtils.setCurrency(self.currencies[1].item)
+
+        self.currencies[2] = {}
+        self.currencies[2].item = component.database.get(2)
+        self.currencies[2].dbSlot = 2
+        self.currencies[2].money = 10000
+
+        self.currencies[3] = {}
+        self.currencies[3].item = component.database.get(3)
+        self.currencies[3].dbSlot = 3
+        self.currencies[3].money = 100000
+
+        self.currencies[4] = {}
+        self.currencies[4].item = component.database.get(4)
+        self.currencies[4].dbSlot = 4
+        self.currencies[4].money = 1000000
+
+        itemUtils.setCurrency(self.currencies)
     end
 
     function obj:dbClause(fieldName, fieldValue, typeOfClause)
@@ -41,7 +57,8 @@ function ShopService:new()
     end
 
     function obj:depositMoney(nick, count)
-        if (itemUtils.takeMoney(count)) then
+        local countOfMoney = itemUtils.takeMoney(count)
+        if (countOfMoney > 0) then
             local playerDataList = self.db:select({ self:dbClause("ID", nick, "=") })
             local playerData
             if (not playerDataList or not playerDataList[1]) then
@@ -51,7 +68,7 @@ function ShopService:new()
             else
                 playerData = playerDataList[1]
             end
-            playerData.balance = playerData.balance + count
+            playerData.balance = playerData.balance + countOfMoney
             self.db:insert(nick, playerData)
             return true, playerData.balance
         end
@@ -72,8 +89,9 @@ function ShopService:new()
         if (playerData.balance < count) then
             return false, "Не хватает денег на счету"
         end
-        if (itemUtils.giveMoney(count)) then
-            playerData.balance = playerData.balance - count
+        local countOfMoney = itemUtils.giveMoney(count)
+        if (countOfMoney > 0) then
+            playerData.balance = playerData.balance - countOfMoney
             self.db:insert(nick, playerData)
             return true, playerData.balance
         end
