@@ -177,9 +177,9 @@ function ShopService:new()
         for i, item in pairs(itemsTaken) do
             local itemCfg
             for j, itemConfig in pairs(self.oreExchangeList) do
-                local item = {}
                 if (item.id == itemConfig.fromId and item.dmg == itemConfig.fromDmg) then
                     itemCfg = itemConfig
+                    break
                 end
             end
             local itemAlreadyInFile = false
