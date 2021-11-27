@@ -113,7 +113,7 @@ function ShopService:new()
 
     function obj:withdrawItem(nick, id, dmg, count)
         local playerData = self:getPlayerData(nick)
-        for i=1, #playerData.items do
+        for i = 1, #playerData.items do
             local item = playerData.items[i]
             if (item.id == id and item.dmg == dmg) then
                 local countToWithdraw = math.min(count, item.count)
@@ -128,12 +128,46 @@ function ShopService:new()
         end
     end
 
+    function obj:withdrawAll(nick)
+        local playerData = self:getPlayerData(nick)
+        for i = 1, #playerData.items do
+            local item = playerData.items[i]
+            local withdrawedCount = itemUtils.giveItem(item.id, item.dmg, item.count)
+            item.count = item.count - withdrawedCount
+            if (item.count == 0) then
+                table.remove(playerData.items, i)
+                i = i - 1
+            end
+        end
+
+        self.db:insert(nick, playerData)
+    end
+
+    --
+    --    function obj:withdrawAll(nick, id, dmg, count)
+    --        local playerData = self:getPlayerData(nick)
+    --        local withdrawedItems = itemUtils.giveAll(playerData.items)
+    --
+    --        for i, item in pairs(withdrawedItems) do
+    --            for i = 1, #playerData.items do
+    --                if (item.id == id and item.dmg == dmg) then
+    --                    playerData.items[i].count = playerData.items[i].count - item.count
+    --                    if (playerData.items[i].count == 0) then
+    --                        table.remove(playerData.items, i)
+    --                        i = i - 1
+    --                    end
+    --                end
+    --            end
+    --        end
+    --        self.db:insert(nick, playerData)
+    --    end
+
     function obj:exchangeOre(nick, itemConfig, count)
         local countOfItems = itemUtils.takeItem(itemConfig.fromId, itemConfig.fromDmg, count)
         if (countOfItems > 0) then
             local playerData = self:getPlayerData(nick)
             local itemAlreadyInFile = false
-            for i=1, #playerData.items do
+            for i = 1, #playerData.items do
                 local item = playerData.items[i]
                 if (item.id == itemConfig.toId and item.dmg == itemConfig.toDmg) then
                     item.count = item.count + countOfItems * itemConfig.toCount / itemConfig.fromCount

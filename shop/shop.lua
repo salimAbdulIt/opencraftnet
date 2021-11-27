@@ -107,7 +107,12 @@ function createGarbageForm()
         MainForm = createMainForm(nickname)
         MainForm:setActive()
     end)
-    local shopWithdrawAllButton = ShopForm:addButton(68, 23, " Забрать все ")
+    local shopWithdrawAllButton = ShopForm:addButton(68, 23, " Забрать все ", function()
+        shopService:withdrawAll(nickname)
+
+        GarbageForm = createGarbageForm()
+        GarbageForm:setActive()
+    end)
     local shopWithdrawButton = ShopForm:addButton(55, 23, " Забрать ", function() itemCounterNumberSelectForm:setActive() end)
     shopBackButton.H = 1
     shopBackButton.W = 9
