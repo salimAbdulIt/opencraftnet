@@ -1,6 +1,7 @@
 local component = require('component')
 local forms = require("forms") -- подключаем библиотеку
 local gpu = component.gpu
+local utils = require('utils')
 gpu.setResolution(80, 25)
 require("shopService")
 local shopService = ShopService:new()
@@ -13,6 +14,8 @@ local OreExchangerForm
 
 local nickname = ""
 local isAutorized = false
+
+local oreExchangerCfg = utils.readFromFile("home/cfg/oreExchanger.cfg")
 
 function createNumberEditForm(callback, form, buttonText)
     local itemCounterNumberForm = forms:addForm()
@@ -258,10 +261,15 @@ function createOreExchangerForm()
 
     local itemList = ShopForm:addList(5, 7, function()
     end)
-    itemList:insert("Железная руда                                             1к2   ")
-    itemList:insert("Медная руда                                               1к2   ")
-    itemList:insert("Золотая руда                                              1к2   ")
-    itemList:insert("Угольная руда                                             1к4   ")
+
+    for i,itemConfig in pairs(oreExchangerCfg) do
+        local name = itemConfig.label
+        for i=1, 58 - string.len(name) do
+            name = name .. ' '
+        end
+        name = name .. itemConfig.fromCount .. 'к' .. itemConfig.toCount
+        itemList:insert(name, itemConfig)
+    end
     itemList.border = 0
     itemList.W = 70
     itemList.H = 15
