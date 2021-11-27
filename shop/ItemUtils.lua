@@ -21,7 +21,7 @@ itemService.giveMoney = function(money)
     money = math.floor(money + 0.5)
     while money > 0 do
         local executed, g = pcall(function()
-            return meInterface.exportItem(CURRENCY, 1, money < 64 and money or 64).size
+            return meInterface.exportItem(CURRENCY, "UP", money < 64 and money or 64).size
         end)
         money = money - (money < 64 and money or 64)
     end
@@ -32,7 +32,7 @@ itemService.takeMoney = function(money)
     for i = 1, containerSize do
         local item = component.pim.getStackInSlot(i)
         if item and not item.nbt_hash and item.id == CURRENCY.name and item.dmg == CURRENCY.damage then
-            sum = sum + component.pim.pushItem(0, i, money - sum)
+            sum = sum + component.pim.pushItem("DOWN", i, money - sum)
         end
     end
     if sum < money then
