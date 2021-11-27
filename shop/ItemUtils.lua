@@ -56,7 +56,7 @@ itemService.giveMoney = function(money)
     itemCount = itemCount - currenct1kGiven
     sum = sum + currenct1kGiven
 
-    return sum
+    return sum * 1000
 end
 
 itemService.takeCurrency = function(currency, count)
