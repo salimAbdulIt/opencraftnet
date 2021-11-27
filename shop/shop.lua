@@ -104,7 +104,7 @@ function createGarbageForm()
     end, ShopForm, "Забрать")
 
     local shopBackButton = ShopForm:addButton(3, 23, " Назад ", function()
-        MainForm = createMainForm(nick)
+        MainForm = createMainForm(nickname)
         MainForm:setActive()
     end)
     local shopWithdrawAllButton = ShopForm:addButton(68, 23, " Забрать все ")
