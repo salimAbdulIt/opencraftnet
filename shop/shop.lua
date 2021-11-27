@@ -95,9 +95,9 @@ function createGarbageForm()
     itemList.H = 15
     itemList.fontColor = 0xFF8F00
 
-    local itemCounterNumberSelectForm = createNumberEditForm(function()
+    local itemCounterNumberSelectForm = createNumberEditForm(function(count)
         local itemToWithdraw = itemList.items[itemList.index]
-        shopService:withdrawItem(nickname, itemToWithdraw.id, itemToWithdraw.dmg, itemToWithdraw)
+        shopService:withdrawItem(nickname, itemToWithdraw.id, itemToWithdraw.dmg, count)
 
         GarbageForm = createGarbageForm()
         GarbageForm:setActive()
