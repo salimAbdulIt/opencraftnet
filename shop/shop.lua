@@ -283,8 +283,8 @@ function createOreExchangerForm()
 
     local itemCounterNumberSelectForm = createNumberEditForm(function(count)
         shopService:exchangeOre(nickname, itemList.items[itemList.index], count)
-        MainForm = createMainForm(nickname)
-        MainForm:setActive()
+        OreExchangerForm = createOreExchangerForm(nickname)
+        OreExchangerForm:setActive()
     end, ShopForm, "Обменять")
 
     local shopBackButton = ShopForm:addButton(3, 23, " Назад ", function()
