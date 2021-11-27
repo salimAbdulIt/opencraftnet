@@ -21,7 +21,7 @@ itemService.giveCurrency = function(currency, count)
             return meInterface.exportItem({ id = currency.name, dmg = currency.damage }, "UP", (count - sum) < 64 and (count - sum) or 64).size
         end)
         if (not executed) then
-            return 0
+            return sum
         end
         sum = sum + result
         if (result == 0) then
