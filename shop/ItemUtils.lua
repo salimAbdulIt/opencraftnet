@@ -18,17 +18,18 @@ itemService.setCurrency = function(currency)
 end
 
 itemService.giveMoney = function(money)
-    local itemCount = money/1000
+    local itemCount = money / 1000
     while itemCount > 0 do
         local executed, g = pcall(function()
-            return meInterface.exportItem(CURRENCY, "UP", itemCount < 64 and itemCount or 64).size
+            return meInterface.exportItem({ id = CURRENCY.name, dmg = CURRENCY.gamage }, "UP", itemCount < 64 and itemCount or 64).size
         end)
         itemCount = itemCount - (itemCount < 64 and itemCount or 64)
     end
+    return true
 end
 
 itemService.takeMoney = function(money)
-    local itemCount = money/1000
+    local itemCount = money / 1000
     local sum = 0
     for i = 1, containerSize do
         local item = component.pim.getStackInSlot(i)
@@ -44,14 +45,13 @@ itemService.takeMoney = function(money)
 end
 
 itemService.rewardItem = function(id, dmg, count)
-
 end
 
 itemService.getCurrencyInStorage = function(currency)
     if not currency.id then
         return -1
     end
-    local item = {id=currency.id, dmg=currency.dmg}
+    local item = { id = currency.id, dmg = currency.dmg }
     local detail = meInterface.getItemDetail(item)
     return detail and detail.basic().qty or 0
 end
