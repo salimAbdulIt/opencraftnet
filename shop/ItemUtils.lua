@@ -20,6 +20,9 @@ itemService.giveCurrency = function(currency, count)
         local executed, result = pcall(function()
             return meInterface.exportItem({ id = currency.name, dmg = currency.damage }, "UP", (count - sum) < 64 and (count - sum) or 64).size
         end)
+        if (not executed) then
+            return 0
+        end
         sum = sum + result
         if (result == 0) then
             return sum
@@ -33,7 +36,7 @@ itemService.giveMoney = function(money)
     if (itemCount ~= math.floor(itemCount)) then
         return false
     end
-    
+
     local sum = 0
 
     local currency1kk = math.floor(itemCount / 1000)
@@ -67,7 +70,7 @@ itemService.takeCurrency = function(currency, count)
     for i = 1, containerSize do
         local item = component.pim.getStackInSlot(i)
         if item and not item.nbt_hash and item.id == currency.name and item.dmg == currency.damage then
-            sum = sum + component.pim.pushItem("DOWN", i, count-sum)
+            sum = sum + component.pim.pushItem("DOWN", i, count - sum)
         end
         if (count == sum) then
             return sum
