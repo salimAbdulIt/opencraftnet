@@ -15,7 +15,7 @@ local OreExchangerForm
 local nickname = ""
 local isAutorized = false
 
-local oreExchangerCfg = utils.readFromFile("config/oreExchanger.cfg")
+local oreExchangerCfg = utils.readObjectFromFile("/config/oreExchanger.cfg")
 
 function createNumberEditForm(callback, form, buttonText)
     local itemCounterNumberForm = forms:addForm()
