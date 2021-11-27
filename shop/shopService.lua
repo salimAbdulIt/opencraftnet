@@ -192,11 +192,11 @@ function ShopService:new()
                 end
             end
             if (not itemAlreadyInFile) then
-                local item = {}
-                item.id = itemCfg.toId
-                item.dmg = itemCfg.toDmg
-                item.count = item.count * itemCfg.toCount / itemCfg.fromCount
-                table.insert(playerData.items, item)
+                local newItem = {}
+                newItem.id = itemCfg.toId
+                newItem.dmg = itemCfg.toDmg
+                newItem.count = item.count * itemCfg.toCount / itemCfg.fromCount
+                table.insert(playerData.items, newItem)
             end
         end
         self.db:insert(nick, playerData)
