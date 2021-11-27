@@ -98,6 +98,7 @@ itemService.takeItems = function(items)
                     sumElement.id = itemCfg.id
                     sumElement.dmg = itemCfg.dmg
                     sumElement.count = sum
+                    table.insert(sumList, sumElement)
                 end
                 break
             end
