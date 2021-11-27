@@ -67,7 +67,10 @@ itemService.takeCurrency = function(currency, count)
     for i = 1, containerSize do
         local item = component.pim.getStackInSlot(i)
         if item and not item.nbt_hash and item.id == currency.name and item.dmg == currency.damage then
-            sum = sum + component.pim.pushItem("DOWN", i, count)
+            sum = sum + component.pim.pushItem("DOWN", i, count-sum)
+        end
+        if (count == sum) then
+            return sum
         end
     end
     return sum
