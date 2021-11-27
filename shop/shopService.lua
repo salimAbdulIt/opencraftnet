@@ -58,7 +58,7 @@ function ShopService:new()
         return false
     end
 
-    function obj:depositMoney(nick, count)
+    function obj:withdrawMoney(nick, count)
         local playerDataList = self.db:select({ self:dbClause("ID", nick, "=") })
         local playerData
         if (not playerDataList or not playerDataList[1]) then
