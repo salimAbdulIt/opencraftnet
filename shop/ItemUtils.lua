@@ -108,9 +108,6 @@ itemService.takeMoney = function(money)
     return sum * 1000
 end
 
-itemService.giveItem = function(id, dmg, count)
-end
-
 itemService.getCurrencyInStorage = function(currency)
     if not currency.id then
         return -1
