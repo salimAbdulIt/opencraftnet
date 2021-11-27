@@ -22,9 +22,7 @@ function createNumberEditForm(callback, form, buttonText)
     itemCounterNumberForm.left = math.floor((form.W - itemCounterNumberForm.W) / 2)
     itemCounterNumberForm.top = math.floor((form.H - itemCounterNumberForm.H) / 2)
     itemCounterNumberForm:addLabel(8, 3, "Введите количество")
-    local itemCountEdit = itemCounterNumberForm:addEdit(8, 4, function(tbl)
-        tbl.text = ""
-    end)
+    local itemCountEdit = itemCounterNumberForm:addEdit(8, 4)
     itemCountEdit.W = 18
     itemCountEdit.validator = function(value)
         return tonumber(value) ~= nil
