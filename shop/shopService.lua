@@ -117,7 +117,7 @@ function ShopService:new()
             local item = playerData.items[i]
             if (item.id == id and item.dmg == dmg) then
                 local countToWithdraw = math.min(count, item.count)
-                local withdrawedCount = itemUtils.takeItem(id, dmg, countToWithdraw)
+                local withdrawedCount = itemUtils.giveItem(id, dmg, countToWithdraw)
                 item.count = item.count - withdrawedCount
                 if (item.count == 0) then
                     table.remove(playerData.items, i)
