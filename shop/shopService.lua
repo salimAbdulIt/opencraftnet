@@ -163,7 +163,7 @@ function ShopService:new()
     --        self.db:insert(nick, playerData)
     --    end
 
-    function obj:exchangeOre(nick)
+    function obj:exchangeAllOres(nick)
         local items = {}
         for i, itemConfig in pairs(self.oreExchangeList) do
             local item = {}
@@ -203,7 +203,7 @@ function ShopService:new()
         return false
     end
 
-    function obj:exchangeAllOres(nick, itemConfig, count)
+    function obj:exchangeOre(nick, itemConfig, count)
         local countOfItems = itemUtils.takeItems(itemConfig.fromId, itemConfig.fromDmg, count)
         if (countOfItems > 0) then
             local playerData = self:getPlayerData(nick)
