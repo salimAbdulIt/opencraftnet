@@ -83,7 +83,7 @@ function createGarbageForm()
     local items = shopService:getItems(nickname)
     for i = 1, #items do
         local name = translations[items[i].id .. ":" .. items[i].dmg]
-        for i = 1, 70 - string.len(name) do
+        for i = 1, 60 - string.len(name) do
             name = name .. ' '
         end
         name = name .. items[i].count .. " шт"
@@ -157,6 +157,7 @@ function createMainForm(nick)
     MainForm:addLabel(27, 8, shopService:getItemCount(nick))
 
     local withdrawButton = MainForm:addButton(36, 8, "Забрать предметы", function()
+        GarbageForm = createGarbageForm()
         GarbageForm:setActive()
     end)
     withdrawButton.W = 20
@@ -301,7 +302,6 @@ end
 
 AutorizationForm = createAutorizationForm()
 
-GarbageForm = createGarbageForm()
 BuyShopForm = createBuyShopForm()
 OreExchangerForm = createOreExchangerForm()
 
