@@ -1,5 +1,6 @@
 local component = require('component')
 require('database')
+local itemUtils = require('ItemUtils')
 ShopService = {}
 local pim = component.pim
 function ShopService:new()
@@ -12,6 +13,7 @@ function ShopService:new()
         self.currencies[1].item = component.database.get(1)
         self.currencies[1].dbSlot = 1
         self.currencies[1].money = 1000
+        itemUtils.setCurrency(self.currencies[1].item)
     end
 
     function obj:dbClause(fieldName, fieldValue, typeOfClause)
@@ -39,10 +41,21 @@ function ShopService:new()
     end
 
     function obj:depositMoney(nick, count)
-        local allItems = pim.getAllStacks()
-        for i, item in pairs(allItems) do
-
+        if (itemUtils.takeMoney(count)) then
+            local playerDataList = self.db:select({ self:dbClause("ID", nick, "=") })
+            local playerData
+            if (not playerDataList or not playerDataList[1]) then
+                playerData = {}
+                playerData.balance = 0
+                playerData.itemCount = 0
+            else
+                playerData = playerDataList[1]
+            end
+            playerData.balance = playerData.balance + count
+            self.db:insert(nick, playerData)
+            return true, playerData.balance
         end
+        return false
     end
 
 

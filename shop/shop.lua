@@ -34,7 +34,7 @@ function createNumberEditForm(callback, form, buttonText)
     end)
 
     local acceptButton = itemCounterNumberForm:addButton(17, 8, buttonText, function()
-        callback()
+        callback(itemCountEdit.text and tonumber(itemCountEdit.text) or 0)
     end)
     return itemCounterNumberForm
 end
@@ -135,7 +135,9 @@ function createMainForm(nick)
     sellButton.H = 3
     sellButton.W = 15
 
-    local itemCounterNumberSelectDepositBalanceForm = createNumberEditForm(function() end, MainForm, "Пополнить")
+    local itemCounterNumberSelectDepositBalanceForm = createNumberEditForm(function(count)
+        shopService:depositMoney(nick, count)
+    end, MainForm, "Пополнить")
 
     local itemCounterNumberSelectWithdrawBalanceForm = createNumberEditForm(function() end, MainForm, "Снять")
 
