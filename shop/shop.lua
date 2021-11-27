@@ -95,9 +95,16 @@ function createGarbageForm()
     itemList.H = 15
     itemList.fontColor = 0xFF8F00
 
-    local itemCounterNumberSelectForm = createNumberEditForm(function() end, ShopForm, "Забрать")
+    local itemCounterNumberSelectForm = createNumberEditForm(function()
+        local itemToWithdraw = itemList.items[itemList.index]
+        shopService:withdrawItem(nickname, itemToWithdraw.id, itemToWithdraw.dmg, itemToWithdraw)
+
+        GarbageForm = createGarbageForm()
+        GarbageForm:setActive()
+    end, ShopForm, "Забрать")
 
     local shopBackButton = ShopForm:addButton(3, 23, " Назад ", function()
+        MainForm = createMainForm(nick)
         MainForm:setActive()
     end)
     local shopWithdrawAllButton = ShopForm:addButton(68, 23, " Забрать все ")

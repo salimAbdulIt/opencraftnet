@@ -111,6 +111,23 @@ function ShopService:new()
         return playerData
     end
 
+    function obj:withdrawItem(nick, id, dmg, count)
+        local playerData = self:getPlayerData(nick)
+        for i=1, #playerData.items do
+            local item = playerData.items[i]
+            if (item.id == id and item.dmg == dmg) then
+                local countToWithdraw = math.min(count, item.count)
+                local withdrawedCount = itemUtils.takeItem(id, dmg, countToWithdraw)
+                item.count = item.count - withdrawedCount
+                if (item.count == 0) then
+                    table.remove(playerData.items, i)
+                end
+                self.db:insert(nick, playerData)
+                return withdrawedCount
+            end
+        end
+    end
+
     function obj:exchangeOre(nick, itemConfig, count)
         local countOfItems = itemUtils.takeItem(itemConfig.fromId, itemConfig.fromDmg, count)
         if (countOfItems > 0) then
@@ -127,7 +144,7 @@ function ShopService:new()
                 local item = {}
                 item.id = itemConfig.toId
                 item.dmg = itemConfig.toDmg
-                item.count = countOfItems
+                item.count = countOfItems * itemConfig.toCount / itemConfig.fromCount
                 table.insert(playerData.items, item)
             end
             self.db:insert(nick, playerData)
