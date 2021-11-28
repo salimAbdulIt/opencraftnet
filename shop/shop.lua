@@ -197,6 +197,7 @@ function createMainForm(nick)
     return MainForm
 end
 
+
 function createSellShopForm()
     local SellShopForm = forms.addForm()
     SellShopForm.border = 1
@@ -209,10 +210,16 @@ function createSellShopForm()
     local buyButton3 = SellShopForm:addLabel(23, 4, " █  █ █  █ █▀▄ █▄▄█ █  █ █▀▄ █▄▄█ ")
     local buyButton4 = SellShopForm:addLabel(23, 5, " ▀  ▀ ▀▀▀▀ ▀ ▀ ▄▄▄█ ▀  ▀ ▀ ▀ ▀  ▀ ")
 
-    local categoryButton1 = SellShopForm:addButton(5, 9, " Minecraft ")
+    local categoryButton1 = SellShopForm:addButton(5, 9, " Minecraft ", function()
+        SellShopSpecificForm = createSellShopSpecificForm("Minecraft")
+        SellShopSpecificForm:setActive()
+    end)
     categoryButton1.W = 23
     categoryButton1.H = 3
-    local categoryButton1 = SellShopForm:addButton(29, 9, " Industrial Craft 2 ")
+    local categoryButton1 = SellShopForm:addButton(29, 9, " Industrial Craft 2 ", function()
+        SellShopSpecificForm = createSellShopSpecificForm("IC2")
+        SellShopSpecificForm:setActive()
+    end)
     categoryButton1.W = 24
     categoryButton1.H = 3
     local categoryButton1 = SellShopForm:addButton(54, 9, " Applied Energistics 2 ")
@@ -272,10 +279,10 @@ function createSellShopSpecificForm(category)
 
     for i = 1, #sellShopList do
         local name = sellShopList[i].label
---        for i = 1, 27 - unicode.len(name) do
---            name = name .. ' '
---        end
---        name = name .. sellShopList[i].count
+        --        for i = 1, 27 - unicode.len(name) do
+        --            name = name .. ' '
+        --        end
+        --        name = name .. sellShopList[i].count
 
         for i = 1, 58 - unicode.len(name) do
             name = name .. ' '
