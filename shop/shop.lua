@@ -321,7 +321,7 @@ function createSellShopSpecificForm(category)
     local itemList = ShopForm:addList(5, 7, function()
     end)
     itemList:sort(function(list, i, j)
-        return list[i] > list[j]
+        return list[i].label > list[j].label
     end)
 
     local sellShopList = shopService:getSellShopList(category)
