@@ -28,7 +28,9 @@ function createNotification(status, text, secondText, callback)
     notificationForm.left = math.floor((MainForm.W - notificationForm.W) / 2)
     notificationForm.top = math.floor((MainForm.H - notificationForm.H) / 2)
     notificationForm:addLabel(math.floor((notificationForm.W - unicode.len(text)) / 2), 3, text)
-    notificationForm:addLabel(math.floor((notificationForm.W - unicode.len(secondText)) / 2), 4, text)
+    if (secondText) then
+        notificationForm:addLabel(math.floor((notificationForm.W - unicode.len(secondText)) / 2), 4, text)
+    end
     timer = notificationForm:addTimer(3, function()
         callback()
         timer:stop()
@@ -399,7 +401,7 @@ function createOreExchangerForm()
     itemList.fontColor = 0xFF8F00
 
     local itemCounterNumberSelectForm = createNumberEditForm(function(count)
-        local _,message, message2 = shopService:exchangeOre(nickname, itemList.items[itemList.index], count)
+        local _, message, message2 = shopService:exchangeOre(nickname, itemList.items[itemList.index], count)
         createNotification(nil, message, message2, function()
             OreExchangerForm = createOreExchangerForm(nickname)
             OreExchangerForm:setActive()
