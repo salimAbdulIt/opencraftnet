@@ -86,7 +86,7 @@ function createGarbageForm()
     local items = shopService:getItems(nickname)
     for i = 1, #items do
         local name = translations[items[i].id .. ":" .. items[i].dmg]
-        for i = 1, 60 - string.len(name) do
+        for i = 1, 60 - unicode.len(name) do
             name = name .. ' '
         end
         name = name .. items[i].count .. " шт"
@@ -277,7 +277,7 @@ function createOreExchangerForm()
 
     for i = 1, #oreExchangeList do
         local name = oreExchangeList[i].label
-        for i = 1, 68 - string.len(name) do
+        for i = 1, 68 - unicode.len(name) do
             name = name .. ' '
         end
         name = name .. oreExchangeList[i].fromCount .. 'к' .. oreExchangeList[i].toCount
