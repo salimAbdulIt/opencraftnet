@@ -17,13 +17,13 @@ local SellShopSpecificForm
 local nickname = ""
 local isAutorized = false
 
-function createNotification(status, text, secondText, callback, Form)
+function createNotification(status, text, secondText, callback)
     local notificationForm = forms:addForm()
     notificationForm.border = 2
     notificationForm.W = 31
     notificationForm.H = 10
-    notificationForm.left = math.floor((notificationForm.W - Form.W) / 2)
-    notificationForm.top = math.floor((notificationForm.H - Form.H) / 2)
+    notificationForm.left = math.floor((MainForm.W - notificationForm.W) / 2)
+    notificationForm.top = math.floor((MainForm.H - notificationForm.H) / 2)
     notificationForm:addLabel(8, 3, text)
     if (secondText) then
         notificationForm:addLabel(8, 4, secondText)
@@ -127,7 +127,7 @@ function createGarbageForm()
         createNotification(status, message, nil, function()
             GarbageForm = createGarbageForm()
             GarbageForm:setActive()
-        end, GarbageForm)
+        end)
     end)
     local shopWithdrawButton = ShopForm:addButton(55, 23, " Забрать ", function() itemCounterNumberSelectForm:setActive() end)
     shopBackButton.H = 1
