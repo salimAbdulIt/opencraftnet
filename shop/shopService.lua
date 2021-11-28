@@ -161,9 +161,11 @@ function ShopService:new()
     function obj:withdrawAll(nick)
         local playerData = self:getPlayerData(nick)
         local toRemove = {}
+        local sum = 0
         for i = 1, #playerData.items do
             local item = playerData.items[i]
             local withdrawedCount = itemUtils.giveItem(item.id, item.dmg, item.count)
+            sum = sum + withdrawedCount
             item.count = item.count - withdrawedCount
             if (item.count == 0) then
                 table.insert(toRemove, i)
@@ -174,6 +176,14 @@ function ShopService:new()
         end
 
         self.db:insert(nick, playerData)
+        if (sum == 0) then
+            if (itemUtils.countOfAvailableSlots() > 0) then
+                return false, "Вещей нету в наличии!"
+            else
+                return false, "Освободите инвентарь!"
+            end
+        end
+        return true, "Выдано " .. sum .. " вещей"
     end
 
     --

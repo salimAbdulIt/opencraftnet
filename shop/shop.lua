@@ -17,6 +17,23 @@ local SellShopSpecificForm
 local nickname = ""
 local isAutorized = false
 
+function createNotification(status, text, secondText, callback)
+    local notificationForm = forms:addForm()
+    notificationForm.border = 2
+    notificationForm.W = 31
+    notificationForm.H = 10
+    notificationForm.left = math.floor((form.W - itemCounterNumberForm.W) / 2)
+    notificationForm.top = math.floor((form.H - itemCounterNumberForm.H) / 2)
+    notificationForm:addLabel(8, 3, text)
+    if (secondText) then
+        notificationForm:addLabel(8, 4, secondText)
+    end
+    notificationForm:addTimer(3, function()
+        callback()
+    end)
+    notificationForm:setActive()
+end
+
 function createNumberEditForm(callback, form, buttonText)
     local itemCounterNumberForm = forms:addForm()
     itemCounterNumberForm.border = 2
@@ -106,10 +123,11 @@ function createGarbageForm()
         MainForm:setActive()
     end)
     local shopWithdrawAllButton = ShopForm:addButton(68, 23, " Забрать все ", function()
-        shopService:withdrawAll(nickname)
-
-        GarbageForm = createGarbageForm()
-        GarbageForm:setActive()
+        local status, message = shopService:withdrawAll(nickname)
+        createNotification(status, message, nil, function()
+            GarbageForm = createGarbageForm()
+            GarbageForm:setActive()
+        end)
     end)
     local shopWithdrawButton = ShopForm:addButton(55, 23, " Забрать ", function() itemCounterNumberSelectForm:setActive() end)
     shopBackButton.H = 1
@@ -271,7 +289,7 @@ function createSellShopSpecificForm(category)
     authorLabel.fontColor = 0x00FDFF
 
     local shopNameLabel = ShopForm:addLabel(35, 4, " Магазин ")
-    local shopCountLabel = ShopForm:addLabel(4, 6, " Наименование              Количество в магазине           Цена        ")
+    local shopCountLabel = ShopForm:addLabel(4, 6, " Наименование               Количество в магазине          Цена        ")
 
     local itemList = ShopForm:addList(5, 7, function()
     end)
