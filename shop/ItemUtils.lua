@@ -85,7 +85,7 @@ itemService.populateCount = function(items)
     for i, item in pairs(items) do
         item.count = 0
         for k, itemFromMe in pairs(itemsFromMe) do
-            if (item.id == itemFromMe.id and item.dmg == itemFromMe.dmg) then
+            if (item.id == itemFromMe.fingerprint.id and item.dmg == itemFromMe.fingerprint.dmg) then
                 item.count = item.count + itemFromMe.size
             end
         end
