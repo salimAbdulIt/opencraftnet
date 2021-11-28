@@ -15,13 +15,6 @@ local OreExchangerForm
 local nickname = ""
 local isAutorized = false
 
-local translations = {
-    ["minecraft:iron_ingot:0"] = "Железный слиток",
-    ["minecraft:gold_ingot:0"] = "Золотой слиток",
-    ["IC2:itemIngot:1"] = "Оловянный слиток",
-    ["IC2:itemIngot:0"] = "Медный слиток"
-}
-
 function createNumberEditForm(callback, form, buttonText)
     local itemCounterNumberForm = forms:addForm()
     itemCounterNumberForm.border = 2
@@ -276,7 +269,7 @@ function createOreExchangerForm()
     local oreExchangeList = shopService:getOreExchangeList()
 
     for i = 1, #oreExchangeList do
-        local name = oreExchangeList[i].label
+        local name = oreExchangeList[i].fromLabel
         for i = 1, 68 - unicode.len(name) do
             name = name .. ' '
         end

@@ -197,6 +197,7 @@ function ShopService:new()
                 local newItem = {}
                 newItem.id = itemCfg.toId
                 newItem.dmg = itemCfg.toDmg
+                newItem.label = itemCfg.toLabel
                 newItem.count = item.count * itemCfg.toCount / itemCfg.fromCount
                 table.insert(playerData.items, newItem)
             end
@@ -222,6 +223,7 @@ function ShopService:new()
                 local item = {}
                 item.id = itemConfig.toId
                 item.dmg = itemConfig.toDmg
+                item.label = itemConfig.toLabel
                 item.count = countOfItems * itemConfig.toCount / itemConfig.fromCount
                 table.insert(playerData.items, item)
             end
