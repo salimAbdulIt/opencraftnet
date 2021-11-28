@@ -92,14 +92,25 @@ itemService.populateCount = function(items)
     end
 end
 
+itemService.countOfAvailableSlots = function()
+    local count = 0
+    local allStacks = component.pim.getAllStacks()
+    for i = 1, 40 do
+        if (not allStacks[i]) then
+            count = count + 1
+        end
+    end
+    return count
+end
+
 itemService.takeItems = function(items)
     local sumList = {}
     for i = 1, containerSize do
         local item = component.pim.getStackInSlot(i)
-        for j,itemCfg in pairs(items) do
+        for j, itemCfg in pairs(items) do
             if item and not item.nbt_hash and item.id == itemCfg.id and item.dmg == itemCfg.dmg then
                 local sum = component.pim.pushItem("DOWN", i, item.count)
-                for k=1,#sumList do
+                for k = 1, #sumList do
                     if (sumList[k].id == itemCfg.id and sumList[k].dmg == itemCfg.dmg) then
                         sumList[k].count = sumList[k].count + sum
                         sum = 0
