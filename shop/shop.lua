@@ -17,6 +17,8 @@ local SellShopSpecificForm
 local nickname = ""
 local isAutorized = false
 
+local timer
+
 function createNotification(status, text, secondText, callback)
     local notificationForm = forms:addForm()
     notificationForm.border = 2
@@ -24,11 +26,7 @@ function createNotification(status, text, secondText, callback)
     notificationForm.H = 10
     notificationForm.left = math.floor((MainForm.W - notificationForm.W) / 2)
     notificationForm.top = math.floor((MainForm.H - notificationForm.H) / 2)
-    notificationForm:addLabel(8, 3, text)
-    if (secondText) then
-        notificationForm:addLabel(math.floor((MainForm.W - unicode.len(text)) / 2), 4, secondText)
-    end
-    local timer
+    notificationForm:addLabel(math.floor((notificationForm.W - unicode.len(text)) / 2), 3, text)
     timer = notificationForm:addTimer(3, function()
         callback()
         timer:stop()
@@ -427,6 +425,7 @@ local Event1 = AutorizationForm:addEvent("player_on", function(e, p)
 end)
 
 local Event1 = AutorizationForm:addEvent("player_off", function(e, p)
+    timer:stop()
     AutorizationForm:setActive()
 end)
 
