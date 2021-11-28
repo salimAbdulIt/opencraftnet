@@ -313,7 +313,7 @@ function createSellShopSpecificForm(category)
     authorLabel.fontColor = 0x00FDFF
 
     local shopNameLabel = ShopForm:addLabel(35, 4, " Магазин ")
-    local shopCountLabel = ShopForm:addLabel(4, 6, " Наименование                          Количество в магазине   Цена    ")
+    local shopCountLabel = ShopForm:addLabel(4, 6, " Наименование                                       Количество   Цена  ")
 
     local itemList = ShopForm:addList(5, 7, function()
     end)
@@ -322,12 +322,12 @@ function createSellShopSpecificForm(category)
 
     for i = 1, #sellShopList do
         local name = sellShopList[i].label
-        for i = 1, 38 - unicode.len(name) do
+        for i = 1, 51 - unicode.len(name) do
             name = name .. ' '
         end
         name = name .. sellShopList[i].count
 
-        for i = 1, 62 - unicode.len(name) do
+        for i = 1, 64 - unicode.len(name) do
             name = name .. ' '
         end
 
