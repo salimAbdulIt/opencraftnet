@@ -10,8 +10,9 @@ local shopService = ShopService:new()
 local GarbageForm
 local MainForm
 local AutorizationForm
-local BuyShopForm
+local SellShopForm
 local OreExchangerForm
+local SellShopSpecificForm
 
 local nickname = ""
 local isAutorized = false
@@ -172,7 +173,7 @@ function createMainForm(nick)
     withdrawButton.W = 20
 
     local buyButton = MainForm:addButton(8, 17, " Купить ", function()
-        BuyShopForm:setActive()
+        SellShopForm:setActive()
     end)
     buyButton.H = 3
     buyButton.W = 21
@@ -196,57 +197,116 @@ function createMainForm(nick)
     return MainForm
 end
 
-function createBuyShopForm()
-    local BuyShopForm = forms.addForm()
-    BuyShopForm.border = 1
-    local shopNameLabel = BuyShopForm:addLabel(33, 1, " Legend Shop ")
+function createSellShopForm()
+    local SellShopForm = forms.addForm()
+    SellShopForm.border = 1
+    local shopNameLabel = SellShopForm:addLabel(33, 1, " Legend Shop ")
     shopNameLabel.fontColor = 0x00FDFF
-    local authorLabel = BuyShopForm:addLabel(32, 25, " Автор: Durex77 ")
+    local authorLabel = SellShopForm:addLabel(32, 25, " Автор: Durex77 ")
     authorLabel.fontColor = 0x00FDFF
 
-    local buyButton2 = BuyShopForm:addLabel(23, 3, " █▀▀█ █▀▀█ █ █ █  █ █▀▀█ █ █ █▀▀█ ")
-    local buyButton3 = BuyShopForm:addLabel(23, 4, " █  █ █  █ █▀▄ █▄▄█ █  █ █▀▄ █▄▄█ ")
-    local buyButton4 = BuyShopForm:addLabel(23, 5, " ▀  ▀ ▀▀▀▀ ▀ ▀ ▄▄▄█ ▀  ▀ ▀ ▀ ▀  ▀ ")
+    local buyButton2 = SellShopForm:addLabel(23, 3, " █▀▀█ █▀▀█ █ █ █  █ █▀▀█ █ █ █▀▀█ ")
+    local buyButton3 = SellShopForm:addLabel(23, 4, " █  █ █  █ █▀▄ █▄▄█ █  █ █▀▄ █▄▄█ ")
+    local buyButton4 = SellShopForm:addLabel(23, 5, " ▀  ▀ ▀▀▀▀ ▀ ▀ ▄▄▄█ ▀  ▀ ▀ ▀ ▀  ▀ ")
 
-    local categoryButton1 = BuyShopForm:addButton(5, 9, " Minecraft ")
+    local categoryButton1 = SellShopForm:addButton(5, 9, " Minecraft ")
     categoryButton1.W = 23
     categoryButton1.H = 3
-    local categoryButton1 = BuyShopForm:addButton(29, 9, " Industrial Craft 2 ")
+    local categoryButton1 = SellShopForm:addButton(29, 9, " Industrial Craft 2 ")
     categoryButton1.W = 24
     categoryButton1.H = 3
-    local categoryButton1 = BuyShopForm:addButton(54, 9, " Applied Energistics 2 ")
+    local categoryButton1 = SellShopForm:addButton(54, 9, " Applied Energistics 2 ")
     categoryButton1.W = 23
     categoryButton1.H = 3
 
-    local categoryButton1 = BuyShopForm:addButton(5, 13, " Forestry ")
+    local categoryButton1 = SellShopForm:addButton(5, 13, " Forestry ")
     categoryButton1.W = 23
     categoryButton1.H = 3
-    local categoryButton1 = BuyShopForm:addButton(29, 13, " Зачарованные книги ")
+    local categoryButton1 = SellShopForm:addButton(29, 13, " Зачарованные книги ")
     categoryButton1.W = 24
     categoryButton1.H = 3
-    local categoryButton1 = BuyShopForm:addButton(54, 13, " Draconic Evolution ")
+    local categoryButton1 = SellShopForm:addButton(54, 13, " Draconic Evolution ")
     categoryButton1.W = 23
     categoryButton1.H = 3
 
-    local categoryButton1 = BuyShopForm:addButton(5, 17, " Thermal Expansion ")
+    local categoryButton1 = SellShopForm:addButton(5, 17, " Thermal Expansion ")
     categoryButton1.W = 23
     categoryButton1.H = 3
-    local categoryButton1 = BuyShopForm:addButton(29, 17, " Скоро ")
+    local categoryButton1 = SellShopForm:addButton(29, 17, " Скоро ")
     categoryButton1.W = 24
     categoryButton1.H = 3
     categoryButton1.fontColor = 0xaaaaaa
     categoryButton1.color = 0x000000
-    local categoryButton1 = BuyShopForm:addButton(54, 17, " Скоро ")
+    local categoryButton1 = SellShopForm:addButton(54, 17, " Скоро ")
     categoryButton1.W = 23
     categoryButton1.H = 3
     categoryButton1.fontColor = 0xaaaaaa
     categoryButton1.color = 0x000000
 
-    local shopBackButton = BuyShopForm:addButton(3, 23, " Назад ", function()
+    local shopBackButton = SellShopForm:addButton(3, 23, " Назад ", function()
         MainForm:setActive()
     end)
 
-    return BuyShopForm
+    return SellShopForm
+end
+
+
+function createSellShopSpecificForm(category)
+    local ShopForm = forms.addForm()
+    ShopForm.border = 1
+    local shopFrame = ShopForm:addFrame(3, 5, 1)
+    shopFrame.W = 76
+    shopFrame.H = 18
+    local shopNameLabel = ShopForm:addLabel(33, 1, " Legend Shop ")
+    shopNameLabel.fontColor = 0x00FDFF
+    local authorLabel = ShopForm:addLabel(32, 25, " Автор: Durex77 ")
+    authorLabel.fontColor = 0x00FDFF
+
+    local shopNameLabel = ShopForm:addLabel(35, 4, " Магазин ")
+    local shopCountLabel = ShopForm:addLabel(4, 6, " Наименование              Количество в магазине           Цена        ")
+
+    local itemList = ShopForm:addList(5, 7, function()
+    end)
+
+    local sellShopList = shopService:getSellShopList(category)
+
+    for i = 1, #sellShopList do
+        local name = sellShopList[i].label
+--        for i = 1, 27 - unicode.len(name) do
+--            name = name .. ' '
+--        end
+--        name = name .. sellShopList[i].count
+
+        for i = 1, 58 - unicode.len(name) do
+            name = name .. ' '
+        end
+
+        name = name .. sellShopList[i].price
+
+        itemList:insert(name, sellShopList[i])
+    end
+    itemList.border = 0
+    itemList.W = 70
+    itemList.H = 15
+    itemList.fontColor = 0xFF8F00
+
+    local itemCounterNumberSelectForm = createNumberEditForm(function(count)
+        shopService:sellItem(nickname, itemList.items[itemList.index], count)
+        SellShopSpecificForm = createSellShopSpecificForm(category)
+        SellShopSpecificForm:setActive()
+    end, ShopForm, "Купить")
+
+    local shopBackButton = ShopForm:addButton(3, 23, " Назад ", function()
+        MainForm = createMainForm(nickname)
+        MainForm:setActive()
+    end)
+
+    local shopWithdrawButton = ShopForm:addButton(68, 23, " Купить ", function()
+        itemCounterNumberSelectForm:setActive()
+    end)
+    shopBackButton.H = 1
+    shopBackButton.W = 9
+    return ShopForm
 end
 
 
@@ -271,7 +331,7 @@ function createOreExchangerForm()
 
     for i = 1, #oreExchangeList do
         local name = oreExchangeList[i].fromLabel
-        for i = 1, 60 - unicode.len(name) do
+        for i = 1, 58 - unicode.len(name) do
             name = name .. ' '
         end
         name = name .. oreExchangeList[i].fromCount .. 'к' .. oreExchangeList[i].toCount
@@ -315,7 +375,7 @@ end
 
 AutorizationForm = createAutorizationForm()
 
-BuyShopForm = createBuyShopForm()
+SellShopForm = createSellShopForm()
 OreExchangerForm = createOreExchangerForm()
 
 

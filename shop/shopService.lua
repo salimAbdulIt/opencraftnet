@@ -9,6 +9,7 @@ function ShopService:new()
 
     function obj:init()
         self.oreExchangeList = utils.readObjectFromFile("home/config/oreExchanger.cfg")
+        self.sellShopList = utils.readObjectFromFile("home/config/sellShop.cfg")
 
         self.db = DurexDatabase:new("USERS")
         self.currencies = {}
@@ -45,6 +46,19 @@ function ShopService:new()
 
     function obj:getOreExchangeList()
         return self.oreExchangeList
+    end
+
+
+    function obj:getSellShopList(category)
+        local categorySellShopList = {}
+
+        for i, sellConfig in pairs(self.sellShopList) do
+            if (sellConfig.category == category) then
+                table.insert(categorySellShopList, sellConfig)
+            end
+        end
+
+        return categorySellShopList
     end
 
     function obj:getBalance(nick)
@@ -128,6 +142,21 @@ function ShopService:new()
         end
     end
 
+    function obj:sellItem(nick, sellItemCfg, count)
+        local playerData = self:getPlayerData(nick)
+
+        if (playerData.balance < count * sellItemCfg.price) then
+            return false, "Не хватает денег на счету"
+        end
+        local itemsCount = itemUtils.giveItem(sellItemCfg.id, sellItemCfg.dmg, count)
+
+        if (itemsCount > 0) then
+            playerData.balance = playerData.balance - itemsCount * sellItemCfg.price
+            self.db:insert(nick, playerData)
+        end
+        return true
+    end
+
     function obj:withdrawAll(nick)
         local playerData = self:getPlayerData(nick)
         local toRemove = {}
@@ -139,7 +168,7 @@ function ShopService:new()
                 table.insert(toRemove, i)
             end
         end
-        for i=#toRemove,1,-1 do
+        for i = #toRemove, 1, -1 do
             table.remove(playerData.items, toRemove[i])
         end
 
