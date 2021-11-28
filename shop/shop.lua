@@ -22,8 +22,8 @@ function createNotification(status, text, secondText, callback)
     notificationForm.border = 2
     notificationForm.W = 31
     notificationForm.H = 10
-    notificationForm.left = math.floor((form.W - itemCounterNumberForm.W) / 2)
-    notificationForm.top = math.floor((form.H - itemCounterNumberForm.H) / 2)
+    notificationForm.left = math.floor((notificationForm.W - MainForm.W) / 2)
+    notificationForm.top = math.floor((notificationForm.H - MainForm.H) / 2)
     notificationForm:addLabel(8, 3, text)
     if (secondText) then
         notificationForm:addLabel(8, 4, secondText)
