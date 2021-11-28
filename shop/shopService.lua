@@ -259,7 +259,7 @@ function ShopService:new()
         if (sum == 0) then
             return 0, "Нету руд в инвентаре!"
         else
-            return sum, "Обменняно " .. sum .. " руд на слитки."
+            return sum, " Обменяно " .. sum .. " руд на слитки.", "Заберите из корзины"
         end
     end
 
@@ -285,7 +285,7 @@ function ShopService:new()
                 table.insert(playerData.items, item)
             end
             self.db:insert(nick, playerData)
-            return countOfItems, "Обменняно " .. countOfItems .. " руд на слитки."
+            return countOfItems, " Обменяно " .. countOfItems .. " руд на слитки.", "Заберите из корзины"
         end
         return 0, "Нету руд в инвентаре!"
     end
