@@ -19,7 +19,7 @@ local translations = {
     ["minecraft:iron_ingot:0"] = "Железный слиток",
     ["minecraft:gold_ingot:0"] = "Золотой слиток",
     ["IC2:itemIngot:1"] = "Оловянный слиток",
-    ["IC2:itemIngot:2"] = "Медный слиток"
+    ["IC2:itemIngot:0"] = "Медный слиток"
 }
 
 function createNumberEditForm(callback, form, buttonText)
