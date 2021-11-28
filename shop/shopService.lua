@@ -4,6 +4,12 @@ local itemUtils = require('ItemUtils')
 local utils = require('utils')
 ShopService = {}
 local pim = component.pim
+local event = require('event')
+
+event.shouldInterrupt = function()
+    return false
+end
+
 function ShopService:new()
     local obj = {}
 

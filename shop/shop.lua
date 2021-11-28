@@ -1,4 +1,5 @@
 local component = require('component')
+local computer = require('computer')
 local forms = require("forms") -- подключаем библиотеку
 local gpu = component.gpu
 local utils = require('utils')
@@ -248,21 +249,36 @@ function createSellShopForm()
     end)
     categoryButton1.W = 24
     categoryButton1.H = 3
-    local categoryButton1 = SellShopForm:addButton(54, 9, " Applied Energistics 2 ")
+    local categoryButton1 = SellShopForm:addButton(54, 9, " Applied Energistics 2 ", function()
+        SellShopSpecificForm = createSellShopSpecificForm("AE2")
+        SellShopSpecificForm:setActive()
+    end)
     categoryButton1.W = 23
     categoryButton1.H = 3
 
-    local categoryButton1 = SellShopForm:addButton(5, 13, " Forestry ")
+    local categoryButton1 = SellShopForm:addButton(5, 13, " Forestry ", function()
+        SellShopSpecificForm = createSellShopSpecificForm("Forestry")
+        SellShopSpecificForm:setActive()
+    end)
     categoryButton1.W = 23
     categoryButton1.H = 3
-    local categoryButton1 = SellShopForm:addButton(29, 13, " Зачарованные книги ")
+    local categoryButton1 = SellShopForm:addButton(29, 13, " Зачарованные книги ", function()
+        SellShopSpecificForm = createSellShopSpecificForm("Books")
+        SellShopSpecificForm:setActive()
+    end)
     categoryButton1.W = 24
     categoryButton1.H = 3
-    local categoryButton1 = SellShopForm:addButton(54, 13, " Draconic Evolution ")
+    local categoryButton1 = SellShopForm:addButton(54, 13, " Draconic Evolution ", function()
+        SellShopSpecificForm = createSellShopSpecificForm("DE")
+        SellShopSpecificForm:setActive()
+    end)
     categoryButton1.W = 23
     categoryButton1.H = 3
 
-    local categoryButton1 = SellShopForm:addButton(5, 17, " Thermal Expansion ")
+    local categoryButton1 = SellShopForm:addButton(5, 17, " Thermal Expansion ", function()
+        SellShopSpecificForm = createSellShopSpecificForm("TE")
+        SellShopSpecificForm:setActive()
+    end)
     categoryButton1.W = 23
     categoryButton1.H = 3
     local categoryButton1 = SellShopForm:addButton(29, 17, " Скоро ")
@@ -420,11 +436,13 @@ OreExchangerForm = createOreExchangerForm()
 
 local Event1 = AutorizationForm:addEvent("player_on", function(e, p)
     if (p) then
+        computer.addUser(p)
         autorize(p)
     end
 end)
 
 local Event1 = AutorizationForm:addEvent("player_off", function(e, p)
+    computer.removeUser(nickname)
     timer:stop()
     AutorizationForm:setActive()
 end)
