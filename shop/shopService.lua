@@ -139,7 +139,7 @@ function ShopService:new()
                 table.insert(toRemove, i)
             end
         end
-        for i=1,#toRemove do
+        for i=#toRemove,1,-1 do
             table.remove(playerData.items, toRemove[i])
         end
 
