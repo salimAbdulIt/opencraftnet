@@ -280,10 +280,10 @@ function createSellShopSpecificForm(category)
 
     for i = 1, #sellShopList do
         local name = sellShopList[i].label
-        --        for i = 1, 27 - unicode.len(name) do
-        --            name = name .. ' '
-        --        end
-        --        name = name .. sellShopList[i].count
+        for i = 1, 27 - unicode.len(name) do
+            name = name .. ' '
+        end
+        name = name .. sellShopList[i].count
 
         for i = 1, 58 - unicode.len(name) do
             name = name .. ' '

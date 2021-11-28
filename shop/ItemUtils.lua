@@ -79,6 +79,19 @@ itemService.takeItem = function(id, dmg, count)
     return sum
 end
 
+itemService.populateCount = function(items)
+    local itemsFromMe = meInterface.getAvailableItems()
+
+    for i, item in pairs(items) do
+        item.count = 0
+        for k, itemFromMe in pairs(itemsFromMe) do
+            if (item.id == itemFromMe.id and item.dmg == itemFromMe.dmg) then
+                item.count = item.count + itemFromMe.size
+            end
+        end
+    end
+end
+
 itemService.takeItems = function(items)
     local sumList = {}
     for i = 1, containerSize do

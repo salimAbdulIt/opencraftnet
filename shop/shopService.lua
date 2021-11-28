@@ -57,6 +57,7 @@ function ShopService:new()
                 table.insert(categorySellShopList, sellConfig)
             end
         end
+        itemUtils.populateCount(categorySellShopList)
 
         return categorySellShopList
     end
