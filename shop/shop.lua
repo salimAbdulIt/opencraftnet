@@ -26,7 +26,7 @@ function createNotification(status, text, secondText, callback)
     notificationForm.top = math.floor((MainForm.H - notificationForm.H) / 2)
     notificationForm:addLabel(8, 3, text)
     if (secondText) then
-        notificationForm:addLabel(8, 4, secondText)
+        notificationForm:addLabel(math.floor((MainForm.W - unicode.len(text)) / 2), 4, secondText)
     end
     local timer
     timer = notificationForm:addTimer(3, function()
