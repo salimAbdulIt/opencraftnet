@@ -207,7 +207,7 @@ function ShopService:new()
     end
 
     function obj:exchangeOre(nick, itemConfig, count)
-        local countOfItems = itemUtils.takeItems(itemConfig.fromId, itemConfig.fromDmg, count)
+        local countOfItems = itemUtils.takeItem(itemConfig.fromId, itemConfig.fromDmg, count)
         if (countOfItems > 0) then
             local playerData = self:getPlayerData(nick)
             local itemAlreadyInFile = false

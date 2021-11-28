@@ -2,6 +2,7 @@ local component = require('component')
 local forms = require("forms") -- подключаем библиотеку
 local gpu = component.gpu
 local utils = require('utils')
+local unicode = require('unicode')
 gpu.setResolution(80, 25)
 require("shopService")
 local shopService = ShopService:new()
@@ -270,7 +271,7 @@ function createOreExchangerForm()
 
     for i = 1, #oreExchangeList do
         local name = oreExchangeList[i].fromLabel
-        for i = 1, 68 - unicode.len(name) do
+        for i = 1, 60 - unicode.len(name) do
             name = name .. ' '
         end
         name = name .. oreExchangeList[i].fromCount .. 'к' .. oreExchangeList[i].toCount
