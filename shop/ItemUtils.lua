@@ -90,7 +90,6 @@ itemService.takeItems = function(items)
                     if (sumList[k].id == itemCfg.id and sumList[k].dmg == itemCfg.dmg) then
                         sumList[k].count = sumList[k].count + sum
                         sum = 0
-                        break
                     end
                 end
                 if (sum > 0) then
