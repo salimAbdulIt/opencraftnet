@@ -251,6 +251,7 @@ function createSellShopForm()
     categoryButton1.color = 0x000000
 
     local shopBackButton = SellShopForm:addButton(3, 23, " Назад ", function()
+        MainForm = createMainForm(nickname)
         MainForm:setActive()
     end)
 
@@ -304,8 +305,7 @@ function createSellShopSpecificForm(category)
     end, ShopForm, "Купить")
 
     local shopBackButton = ShopForm:addButton(3, 23, " Назад ", function()
-        MainForm = createMainForm(nickname)
-        MainForm:setActive()
+        SellShopForm:setActive()
     end)
 
     local shopWithdrawButton = ShopForm:addButton(68, 23, " Купить ", function()
