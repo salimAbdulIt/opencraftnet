@@ -330,7 +330,7 @@ function createSellShopSpecificForm(category)
         end
         name = name .. sellShopList[i].count
 
-        for i = 1, 64 - unicode.len(name) do
+        for i = 1, 62 - unicode.len(name) do
             name = name .. ' '
         end
 
