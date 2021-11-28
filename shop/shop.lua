@@ -79,7 +79,7 @@ function createGarbageForm()
 
     local items = shopService:getItems(nickname)
     for i = 1, #items do
-        local name = translations[items[i].id .. ":" .. items[i].dmg]
+        local name = items[i].label
         for i = 1, 60 - unicode.len(name) do
             name = name .. ' '
         end
