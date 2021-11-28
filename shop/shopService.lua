@@ -130,14 +130,17 @@ function ShopService:new()
 
     function obj:withdrawAll(nick)
         local playerData = self:getPlayerData(nick)
+        local toRemove = {}
         for i = 1, #playerData.items do
             local item = playerData.items[i]
             local withdrawedCount = itemUtils.giveItem(item.id, item.dmg, item.count)
             item.count = item.count - withdrawedCount
             if (item.count == 0) then
-                table.remove(playerData.items, i)
-                i = i - 1
+                table.insert(i)
             end
+        end
+        for i=1,#toRemove do
+            table.remove(playerData.items, toRemove[i])
         end
 
         self.db:insert(nick, playerData)
