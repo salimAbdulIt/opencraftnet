@@ -99,6 +99,7 @@ itemService.takeItems = function(items)
                     sumElement.count = sum
                     table.insert(sumList, sumElement)
                 end
+                break
             end
         end
     end

@@ -181,6 +181,7 @@ function ShopService:new()
             for j, itemConfig in pairs(self.oreExchangeList) do
                 if (item.id == itemConfig.fromId and item.dmg == itemConfig.fromDmg) then
                     itemCfg = itemConfig
+                    break
                 end
             end
             local itemAlreadyInFile = false
@@ -189,6 +190,7 @@ function ShopService:new()
                 if (itemP.id == itemCfg.toId and itemP.dmg == itemCfg.toDmg) then
                     itemP.count = itemP.count + item.count * itemCfg.toCount / itemCfg.fromCount
                     itemAlreadyInFile = true
+                    break
                 end
             end
             if (not itemAlreadyInFile) then
@@ -213,6 +215,7 @@ function ShopService:new()
                 if (item.id == itemConfig.toId and item.dmg == itemConfig.toDmg) then
                     item.count = item.count + countOfItems * itemConfig.toCount / itemConfig.fromCount
                     itemAlreadyInFile = true
+                    break
                 end
             end
             if (not itemAlreadyInFile) then
