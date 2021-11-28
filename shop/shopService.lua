@@ -136,7 +136,7 @@ function ShopService:new()
             local withdrawedCount = itemUtils.giveItem(item.id, item.dmg, item.count)
             item.count = item.count - withdrawedCount
             if (item.count == 0) then
-                table.insert(i)
+                table.insert(toRemove, i)
             end
         end
         for i=1,#toRemove do
