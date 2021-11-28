@@ -237,7 +237,7 @@ function createSellShopForm()
     local buyButton3 = SellShopForm:addLabel(23, 4, " █  █ █  █ █▀▄ █▄▄█ █  █ █▀▄ █▄▄█ ")
     local buyButton4 = SellShopForm:addLabel(23, 5, " ▀  ▀ ▀▀▀▀ ▀ ▀ ▄▄▄█ ▀  ▀ ▀ ▀ ▀  ▀ ")
 
-    local categoryButton1 = SellShopForm:addButton(5, 9, " Minecraft ", function()
+    local categoryButton1 = SellShopForm:addButton(5, 9, " Разное ", function()
         SellShopSpecificForm = createSellShopSpecificForm("Minecraft")
         SellShopSpecificForm:setActive()
     end)
@@ -313,9 +313,12 @@ function createSellShopSpecificForm(category)
     authorLabel.fontColor = 0x00FDFF
 
     local shopNameLabel = ShopForm:addLabel(35, 4, " Магазин ")
-    local shopCountLabel = ShopForm:addLabel(4, 6, " Наименование                                       Количество   Цена  ")
+    local shopCountLabel = ShopForm:addLabel(4, 6, " Наименование                                       Количество Цена    ")
 
     local itemList = ShopForm:addList(5, 7, function()
+    end)
+    itemList:sort(function(list, i, j)
+        return list[i] > list[j]
     end)
 
     local sellShopList = shopService:getSellShopList(category)
@@ -336,7 +339,7 @@ function createSellShopSpecificForm(category)
         itemList:insert(name, sellShopList[i])
     end
     itemList.border = 0
-    itemList.W = 70
+    itemList.W = 72
     itemList.H = 15
     itemList.fontColor = 0xFF8F00
 
