@@ -28,7 +28,8 @@ function createNotification(status, text, secondText, callback)
     if (secondText) then
         notificationForm:addLabel(8, 4, secondText)
     end
-    local timer = notificationForm:addTimer(3, function()
+    local timer
+    timer = notificationForm:addTimer(3, function()
         callback()
         timer:stop()
     end)
