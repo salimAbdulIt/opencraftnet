@@ -137,7 +137,6 @@ function ShopService:new()
             if (item.count == 0) then
                 table.remove(playerData.items, i)
                 i = i - 1
-                break
             end
         end
 
