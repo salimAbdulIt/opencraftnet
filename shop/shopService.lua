@@ -93,24 +93,28 @@ function ShopService:new()
 
             playerData.balance = playerData.balance + countOfMoney
             self.db:insert(nick, playerData)
-            return true, playerData.balance
+            return playerData.balance, "Баланс пополнен на " .. countOfMoney
         end
-        return false
+        return 0, "Нету монеток в инвентаре!"
     end
 
     function obj:withdrawMoney(nick, count)
         local playerData = self:getPlayerData(nick)
 
         if (playerData.balance < count) then
-            return false, "Не хватает денег на счету"
+            return 0, "Не хватает денег на счету"
         end
         local countOfMoney = itemUtils.giveMoney(count)
         if (countOfMoney > 0) then
             playerData.balance = playerData.balance - countOfMoney
             self.db:insert(nick, playerData)
-            return true, playerData.balance
+            return countOfMoney, "C баланса списанно " .. countOfMoney
         end
-        return false
+        if (itemUtils.countOfAvailableSlots() > 0) then
+            return 0, "Нету монеток в инвентаре!"
+        else
+            return 0, "Освободите инвентарь!"
+        end
     end
 
     function obj:getPlayerData(nick)
@@ -138,9 +142,10 @@ function ShopService:new()
                     table.remove(playerData.items, i)
                 end
                 self.db:insert(nick, playerData)
-                return withdrawedCount
+                return withdrawedCount, "Выданно " .. withdrawedCount .. " вещей"
             end
         end
+        return 0, "Вещей нету в наличии!"
     end
 
     function obj:sellItem(nick, sellItemCfg, count)
@@ -155,7 +160,7 @@ function ShopService:new()
             playerData.balance = playerData.balance - itemsCount * sellItemCfg.price
             self.db:insert(nick, playerData)
         end
-        return true
+        return itemsCount, "Купленно " .. itemsCount .. " предметов!"
     end
 
     function obj:withdrawAll(nick)
@@ -178,12 +183,12 @@ function ShopService:new()
         self.db:insert(nick, playerData)
         if (sum == 0) then
             if (itemUtils.countOfAvailableSlots() > 0) then
-                return false, "Вещей нету в наличии!"
+                return sum, "Вещей нету в наличии!"
             else
-                return false, "Освободите инвентарь!"
+                return sum, "Освободите инвентарь!"
             end
         end
-        return true, "Выдано " .. sum .. " вещей"
+        return sum, "Выданно " .. sum .. " вещей"
     end
 
     --
@@ -216,7 +221,9 @@ function ShopService:new()
         local itemsTaken = itemUtils.takeItems(items)
 
         local playerData = self:getPlayerData(nick)
+        local sum = 0
         for i, item in pairs(itemsTaken) do
+            sum = sum + item.count
             local itemCfg
             for j, itemConfig in pairs(self.oreExchangeList) do
                 if (item.id == itemConfig.fromId and item.dmg == itemConfig.fromDmg) then
@@ -243,7 +250,11 @@ function ShopService:new()
             end
         end
         self.db:insert(nick, playerData)
-        return false
+        if (sum == 0) then
+            return 0, "Нету руд в инвентаре!"
+        else
+            return sum, "Обменняно " .. sum .. " руд на слитки."
+        end
     end
 
     function obj:exchangeOre(nick, itemConfig, count)
@@ -268,9 +279,9 @@ function ShopService:new()
                 table.insert(playerData.items, item)
             end
             self.db:insert(nick, playerData)
-            return true, playerData.balance
+            return countOfItems, "Обменняно " .. countOfItems .. " руд на слитки."
         end
-        return false
+        return 0, "Нету руд в инвентаре!"
     end
 
 
