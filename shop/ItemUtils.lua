@@ -97,7 +97,7 @@ itemService.populateUserCount = function(items)
     for i, item in pairs(items) do
         item.count = 0
         for k, itemFromPlayer in pairs(itemsFromPlayer) do
-            if (itemsFromPlayer[k] and item.id == itemsFromPlayer[k].getAll().id and item.dmg == itemsFromPlayer[k].getAll().dmg) then
+            if (itemFromPlayer and item.id == itemFromPlayer.getAll().id and item.dmg == itemFromPlayer.getAll().dmg) then
                 item.count = item.count + itemsFromPlayer[k].qty
             end
         end
