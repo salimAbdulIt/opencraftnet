@@ -129,7 +129,7 @@ function ShopService:new()
             return countOfMoney, "C баланса списанно " .. countOfMoney
         end
         if (itemUtils.countOfAvailableSlots() > 0) then
-            return 0, "Нету монеток в инвентаре!"
+            return 0, "Нету монеток в магазине!"
         else
             return 0, "Освободите инвентарь!"
         end
