@@ -17,6 +17,7 @@ function ShopService:new()
     function obj:init()
         self.oreExchangeList = utils.readObjectFromFile("home/config/oreExchanger.cfg")
         self.sellShopList = utils.readObjectFromFile("home/config/sellShop.cfg")
+        self.buyShopList = utils.readObjectFromFile("home/config/buyShop.cfg")
 
         self.db = DurexDatabase:new("USERS")
         self.currencies = {}
