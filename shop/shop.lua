@@ -535,10 +535,10 @@ function createRulesForm()
     ruleList:insert("   m_dessert")
     ruleList:insert("3. Вывод/ввод денег осуществляется кратно 1000")
 
-    itemList.border = 0
-    itemList.W = 70
-    itemList.H = 15
-    itemList.fontColor = 0xFF8F00
+    ruleList.border = 0
+    ruleList.W = 70
+    ruleList.H = 15
+    ruleList.fontColor = 0xFF8F00
 
     local shopBackButton = ShopForm:addButton(3, 23, " Назад ", function()
         MainForm = createMainForm(nickname)
