@@ -174,7 +174,7 @@ function createMainForm(nick)
 
     local itemCounterNumberSelectDepositBalanceForm = createNumberEditForm(function(count)
         local _, message = shopService:depositMoney(nick, count)
-        if (count % 1000) then
+        if (count % 1000 ~= 0) then
             createNotification(nil, "Выввод/ввод осуществляется ", "кратно 1000", function()
                 MainForm = createMainForm(nick)
                 MainForm:setActive()
@@ -188,7 +188,7 @@ function createMainForm(nick)
     end, MainForm, "Пополнить")
 
     local itemCounterNumberSelectWithdrawBalanceForm = createNumberEditForm(function(count)
-        if (count % 1000) then
+        if (count % 1000 ~= 0) then
             createNotification(nil, "Выввод/ввод осуществляется ", "кратно 1000", function()
                 MainForm = createMainForm(nick)
                 MainForm:setActive()
