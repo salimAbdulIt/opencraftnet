@@ -109,8 +109,7 @@ function ShopService:new(terminalName)
 
             playerData.balance = playerData.balance + countOfMoney
             self.db:insert(nick, playerData)
-            printD(terminalName .. ": Игрок " .. nick .. " пополнил баланс на " .. countOfMoney)
-            printD(terminalName .. ": Текущий баланс " .. nick .. " " .. playerData.balance)
+            printD(terminalName .. ": Игрок " .. nick .. " пополнил баланс на " .. countOfMoney " Текущий баланс " .. nick .. " " .. playerData.balance)
             return playerData.balance, "Баланс пополнен на " .. countOfMoney
         end
         return 0, "Нету монеток в инвентаре!"
@@ -126,8 +125,7 @@ function ShopService:new(terminalName)
         if (countOfMoney > 0) then
             playerData.balance = playerData.balance - countOfMoney
             self.db:insert(nick, playerData)
-            printD(terminalName .. ": Игрок " .. nick .. " снял с баланса " .. countOfMoney)
-            printD(terminalName .. ": Текущий баланс " .. nick .. " " .. playerData.balance)
+            printD(terminalName .. ": Игрок " .. nick .. " снял с баланса " .. countOfMoney .. ". Текущий баланс " .. nick .. " " .. playerData.balance)
             return countOfMoney, "C баланса списанно " .. countOfMoney
         end
         if (itemUtils.countOfAvailableSlots() > 0) then
@@ -182,8 +180,7 @@ function ShopService:new(terminalName)
         if (itemsCount > 0) then
             playerData.balance = playerData.balance - itemsCount * itemCfg.price
             self.db:insert(nick, playerData)
-            printD(terminalName .. ": Игрок " .. nick .. " купил " .. itemCfg.id .. ":" .. itemCfg.dmg .. " в количестве " .. itemsCount .. " по цене " .. itemCfg.price .. " за шт")
-            printD(terminalName .. ": Текущий баланс " .. nick .. " " .. playerData.balance)
+            printD(terminalName .. ": Игрок " .. nick .. " купил " .. itemCfg.id .. ":" .. itemCfg.dmg .. " в количестве " .. itemsCount .. " по цене " .. itemCfg.price .. " за шт. Текущий баланс " .. nick .. " " .. playerData.balance)
         end
         return itemsCount, "Куплено " .. itemsCount .. " предметов!"
     end
@@ -197,7 +194,7 @@ function ShopService:new(terminalName)
         if (itemsCount > 0) then
             playerData.balance = playerData.balance + itemsCount * itemCfg.price
             self.db:insert(nick, playerData)
-            printD(terminalName .. ": Игрок " .. nick .. " продал " .. itemCfg.id .. ":" .. itemCfg.dmg .. " в количестве " .. itemsCount .. " по цене " .. itemCfg.price .. " за шт")
+            printD(terminalName .. ": Игрок " .. nick .. " продал " .. itemCfg.id .. ":" .. itemCfg.dmg .. " в количестве " .. itemsCount .. " по цене " .. itemCfg.price .. " за шт. Текущий баланс " .. nick .. " " .. playerData.balance)
         end
         return itemsCount, "Продано " .. itemsCount .. " предметов!"
     end
