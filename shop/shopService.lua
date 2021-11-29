@@ -167,16 +167,16 @@ function ShopService:new()
         return 0, "Вещей нету в наличии!"
     end
 
-    function obj:sellItem(nick, sellItemCfg, count)
+    function obj:sellItem(nick, itemCfg, count)
         local playerData = self:getPlayerData(nick)
 
-        if (playerData.balance < count * sellItemCfg.price) then
+        if (playerData.balance < count * itemCfg.price) then
             return false, "Не хватает денег на счету"
         end
-        local itemsCount = itemUtils.giveItem(sellItemCfg.id, sellItemCfg.dmg, count)
+        local itemsCount = itemUtils.giveItem(itemCfg.id, itemCfg.dmg, count)
 
         if (itemsCount > 0) then
-            playerData.balance = playerData.balance - itemsCount * sellItemCfg.price
+            playerData.balance = playerData.balance - itemsCount * itemCfg.price
             self.db:insert(nick, playerData)
         end
         printD("Игрок " .. nick .. " купил " .. itemsCount .. " предметов")
@@ -184,13 +184,13 @@ function ShopService:new()
     end
 
 
-    function obj:sellItem(nick, sellItemCfg, count)
+    function obj:buyItem(nick, itemCfg, count)
         local playerData = self:getPlayerData(nick)
 
-        local itemsCount = itemUtils.takeItem(sellItemCfg.id, sellItemCfg.dmg, count)
+        local itemsCount = itemUtils.takeItem(itemCfg.id, itemCfg.dmg, count)
 
         if (itemsCount > 0) then
-            playerData.balance = playerData.balance + itemsCount * sellItemCfg.price
+            playerData.balance = playerData.balance + itemsCount * itemCfg.price
             self.db:insert(nick, playerData)
         end
         printD("Игрок " .. nick .. " продал " .. itemsCount .. " предметов")
