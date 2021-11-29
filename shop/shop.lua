@@ -536,7 +536,7 @@ function createRulesForm()
     ruleList:insert("3. Вывод/ввод денег осуществляется кратно 1000")
 
     ruleList.border = 0
-    ruleList.W = 70
+    ruleList.W = 73
     ruleList.H = 15
     ruleList.fontColor = 0xFF8F00
 
