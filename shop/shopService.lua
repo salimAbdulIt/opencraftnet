@@ -160,7 +160,7 @@ function ShopService:new()
                     table.remove(playerData.items, i)
                 end
                 self.db:insert(nick, playerData)
-                printD("Игрок " .. nick .. " забрал " .. countOfMoney .. " вещей")
+                printD("Игрок " .. nick .. " забрал " .. id .. ":" .. dmg .. " в количестве" .. withdrawedCount)
                 return withdrawedCount, "Выданно " .. withdrawedCount .. " вещей"
             end
         end
@@ -179,7 +179,7 @@ function ShopService:new()
             playerData.balance = playerData.balance - itemsCount * itemCfg.price
             self.db:insert(nick, playerData)
         end
-        printD("Игрок " .. nick .. " купил " .. itemsCount .. " предметов")
+        printD("Игрок " .. nick .. " купил " .. itemCfg.id .. ":" .. itemCfg.dmg .. " в количестве " .. itemsCount)
         return itemsCount, "Куплено " .. itemsCount .. " предметов!"
     end
 
@@ -193,7 +193,7 @@ function ShopService:new()
             playerData.balance = playerData.balance + itemsCount * itemCfg.price
             self.db:insert(nick, playerData)
         end
-        printD("Игрок " .. nick .. " продал " .. itemsCount .. " предметов")
+        printD("Игрок " .. nick .. " продал " .. itemCfg.id .. ":" .. itemCfg.dmg .. " в количестве " .. itemsCount)
         return itemsCount, "Продано " .. itemsCount .. " предметов!"
     end
 
@@ -209,6 +209,7 @@ function ShopService:new()
             if (item.count == 0) then
                 table.insert(toRemove, i)
             end
+            printD("Игрок " .. nick .. " забрал " .. item.id .. ":" .. item.dmg .. " в количестве " .. withdrawedCount)
         end
         for i = #toRemove, 1, -1 do
             table.remove(playerData.items, toRemove[i])
@@ -222,7 +223,6 @@ function ShopService:new()
                 return sum, "Освободите инвентарь!"
             end
         end
-        printD("Игрок " .. nick .. " забрал " .. sum .. " вещей")
         return sum, "Выданно " .. sum .. " вещей"
     end
 
@@ -266,6 +266,7 @@ function ShopService:new()
                     break
                 end
             end
+            printD("Игрок " .. nick .. " обменял " .. itemCfg.fromId .. ":" .. itemCfg.fromDm .. " в количестве" .. item.count)
             local itemAlreadyInFile = false
             for i = 1, #playerData.items do
                 local itemP = playerData.items[i]
@@ -288,7 +289,6 @@ function ShopService:new()
         if (sum == 0) then
             return 0, "Нету руд в инвентаре!"
         else
-            printD("Игрок " .. nick .. " обменял " .. sum .. " руд")
             return sum, " Обменяно " .. sum .. " руд на слитки.", "Заберите из корзины"
         end
     end
@@ -315,7 +315,7 @@ function ShopService:new()
                 table.insert(playerData.items, item)
             end
             self.db:insert(nick, playerData)
-            printD("Игрок " .. nick .. " обменял " .. countOfItems .. " руд")
+            printD("Игрок " .. nick .. " обменял " .. itemConfig.fromId .. ":" .. itemConfig.toId .. " в количестве" .. countOfItems)
             return countOfItems, " Обменяно " .. countOfItems .. " руд на слитки.", "Заберите из корзины"
         end
         return 0, "Нету руд в инвентаре!"
