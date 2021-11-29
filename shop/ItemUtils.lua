@@ -93,12 +93,12 @@ itemService.populateCount = function(items)
 end
 
 itemService.populateUserCount = function(items)
-    local itemsFromMe = component.pim.getAllStacks()
+    local itemsFromPlayer = component.pim.getAllStacks()
     for i, item in pairs(items) do
         item.count = 0
-        for k, itemFromPlayer in pairs(itemsFromMe) do
-            if (itemFromPlayer[i] and item.id == itemFromPlayer[i].getAll().id and item.dmg == itemFromPlayer[i].getAll().dmg) then
-                item.count = item.count + itemFromPlayer[i].qty
+        for k, itemFromPlayer in pairs(itemsFromPlayer) do
+            if (itemFromPlayer[k] and item.id == itemFromPlayer[k].getAll().id and item.dmg == itemFromPlayer[k].getAll().dmg) then
+                item.count = item.count + itemFromPlayer[k].qty
             end
         end
     end
