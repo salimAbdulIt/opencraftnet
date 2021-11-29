@@ -179,7 +179,7 @@ function ShopService:new()
             playerData.balance = playerData.balance - itemsCount * itemCfg.price
             self.db:insert(nick, playerData)
         end
-        printD("Игрок " .. nick .. " купил " .. itemCfg.id .. ":" .. itemCfg.dmg .. " в количестве " .. itemsCount .. " по цене " .. itemCfg.price)
+        printD("Игрок " .. nick .. " купил " .. itemCfg.id .. ":" .. itemCfg.dmg .. " в количестве " .. itemsCount .. " по цене " .. itemCfg.price .. " за шт")
         return itemsCount, "Куплено " .. itemsCount .. " предметов!"
     end
 
@@ -193,7 +193,7 @@ function ShopService:new()
             playerData.balance = playerData.balance + itemsCount * itemCfg.price
             self.db:insert(nick, playerData)
         end
-        printD("Игрок " .. nick .. " продал " .. itemCfg.id .. ":" .. itemCfg.dmg .. " в количестве " .. itemsCount .. " по цене " .. itemCfg.price)
+        printD("Игрок " .. nick .. " продал " .. itemCfg.id .. ":" .. itemCfg.dmg .. " в количестве " .. itemsCount .. " по цене " .. itemCfg.price .. " за шт")
         return itemsCount, "Продано " .. itemsCount .. " предметов!"
     end
 

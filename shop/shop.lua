@@ -412,10 +412,11 @@ function createBuyShopForm()
             BuyShopForm = createBuyShopForm()
             BuyShopForm:setActive()
         end)
-    end, MainForm, "Купить")
+    end, MainForm, "Продать")
 
     local shopBackButton = ShopForm:addButton(3, 23, " Назад ", function()
-        BuyShopForm:setActive()
+        MainForm = createMainForm(nickname)
+        MainForm:setActive()
     end)
 
     local shopWithdrawButton = ShopForm:addButton(68, 23, " Продать ", function()
