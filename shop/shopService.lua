@@ -166,7 +166,7 @@ function ShopService:new()
             playerData.balance = playerData.balance - itemsCount * sellItemCfg.price
             self.db:insert(nick, playerData)
         end
-        return itemsCount, "Купленно " .. itemsCount .. " предметов!"
+        return itemsCount, "Куплено " .. itemsCount .. " предметов!"
     end
 
     function obj:withdrawAll(nick)
