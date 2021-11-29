@@ -266,7 +266,7 @@ function ShopService:new()
                     break
                 end
             end
-            printD("Игрок " .. nick .. " обменял на слитки " .. itemCfg.fromId .. ":" .. itemCfg.fromDm .. " в количестве" .. item.count .. " по курсу " .. itemCfg.fromCount .. "к" .. itemCfg.toCount)
+            printD("Игрок " .. nick .. " обменял на слитки " .. itemCfg.fromId .. ":" .. itemCfg.fromDmg .. " в количестве" .. item.count .. " по курсу " .. itemCfg.fromCount .. "к" .. itemCfg.toCount)
             local itemAlreadyInFile = false
             for i = 1, #playerData.items do
                 local itemP = playerData.items[i]
@@ -315,7 +315,7 @@ function ShopService:new()
                 table.insert(playerData.items, item)
             end
             self.db:insert(nick, playerData)
-            printD("Игрок " .. nick .. " обменял " .. itemConfig.fromId .. ":" .. itemConfig.toId .. " в количестве"  .. countOfItems .. " по курсу " .. itemConfig.fromCount .. "к" .. itemConfig.toCount)
+            printD("Игрок " .. nick .. " обменял " .. itemConfig.fromId .. ":" .. itemConfig.fromDmg .. " в количестве"  .. countOfItems .. " по курсу " .. itemConfig.fromCount .. "к" .. itemConfig.toCount)
             return countOfItems, " Обменяно " .. countOfItems .. " руд на слитки.", "Заберите из корзины"
         end
         return 0, "Нету руд в инвентаре!"
