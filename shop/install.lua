@@ -10,4 +10,5 @@ shell.execute("wget -fq " .. REPOSITOTY .. "/v2/libs/utils.lua lib/utils.lua")
 shell.execute("wget -fq " .. REPOSITOTY .. "/shop/ItemUtils.lua lib/ItemUtils.lua")
 shell.execute("wget -fq " .. REPOSITOTY .. "/shop/oreExchanger.cfg /home/config/oreExchanger.cfg")
 shell.execute("wget -fq " .. REPOSITOTY .. "/shop/sellShop.cfg /home/config/sellShop.cfg")
+shell.execute("wget -fq " .. REPOSITOTY .. "/shop/buyShop.cfg /home/config/buyShop.cfg")
 
