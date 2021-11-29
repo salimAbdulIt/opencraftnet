@@ -69,6 +69,14 @@ function ShopService:new()
         return categorySellShopList
     end
 
+    function obj:getBuyShopList()
+        local categoryBuyShopList = self.buyShopList
+
+        itemUtils.populateUserCount(categoryBuyShopList)
+
+        return categoryBuyShopList
+    end
+
     function obj:getBalance(nick)
         local playerData = self:getPlayerData(nick)
         if (playerData) then
@@ -172,6 +180,20 @@ function ShopService:new()
         end
         printD("Игрок " .. nick .. " купил " .. itemsCount .. " предметов")
         return itemsCount, "Куплено " .. itemsCount .. " предметов!"
+    end
+
+
+    function obj:sellItem(nick, sellItemCfg, count)
+        local playerData = self:getPlayerData(nick)
+
+        local itemsCount = itemUtils.takeItem(sellItemCfg.id, sellItemCfg.dmg, count)
+
+        if (itemsCount > 0) then
+            playerData.balance = playerData.balance + itemsCount * sellItemCfg.price
+            self.db:insert(nick, playerData)
+        end
+        printD("Игрок " .. nick .. " продал " .. itemsCount .. " предметов")
+        return itemsCount, "Продано " .. itemsCount .. " предметов!"
     end
 
     function obj:withdrawAll(nick)

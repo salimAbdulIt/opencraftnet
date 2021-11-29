@@ -92,6 +92,18 @@ itemService.populateCount = function(items)
     end
 end
 
+itemService.populateUserCount = function(items)
+    local itemsFromMe = component.pim.getAllStacks()
+    for i, item in pairs(items) do
+        item.count = 0
+        for k, itemFromPlayer in pairs(itemsFromMe) do
+            if (itemFromPlayer[i] and item.id == itemFromPlayer[i].getAll().id and item.dmg == itemFromPlayer[i].getAll().dmg) then
+                item.count = item.count + itemFromPlayer[i].qty
+            end
+        end
+    end
+end
+
 itemService.countOfAvailableSlots = function()
     local count = 0
     local allStacks = component.pim.getAllStacks()
