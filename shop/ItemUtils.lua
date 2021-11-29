@@ -145,7 +145,7 @@ end
 itemService.takeMoney = function(money)
     local itemCount = money / 1000
     if (itemCount ~= math.floor(itemCount)) then
-        return false
+        return 0
     end
     local sum = 0
     local currency1kk = math.floor(itemCount / 1000)
