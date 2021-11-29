@@ -6,8 +6,8 @@ local utils = require('utils')
 local unicode = require('unicode')
 gpu.setResolution(80, 25)
 require("shopService")
-local shopService = ShopService:new()
-
+local shopName = "Shop1"
+local shopService = ShopService:new(shopName)
 local GarbageForm
 local MainForm
 local AutorizationForm
@@ -137,7 +137,10 @@ function createGarbageForm()
         end)
     end)
     local shopWithdrawButton = ShopForm:addButton(55, 23, " Забрать ", function()
-        itemCounterNumberSelectForm:setActive()
+        local itemToWithdraw = itemList.items[itemList.index]
+        if (itemToWithdraw) then
+            itemCounterNumberSelectForm:setActive()
+        end
     end)
     shopBackButton.H = 1
     shopBackButton.W = 9
@@ -170,6 +173,13 @@ function createMainForm(nick)
 
     local itemCounterNumberSelectDepositBalanceForm = createNumberEditForm(function(count)
         local _, message = shopService:depositMoney(nick, count)
+        if (count % 1000) then
+            createNotification(nil, "Выввод/ввод осуществляется ", "кратно 1000", function()
+                MainForm = createMainForm(nick)
+                MainForm:setActive()
+            end)
+            return
+        end
         createNotification(nil, message, nil, function()
             MainForm = createMainForm(nick)
             MainForm:setActive()
@@ -177,6 +187,13 @@ function createMainForm(nick)
     end, MainForm, "Пополнить")
 
     local itemCounterNumberSelectWithdrawBalanceForm = createNumberEditForm(function(count)
+        if (count % 1000) then
+            createNotification(nil, "Выввод/ввод осуществляется ", "кратно 1000", function()
+                MainForm = createMainForm(nick)
+                MainForm:setActive()
+            end)
+            return
+        end
         local _, message = shopService:withdrawMoney(nick, count)
         createNotification(nil, message, nil, function()
             MainForm = createMainForm(nick)
@@ -215,8 +232,8 @@ function createMainForm(nick)
     end)
     sellButton.H = 3
     sellButton.W = 22
---    sellButton.fontColor = 0xaaaaaa
---    sellButton.color = 0x0202020
+    --    sellButton.fontColor = 0xaaaaaa
+    --    sellButton.color = 0x0202020
 
     local exchangeButton = MainForm:addButton(53, 17, " Обмен руд", function()
         OreExchangerForm:setActive()
@@ -224,7 +241,7 @@ function createMainForm(nick)
     exchangeButton.H = 3
     exchangeButton.W = 21
 
-    local sellButton = MainForm:addButton(8, 21, " Правила ")
+    local sellButton = MainForm:addButton(8, 21, " Примечание ")
     sellButton.H = 3
     sellButton.W = 66
 
@@ -360,7 +377,10 @@ function createSellShopSpecificForm(category)
     end)
 
     local shopWithdrawButton = ShopForm:addButton(68, 23, " Купить ", function()
-        itemCounterNumberSelectForm:setActive()
+        local itemToBuy = itemList.items[itemList.index]
+        if (itemToBuy) then
+            itemCounterNumberSelectForm:setActive()
+        end
     end)
     shopBackButton.H = 1
     shopBackButton.W = 9
@@ -482,6 +502,46 @@ function createOreExchangerForm()
     local shopWithdrawButton = ShopForm:addButton(54, 23, " Обменять ", function()
         itemCounterNumberSelectForm:setActive()
     end)
+    shopBackButton.H = 1
+    shopBackButton.W = 9
+    return ShopForm
+end
+
+
+function rulesForm()
+    local ShopForm = forms.addForm()
+    ShopForm.border = 1
+    local shopFrame = ShopForm:addFrame(3, 5, 1)
+    shopFrame.W = 76
+    shopFrame.H = 18
+    local shopNameLabel = ShopForm:addLabel(33, 1, " Legend Shop ")
+    shopNameLabel.fontColor = 0x00FDFF
+    local authorLabel = ShopForm:addLabel(32, 25, " Автор: Durex77 ")
+    authorLabel.fontColor = 0x00FDFF
+
+    local shopNameLabel = ShopForm:addLabel(35, 4, " Примечания ")
+
+    local ruleList = ShopForm:addList(5, 6, function()
+    end)
+
+    ruleList:insert("1. Баланс на компьютерах разный, пользуйтесь одним магазином для удобства пользования! ")
+    ruleList:insert("2. При возникновении какого либо вопроса, обращайтесь к:")
+    ruleList:insert("   Graciya")
+    ruleList:insert("   Durex77")
+    ruleList:insert("   Zarik1")
+    ruleList:insert("   m_dessert")
+    ruleList:insert("3. Вывод/ввод денег осуществляется кратно 1000")
+
+    itemList.border = 0
+    itemList.W = 70
+    itemList.H = 15
+    itemList.fontColor = 0xFF8F00
+
+    local shopBackButton = ShopForm:addButton(3, 23, " Назад ", function()
+        MainForm = createMainForm(nickname)
+        MainForm:setActive()
+    end)
+
     shopBackButton.H = 1
     shopBackButton.W = 9
     return ShopForm
