@@ -15,6 +15,7 @@ local SellShopForm
 local OreExchangerForm
 local SellShopSpecificForm
 local BuyShopForm
+local RulesForm
 
 local nickname = ""
 local isAutorized = false
@@ -241,7 +242,9 @@ function createMainForm(nick)
     exchangeButton.H = 3
     exchangeButton.W = 21
 
-    local sellButton = MainForm:addButton(8, 21, " Примечание ")
+    local sellButton = MainForm:addButton(8, 21, " Примечание ", function()
+        RulesForm:setActive()
+    end)
     sellButton.H = 3
     sellButton.W = 66
 
@@ -508,7 +511,7 @@ function createOreExchangerForm()
 end
 
 
-function rulesForm()
+function createRulesForm()
     local ShopForm = forms.addForm()
     ShopForm.border = 1
     local shopFrame = ShopForm:addFrame(3, 5, 1)
@@ -555,9 +558,9 @@ function autorize(nick)
 end
 
 AutorizationForm = createAutorizationForm()
-
 SellShopForm = createSellShopForm()
 OreExchangerForm = createOreExchangerForm()
+RulesForm = createRulesForm()
 
 
 local Event1 = AutorizationForm:addEvent("player_on", function(e, p)
