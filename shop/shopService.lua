@@ -160,7 +160,9 @@ function ShopService:new()
                     table.remove(playerData.items, i)
                 end
                 self.db:insert(nick, playerData)
-                printD("Игрок " .. nick .. " забрал " .. id .. ":" .. dmg .. " в количестве" .. withdrawedCount)
+                if (withdrawedCount > 0) then
+                    printD("Игрок " .. nick .. " забрал " .. id .. ":" .. dmg .. " в количестве " .. withdrawedCount)
+                end
                 return withdrawedCount, "Выданно " .. withdrawedCount .. " вещей"
             end
         end
@@ -178,8 +180,8 @@ function ShopService:new()
         if (itemsCount > 0) then
             playerData.balance = playerData.balance - itemsCount * itemCfg.price
             self.db:insert(nick, playerData)
+            printD("Игрок " .. nick .. " купил " .. itemCfg.id .. ":" .. itemCfg.dmg .. " в количестве " .. itemsCount .. " по цене " .. itemCfg.price .. " за шт")
         end
-        printD("Игрок " .. nick .. " купил " .. itemCfg.id .. ":" .. itemCfg.dmg .. " в количестве " .. itemsCount .. " по цене " .. itemCfg.price .. " за шт")
         return itemsCount, "Куплено " .. itemsCount .. " предметов!"
     end
 
@@ -192,8 +194,8 @@ function ShopService:new()
         if (itemsCount > 0) then
             playerData.balance = playerData.balance + itemsCount * itemCfg.price
             self.db:insert(nick, playerData)
+            printD("Игрок " .. nick .. " продал " .. itemCfg.id .. ":" .. itemCfg.dmg .. " в количестве " .. itemsCount .. " по цене " .. itemCfg.price .. " за шт")
         end
-        printD("Игрок " .. nick .. " продал " .. itemCfg.id .. ":" .. itemCfg.dmg .. " в количестве " .. itemsCount .. " по цене " .. itemCfg.price .. " за шт")
         return itemsCount, "Продано " .. itemsCount .. " предметов!"
     end
 
@@ -209,7 +211,9 @@ function ShopService:new()
             if (item.count == 0) then
                 table.insert(toRemove, i)
             end
-            printD("Игрок " .. nick .. " забрал " .. item.id .. ":" .. item.dmg .. " в количестве " .. withdrawedCount)
+            if (withdrawedCount > 0) then
+                printD("Игрок " .. nick .. " забрал " .. item.id .. ":" .. item.dmg .. " в количестве " .. withdrawedCount)
+            end
         end
         for i = #toRemove, 1, -1 do
             table.remove(playerData.items, toRemove[i])
@@ -266,7 +270,7 @@ function ShopService:new()
                     break
                 end
             end
-            printD("Игрок " .. nick .. " обменял на слитки " .. itemCfg.fromId .. ":" .. itemCfg.fromDmg .. " в количестве" .. item.count .. " по курсу " .. itemCfg.fromCount .. "к" .. itemCfg.toCount)
+            printD("Игрок " .. nick .. " обменял на слитки " .. itemCfg.fromId .. ":" .. itemCfg.fromDmg .. " в количестве " .. item.count .. " по курсу " .. itemCfg.fromCount .. "к" .. itemCfg.toCount)
             local itemAlreadyInFile = false
             for i = 1, #playerData.items do
                 local itemP = playerData.items[i]
@@ -315,7 +319,7 @@ function ShopService:new()
                 table.insert(playerData.items, item)
             end
             self.db:insert(nick, playerData)
-            printD("Игрок " .. nick .. " обменял " .. itemConfig.fromId .. ":" .. itemConfig.fromDmg .. " в количестве"  .. countOfItems .. " по курсу " .. itemConfig.fromCount .. "к" .. itemConfig.toCount)
+            printD("Игрок " .. nick .. " обменял " .. itemConfig.fromId .. ":" .. itemConfig.fromDmg .. " в количестве " .. countOfItems .. " по курсу " .. itemConfig.fromCount .. "к" .. itemConfig.toCount)
             return countOfItems, " Обменяно " .. countOfItems .. " руд на слитки.", "Заберите из корзины"
         end
         return 0, "Нету руд в инвентаре!"
