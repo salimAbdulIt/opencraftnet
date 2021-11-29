@@ -5,6 +5,7 @@ local utils = require('utils')
 ShopService = {}
 local pim = component.pim
 local event = require('event')
+require('dlog')
 
 event.shouldInterrupt = function()
     return false
@@ -99,6 +100,7 @@ function ShopService:new()
 
             playerData.balance = playerData.balance + countOfMoney
             self.db:insert(nick, playerData)
+            printD("Игрок " .. nick .. " пополнил баланс на " .. countOfMoney)
             return playerData.balance, "Баланс пополнен на " .. countOfMoney
         end
         return 0, "Нету монеток в инвентаре!"
@@ -114,6 +116,7 @@ function ShopService:new()
         if (countOfMoney > 0) then
             playerData.balance = playerData.balance - countOfMoney
             self.db:insert(nick, playerData)
+            printD("Игрок " .. nick .. " снял с баланса " .. countOfMoney)
             return countOfMoney, "C баланса списанно " .. countOfMoney
         end
         if (itemUtils.countOfAvailableSlots() > 0) then
@@ -148,6 +151,7 @@ function ShopService:new()
                     table.remove(playerData.items, i)
                 end
                 self.db:insert(nick, playerData)
+                printD("Игрок " .. nick .. " забрал " .. countOfMoney .. " вещей")
                 return withdrawedCount, "Выданно " .. withdrawedCount .. " вещей"
             end
         end
@@ -166,6 +170,7 @@ function ShopService:new()
             playerData.balance = playerData.balance - itemsCount * sellItemCfg.price
             self.db:insert(nick, playerData)
         end
+        printD("Игрок " .. nick .. " купил " .. itemsCount .. " предметов")
         return itemsCount, "Куплено " .. itemsCount .. " предметов!"
     end
 
@@ -194,6 +199,7 @@ function ShopService:new()
                 return sum, "Освободите инвентарь!"
             end
         end
+        printD("Игрок " .. nick .. " забрал " .. sum .. " вещей")
         return sum, "Выданно " .. sum .. " вещей"
     end
 
@@ -259,6 +265,7 @@ function ShopService:new()
         if (sum == 0) then
             return 0, "Нету руд в инвентаре!"
         else
+            printD("Игрок " .. nick .. " обменял " .. sum .. " руд")
             return sum, " Обменяно " .. sum .. " руд на слитки.", "Заберите из корзины"
         end
     end
@@ -285,6 +292,7 @@ function ShopService:new()
                 table.insert(playerData.items, item)
             end
             self.db:insert(nick, playerData)
+            printD("Игрок " .. nick .. " обменял " .. countOfItems .. " руд")
             return countOfItems, " Обменяно " .. countOfItems .. " руд на слитки.", "Заберите из корзины"
         end
         return 0, "Нету руд в инвентаре!"

@@ -1,12 +1,11 @@
 local REPOSITOTY = "https://gitlab.com/lfreew1ndl/opencraftnetoriginal/-/raw/dev"
 
 local shell = require("shell")
-shell.execute("wget -fq " .. REPOSITOTY .. "/shop-interface.lua /home/1.lua")
-shell.execute("wget -fq " .. REPOSITOTY .. "/shop/color.lua lib/color.lua")
-shell.execute("wget -fq " .. REPOSITOTY .. "/shop/Filesystem.lua lib/Filesystem.lua")
-shell.execute("wget -fq " .. REPOSITOTY .. "/shop/GUI.lua lib/GUI.lua")
-shell.execute("wget -fq " .. REPOSITOTY .. "/shop/image.lua lib/image.lua")
-shell.execute("wget -fq " .. REPOSITOTY .. "/shop/number.lua lib/number.lua")
-shell.execute("wget -fq " .. REPOSITOTY .. "/shop/Paths.lua lib/Paths.lua")
-shell.execute("wget -fq " .. REPOSITOTY .. "/shop/Screen.lua lib/Screen.lua")
-shell.execute("wget -fq " .. REPOSITOTY .. "/shop/Text.lua lib/Text.lua")
+shell.execute("wget -fq " .. REPOSITOTY .. "/shop/shop.lua /home/1.lua")
+shell.execute("wget -fq " .. REPOSITOTY .. "/shop/shopService.lua lib/shopService.lua")
+shell.execute("wget -fq " .. REPOSITOTY .. "/v2/database.lua lib/database.lua")
+shell.execute("wget -fq " .. REPOSITOTY .. "/v2/discord-logger.lua lib/dlog.lua")
+shell.execute("wget -fq " .. REPOSITOTY .. "/shop/ItemUtils.lua lib/ItemUtils.lua")
+shell.execute("wget -fq " .. REPOSITOTY .. "/shop/oreExchanger.cfg /home/config/oreExchanger.cfg")
+shell.execute("wget -fq " .. REPOSITOTY .. "/shop/sellShop.cfg /home/config/sellShop.cfg")
+
