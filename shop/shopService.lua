@@ -109,7 +109,7 @@ function ShopService:new(terminalName)
 
             playerData.balance = playerData.balance + countOfMoney
             self.db:insert(nick, playerData)
-            printD(terminalName .. ": Игрок " .. nick .. " пополнил баланс на " .. countOfMoney " Текущий баланс " .. playerData.balance)
+            printD(terminalName .. ": Игрок " .. nick .. " пополнил баланс на " .. countOfMoney .. " Текущий баланс " .. playerData.balance)
             return playerData.balance, "Баланс пополнен на " .. countOfMoney
         end
         return 0, "Нету монеток в инвентаре!"
