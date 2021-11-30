@@ -122,6 +122,9 @@ itemService.takeItems = function(items)
         for j, itemCfg in pairs(items) do
             if item and not item.nbt_hash and item.id == itemCfg.id and item.dmg == itemCfg.dmg then
                 local sum = component.pim.pushItem("DOWN", i, item.count)
+                if (not sum) then
+                    sum = 0
+                end
                 for k = 1, #sumList do
                     if (sumList[k].id == itemCfg.id and sumList[k].dmg == itemCfg.dmg) then
                         sumList[k].count = sumList[k].count + sum
