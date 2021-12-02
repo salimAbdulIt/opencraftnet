@@ -456,65 +456,46 @@ function createBuyShopForm()
 end
 
 function createOreExchangerForm()
-    local ShopForm = forms.addForm()
-    ShopForm.border = 1
-    local shopFrame = ShopForm:addFrame(3, 5, 1)
-    shopFrame.W = 76
-    shopFrame.H = 18
-    local shopNameLabel = ShopForm:addLabel(33, 1, " Legend Shop ")
-    shopNameLabel.fontColor = 0x00FDFF
-    local authorLabel = ShopForm:addLabel(32, 25, " Автор: Durex77 ")
-    authorLabel.fontColor = 0x00FDFF
-
-    local shopNameLabel = ShopForm:addLabel(35, 4, " Обмен руд ")
-    local shopCountLabel = ShopForm:addLabel(4, 6, " Наименование                                              Курс обмена ")
-
-    local itemList = ShopForm:addList(5, 7, function()
-    end)
-
-    local oreExchangeList = shopService:getOreExchangeList()
-
-    for i = 1, #oreExchangeList do
-        local name = oreExchangeList[i].fromLabel
+    local items = shopService:getOreExchangeList()
+    for i = 1, #items do
+        local name = items[i].label
         for i = 1, 58 - unicode.len(name) do
             name = name .. ' '
         end
-        name = name .. oreExchangeList[i].fromCount .. 'к' .. oreExchangeList[i].toCount
+        name = name .. items[i].fromCount .. 'к' .. items[i].toCount
 
-        itemList:insert(name, oreExchangeList[i])
+        items[i].displayName = name
     end
-    itemList.border = 0
-    itemList.W = 70
-    itemList.H = 15
-    itemList.fontColor = 0xFF8F00
 
-    local itemCounterNumberSelectForm = createNumberEditForm(function(count)
-        local _, message, message2 = shopService:exchangeOre(nickname, itemList.items[itemList.index], count)
-        createNotification(nil, message, message2, function()
-            OreExchangerForm = createOreExchangerForm(nickname)
-            OreExchangerForm:setActive()
-        end)
-    end, ShopForm, "Обменять")
+    OreExchangerForm = createListForm(" Обмен руд ",
+        " Наименование                                              Курс обмена ",
+        items,
+        {
+            createButton(" Назад ", 3, 23, function(selectedItem)
+                MainForm = createMainForm(nickname)
+                MainForm:setActive()
+            end),
+            createButton(" Обменять все ", 67, 23, function(selectedItem)
+                local _, message, message2 = shopService:exchangeAllOres(nickname)
+                createNotification(nil, message, message2, function()
+                    createOreExchangerForm()
+                end)
+            end),
+            createButton(" Забрать ", 54, 23, function(selectedItem)
+                if (selectedItem) then
+                    local itemCounterNumberSelectForm = createNumberEditForm(function(count)
+                        local _, message, message2 = shopService:exchangeOre(nickname, selectedItem, count)
+                        createNotification(nil, message, message2, function()
+                            createOreExchangerForm()
+                        end)
+                    end, ShopForm, "Обменять")
+                    itemCounterNumberSelectForm:setActive()
+                end
+            end)
+        })
 
-    local shopBackButton = ShopForm:addButton(3, 23, " Назад ", function()
-        MainForm = createMainForm(nickname)
-        MainForm:setActive()
-    end)
-    local shopWithdrawAllButton = ShopForm:addButton(67, 23, " Обменять все ", function()
-        local _, message, message2 = shopService:exchangeAllOres(nickname)
-        createNotification(nil, message, message2, function()
-            OreExchangerForm = createOreExchangerForm(nickname)
-            OreExchangerForm:setActive()
-        end)
-    end)
-    local shopWithdrawButton = ShopForm:addButton(54, 23, " Обменять ", function()
-        itemCounterNumberSelectForm:setActive()
-    end)
-    shopBackButton.H = 1
-    shopBackButton.W = 9
-    return ShopForm
+    OreExchangerForm:setActive()
 end
-
 
 function createExchangerForm()
     local ShopForm = forms.addForm()
@@ -621,7 +602,6 @@ function autorize(nick)
 end
 
 AutorizationForm = createAutorizationForm()
-OreExchangerForm = createOreExchangerForm()
 RulesForm = createRulesForm()
 
 
