@@ -141,7 +141,7 @@ function createGarbageForm()
         end
         name = name .. items[i].count .. " шт"
 
-        items.displayName = name
+        items[i].displayName = name
     end
 
     GarbageForm = createListForm(" Корзина ",
