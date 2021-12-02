@@ -159,8 +159,7 @@ function createGarbageForm()
                         local count, message = shopService:withdrawItem(nickname, itemToWithdraw.id, itemToWithdraw.dmg, count)
 
                         createNotification(count, message, nil, function()
-                            GarbageForm = createGarbageForm()
-                            GarbageForm:setActive()
+                            createGarbageForm()
                         end)
                     end, GarbageForm, "Забрать")
                     NumberForm:setActive()
@@ -239,8 +238,7 @@ function createMainForm(nick)
     MainForm:addLabel(27, 8, shopService:getItemCount(nick))
 
     local withdrawButton = MainForm:addButton(36, 8, "Забрать предметы", function()
-        GarbageForm = createGarbageForm()
-        GarbageForm:setActive()
+        createGarbageForm()
     end)
     withdrawButton.W = 20
 
