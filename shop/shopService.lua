@@ -324,18 +324,18 @@ function ShopService:new(terminalName)
             local itemAlreadyInFile = false
             for i = 1, #playerData.items do
                 local item = playerData.items[i]
-                if (item.id == itemConfig.toId and item.dmg == itemConfig.toDmg) then
-                    item.count = item.count + countOfItems * itemConfig.toCount / itemConfig.fromCount
+                if (item.id == itemConfig.fromId and item.dmg == itemConfig.fromDmg) then
+                    item.count = item.count + left
                     itemAlreadyInFile = true
                     break
                 end
             end
             if (not itemAlreadyInFile) then
                 local item = {}
-                item.id = itemConfig.toId
-                item.dmg = itemConfig.toDmg
-                item.label = itemConfig.toLabel
-                item.count = countOfItems * itemConfig.toCount / itemConfig.fromCount
+                item.id = itemConfig.fromId
+                item.dmg = itemConfig.fromDmg
+                item.label = itemConfig.fromLabel
+                item.count = countOfItems * left
                 table.insert(playerData.items, item)
             end
             self.db:insert(nick, playerData)
@@ -346,7 +346,7 @@ function ShopService:new(terminalName)
             for i = 1, #playerData.items do
                 local item = playerData.items[i]
                 if (item.id == itemConfig.toId and item.dmg == itemConfig.toDmg) then
-                    item.count = item.count + countOfItems * itemConfig.toCount / itemConfig.fromCount
+                    item.count = item.count + countOfExchanges * itemConfig.toCount
                     itemAlreadyInFile = true
                     break
                 end
