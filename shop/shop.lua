@@ -248,7 +248,7 @@ function createMainForm(nick)
     withdrawButton.W = 20
 
     local buyButton = MainForm:addButton(8, 17, " Купить ", function()
-        SellShopForm:setActive()
+        createSellShopForm()
     end)
     buyButton.H = 3
     buyButton.W = 21
@@ -621,7 +621,6 @@ function autorize(nick)
 end
 
 AutorizationForm = createAutorizationForm()
-SellShopForm = createSellShopForm()
 OreExchangerForm = createOreExchangerForm()
 RulesForm = createRulesForm()
 
