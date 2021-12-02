@@ -164,7 +164,6 @@ function createGarbageForm()
             createButton(" Забрать ", 55, 23, function(selectedItem)
                 if (selectedItem) then
                     local NumberForm = createNumberEditForm(function(count)
-                        local itemToWithdraw = itemList.items[itemList.index]
                         local count, message = shopService:withdrawItem(nickname, selectedItem.id, selectedItem.dmg, count)
 
                         createNotification(count, message, nil, function()
