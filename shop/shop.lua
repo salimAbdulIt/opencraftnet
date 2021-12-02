@@ -113,7 +113,11 @@ function createListForm(name, label, items, backCallback, buttons)
 
     for i, button in pairs(buttons) do
         local shopBackButton = ShopForm:addButton(button.W, button.H, button.name, function()
-            button.callback()
+            if (itemList) then
+                button.callback(itemList.items[itemList.index])
+            else
+                button.callback()
+            end
         end)
     end
     return ShopForm
@@ -147,22 +151,21 @@ function createGarbageForm()
             createGarbageForm()
         end,
         {
-            createButton(" Назад ", 3, 23, function()
+            createButton(" Назад ", 3, 23, function(selectedItem)
                 MainForm = createMainForm(nickname)
                 MainForm:setActive()
             end),
-            createButton(" Забрать все ", 68, 23, function()
+            createButton(" Забрать все ", 68, 23, function(selectedItem)
                 local count, message = shopService:withdrawAll(nickname)
                 createNotification(count, message, nil, function()
                     createGarbageForm()
                 end)
             end),
-            createButton(" Забрать ", 55, 23, function()
-                local itemToWithdraw = itemList.items[itemList.index]
-                if (itemToWithdraw) then
+            createButton(" Забрать ", 55, 23, function(selectedItem)
+                if (selectedItem) then
                     local NumberForm = createNumberEditForm(function(count)
                         local itemToWithdraw = itemList.items[itemList.index]
-                        local count, message = shopService:withdrawItem(nickname, itemToWithdraw.id, itemToWithdraw.dmg, count)
+                        local count, message = shopService:withdrawItem(nickname, selectedItem.id, selectedItem.dmg, count)
 
                         createNotification(count, message, nil, function()
                             createGarbageForm()
