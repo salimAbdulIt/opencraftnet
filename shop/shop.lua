@@ -104,7 +104,7 @@ function createListForm(name, label, items, backCallback, buttons)
     end)
 
     for i = 1, #items do
-        itemList:insert(name, items[i])
+        itemList:insert(items[i].displayName, items[i])
     end
     itemList.border = 0
     itemList.W = 70
@@ -112,14 +112,20 @@ function createListForm(name, label, items, backCallback, buttons)
     itemList.fontColor = 0xFF8F00
 
     for i, button in pairs(buttons) do
-        local shopBackButton = ShopForm:addButton(button.W, button.H, " Назад ", function()
+        local shopBackButton = ShopForm:addButton(button.W, button.H, button.name, function()
             button.callback()
         end)
     end
     return ShopForm
 end
 
-function createButton()
+function createButton(buttonName, W, H, callback)
+    local button = {}
+    button.name = buttonName
+    button.W = W
+    button.H = H
+    button.callback = callback
+    return button
 end
 
 function createGarbageForm()
