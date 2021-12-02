@@ -104,7 +104,7 @@ end
 
 BalanceForm = createBalanceForm()
 
-timer = BalanceForm:addTimer(10, function()
+timer = BalanceForm:addTimer(1, function()
     balanceService:balance()
 end)
 

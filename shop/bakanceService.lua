@@ -20,7 +20,7 @@ function BalanceService:new()
 
     function obj:update()
         local itemsFromDatabase = {}
-        for i=1,81 do
+        for i = 1, 81 do
             local item = component.database.get(i)
             if (item) then
                 table.insert(itemsFromDatabase, item)
@@ -43,20 +43,25 @@ function BalanceService:new()
                 balancedItems = balancedItems[1]
             end
 
-            local itemsFromMe = component.me_interface.getAvailableItems()
 
-            for i, item in pairs(balancedItems) do
-                if (item.count > 0) then
-                    local count = item.count < 5 and item.count or math.floor(item.count * 0.8)
-                    for k, itemFromMe in pairs(itemsFromMe) do
-                        if (item.name == itemFromMe.fingerprint.id and item.dmg == itemFromMe.fingerprint.dmg and itemFromMe.size < count) then
-                            local cache = self.itemCache
-                            for l,itemCfg in pairs(cache) do
-                                if (itemCfg.name == item.name and itemCfg.damage == item.dmg) then
-                                    self.craftingItem = component.me_interface.getCraftables(itemCfg)[1].request(item.count - itemFromMe.size)
-                                    return
-                                end
-                            end
+            local item = balancedItems[self.currentIndex]
+            if (not item) then
+                self.currentIndex = 1
+                return
+            end
+            self.currentIndex = self.currentIndex + 1
+
+            if (item.count > 0) then
+                local count = item.count < 5 and item.count or math.floor(item.count * 0.8)
+                local itemFromMe = component.me_interface.getItemDetail({ id = item.name, dmg = item.dmg }).basic()
+
+                if (itemFromMe.qty < count) then
+                    local cache = self.itemCache
+                    for l, itemCfg in pairs(cache) do
+
+                        if (itemCfg.name == item.name and itemCfg.damage == item.dmg) then
+                            self.craftingItem = component.me_interface.getCraftables(itemCfg)[1].request(item.count - itemFromMe.qty)
+                            return
                         end
                     end
                 end

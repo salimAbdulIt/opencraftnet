@@ -182,7 +182,7 @@ function ShopService:new(terminalName)
         if (playerData.balance < count * itemCfg.price) then
             return false, "Не хватает денег на счету"
         end
-        local itemsCount = itemUtils.giveItem(itemCfg.id, itemCfg.dmg, count)
+        local itemsCount = itemUtils.giveItem(itemCfg.id, itemCfg.dmg, count, itemCfg)
 
         if (itemsCount > 0) then
             playerData.balance = playerData.balance - itemsCount * itemCfg.price
