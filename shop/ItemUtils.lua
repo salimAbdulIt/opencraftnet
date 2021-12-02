@@ -14,20 +14,20 @@ itemService.setCurrency = function(currencies)
     CURRENCIES = currencies
 end
 
-itemService.giveItem = function(id, dmg, count, cfg)
+itemService.giveItem = function(id, dmg, count, nbt)
     local sum = 0
     while count > sum do
         local executed, result = pcall(function()
-            local items = meInterface.getItemsInNetwork({ name = id, damage = dmg })
-            if (id == 'minecraft:enchanted_book') then
-                for i, item in pairs(items) do
-                    if (i == 'n') then break end
-                    if (item.enchantments[1].name == cfg.enchant and item.enchantments[1].level == cfg.enchantLevel and item.enchantments[2] == nil) then
-                        return meInterface.exportItem(item, "UP", (count - sum) < 64 and (count - sum) or 64).size
+            if (nbt) then
+                return meInterface.exportItem({ id = id, dmg = dmg, nbt_hash = nbt }, "UP", (count - sum) < 64 and (count - sum) or 64).size
+            else
+                local itemsFromMe = meInterface.getAvailableItems()
+
+                for k, itemFromMe in pairs(itemsFromMe) do
+                    if (id == itemFromMe.fingerprint.id and dmg == itemFromMe.fingerprint.dmg) then
+                        return meInterface.exportItem(itemFromMe.fingerprint, "UP", (count - sum) < 64 and (count - sum) or 64).size
                     end
                 end
-            else
-                return meInterface.exportItem(items[1], "UP", (count - sum) < 64 and (count - sum) or 64).size
             end
         end)
         if (not executed) then
@@ -93,17 +93,15 @@ itemService.populateCount = function(items)
     local itemsFromMe = meInterface.getAvailableItems()
 
     for i, item in pairs(items) do
-        if (item.id == 'minecraft:enchanted_book') then
-            local itemsFromMeWithMeta = meInterface.getItemsInNetwork({ name = item.id, damage = item.dmg })
-            for i, itemWithMeta in pairs(itemsFromMeWithMeta) do
-                if (i == 'n') then break end
-                if (itemWithMeta.enchantments[1].name == item.enchant and itemWithMeta.enchantments[1].level == item.enchantLevel and item.enchantments[2] == nil) then
-                    item.count = item.count + itemWithMeta.size
+        item.count = 0
+
+        if (item.nbt) then
+            for k, itemFromMe in pairs(itemsFromMe) do
+                if (item.id == itemFromMe.fingerprint.id and item.nbt == itemFromMe.fingerprint.nbt_hash) then
+                    item.count = item.count + itemFromMe.size
                 end
             end
         else
-
-            item.count = 0
             for k, itemFromMe in pairs(itemsFromMe) do
                 if (item.id == itemFromMe.fingerprint.id and item.dmg == itemFromMe.fingerprint.dmg) then
                     item.count = item.count + itemFromMe.size

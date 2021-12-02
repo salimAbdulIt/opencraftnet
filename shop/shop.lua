@@ -86,7 +86,8 @@ function createAutorizationForm()
     return AutorizationForm
 end
 
-function createGarbageForm()
+
+function createListForm(name, label, items, backCallback, buttons)
     local ShopForm = forms.addForm()
     ShopForm.border = 1
     local shopFrame = ShopForm:addFrame(3, 5, 1)
@@ -97,11 +98,31 @@ function createGarbageForm()
     local authorLabel = ShopForm:addLabel(32, 25, " Автор: Durex77 ")
     authorLabel.fontColor = 0x00FDFF
 
-    local shopNameLabel = ShopForm:addLabel(35, 4, " Корзина ")
-    local shopCountLabel = ShopForm:addLabel(4, 6, " Наименование                                                Количество")
+    local shopNameLabel = ShopForm:addLabel(35, 4, name)
+    local shopCountLabel = ShopForm:addLabel(4, 6, label)
     local itemList = ShopForm:addList(5, 7, function()
     end)
 
+    for i = 1, #items do
+        itemList:insert(name, items[i])
+    end
+    itemList.border = 0
+    itemList.W = 70
+    itemList.H = 15
+    itemList.fontColor = 0xFF8F00
+
+    for i, button in pairs(buttons) do
+        local shopBackButton = ShopForm:addButton(button.W, button.H, " Назад ", function()
+            button.callback()
+        end)
+    end
+    return ShopForm
+end
+
+function createButton()
+end
+
+function createGarbageForm()
     local items = shopService:getItems(nickname)
     for i = 1, #items do
         local name = items[i].label
@@ -110,43 +131,44 @@ function createGarbageForm()
         end
         name = name .. items[i].count .. " шт"
 
-        itemList:insert(name, items[i])
+        items.displayName = name
     end
-    itemList.border = 0
-    itemList.W = 70
-    itemList.H = 15
-    itemList.fontColor = 0xFF8F00
 
-    local itemCounterNumberSelectForm = createNumberEditForm(function(count)
-        local itemToWithdraw = itemList.items[itemList.index]
-        local count, message = shopService:withdrawItem(nickname, itemToWithdraw.id, itemToWithdraw.dmg, count)
+    GarbageForm = createListForm(" Корзина ",
+        " Наименование                                                Количество",
+        items,
+        function()
+            createGarbageForm()
+        end,
+        {
+            createButton(" Назад ", 3, 23, function()
+                MainForm = createMainForm(nickname)
+                MainForm:setActive()
+            end),
+            createButton(" Забрать все ", 68, 23, function()
+                local count, message = shopService:withdrawAll(nickname)
+                createNotification(count, message, nil, function()
+                    createGarbageForm()
+                end)
+            end),
+            createButton(" Забрать ", 55, 23, function()
+                local itemToWithdraw = itemList.items[itemList.index]
+                if (itemToWithdraw) then
+                    local NumberForm = createNumberEditForm(function(count)
+                        local itemToWithdraw = itemList.items[itemList.index]
+                        local count, message = shopService:withdrawItem(nickname, itemToWithdraw.id, itemToWithdraw.dmg, count)
 
-        createNotification(count, message, nil, function()
-            GarbageForm = createGarbageForm()
-            GarbageForm:setActive()
-        end)
-    end, ShopForm, "Забрать")
+                        createNotification(count, message, nil, function()
+                            GarbageForm = createGarbageForm()
+                            GarbageForm:setActive()
+                        end)
+                    end, GarbageForm, "Забрать")
+                    NumberForm:setActive()
+                end
+            end)
+        })
 
-    local shopBackButton = ShopForm:addButton(3, 23, " Назад ", function()
-        MainForm = createMainForm(nickname)
-        MainForm:setActive()
-    end)
-    local shopWithdrawAllButton = ShopForm:addButton(68, 23, " Забрать все ", function()
-        local count, message = shopService:withdrawAll(nickname)
-        createNotification(count, message, nil, function()
-            GarbageForm = createGarbageForm()
-            GarbageForm:setActive()
-        end)
-    end)
-    local shopWithdrawButton = ShopForm:addButton(55, 23, " Забрать ", function()
-        local itemToWithdraw = itemList.items[itemList.index]
-        if (itemToWithdraw) then
-            itemCounterNumberSelectForm:setActive()
-        end
-    end)
-    shopBackButton.H = 1
-    shopBackButton.W = 9
-    return ShopForm
+    GarbageForm:setActive()
 end
 
 function createMainForm(nick)
