@@ -87,7 +87,7 @@ function createAutorizationForm()
 end
 
 
-function createListForm(name, label, items, backCallback, buttons)
+function createListForm(name, label, items, buttons)
     local ShopForm = forms.addForm()
     ShopForm.border = 1
     local shopFrame = ShopForm:addFrame(3, 5, 1)
@@ -147,9 +147,6 @@ function createGarbageForm()
     GarbageForm = createListForm(" Корзина ",
         " Наименование                                                Количество",
         items,
-        function()
-            createGarbageForm()
-        end,
         {
             createButton(" Назад ", 3, 23, function(selectedItem)
                 MainForm = createMainForm(nickname)
@@ -289,7 +286,7 @@ end
 
 
 function createSellShopForm()
-    local SellShopForm = forms.addForm()
+    SellShopForm = forms.addForm()
     SellShopForm.border = 1
     local shopNameLabel = SellShopForm:addLabel(33, 1, " Legend Shop ")
     shopNameLabel.fontColor = 0x00FDFF
@@ -353,7 +350,7 @@ function createSellShopForm()
         MainForm:setActive()
     end)
 
-    return SellShopForm
+    SellShopForm:setActive()
 end
 
 
@@ -378,13 +375,9 @@ function createSellShopSpecificForm(category)
     SellShopSpecificForm = createListForm(" Магазин ",
         " Наименование                                       Количество Цена    ",
         items,
-        function()
-            createGarbageForm()
-        end,
         {
             createButton(" Назад ", 3, 23, function(selectedItem)
-                MainForm = createMainForm(nickname)
-                MainForm:setActive()
+                createSellShopForm()
             end),
             createButton(" Купить ", 68, 23, function(selectedItem)
                 local itemCounterNumberSelectForm = createNumberEditForm(function(count)
@@ -392,7 +385,7 @@ function createSellShopSpecificForm(category)
                     createNotification(nil, message, nil, function()
                         createSellShopSpecificForm(category)
                     end)
-                end, ShopForm, "Купить")
+                end, SellShopForm, "Купить")
                 if (selectedItem) then
                     itemCounterNumberSelectForm:setActive()
                 end
