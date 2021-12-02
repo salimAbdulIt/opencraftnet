@@ -243,8 +243,9 @@ function createMainForm(nick)
     exchangeButton.H = 3
     exchangeButton.W = 21
 
-    local buyButton = MainForm:addButton(8, 17, " Обменик ", function()
-        SellShopForm:setActive()
+    local buyButton = MainForm:addButton(8, 21, " Обменик ", function()
+        ExchangerForm = createExchangerForm()
+        ExchangerForm:setActive()
     end)
     buyButton.H = 3
     buyButton.W = 21

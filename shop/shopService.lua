@@ -313,6 +313,62 @@ function ShopService:new(terminalName)
         return 0, "Нету руд в инвентаре!"
     end
 
+    function obj:exchange(nick, itemConfig, count)
+        local countOfItems = itemUtils.takeItem(itemConfig.fromId, itemConfig.fromDmg, count * itemConfig.fromCount)
+        local countOfExchanges = math.floor(countOfItems / itemConfig.fromCount)
+        local left = math.floor(countOfItems % itemConfig.fromCount)
+        local save = false
+        local playerData = self:getPlayerData(nick)
+        if (left > 0) then
+            save = true
+            local itemAlreadyInFile = false
+            for i = 1, #playerData.items do
+                local item = playerData.items[i]
+                if (item.id == itemConfig.toId and item.dmg == itemConfig.toDmg) then
+                    item.count = item.count + countOfItems * itemConfig.toCount / itemConfig.fromCount
+                    itemAlreadyInFile = true
+                    break
+                end
+            end
+            if (not itemAlreadyInFile) then
+                local item = {}
+                item.id = itemConfig.toId
+                item.dmg = itemConfig.toDmg
+                item.label = itemConfig.toLabel
+                item.count = countOfItems * itemConfig.toCount / itemConfig.fromCount
+                table.insert(playerData.items, item)
+            end
+            self.db:insert(nick, playerData)
+        end
+        if (countOfExchanges > 0) then
+            save = true
+            local itemAlreadyInFile = false
+            for i = 1, #playerData.items do
+                local item = playerData.items[i]
+                if (item.id == itemConfig.toId and item.dmg == itemConfig.toDmg) then
+                    item.count = item.count + countOfItems * itemConfig.toCount / itemConfig.fromCount
+                    itemAlreadyInFile = true
+                    break
+                end
+            end
+            if (not itemAlreadyInFile) then
+                local item = {}
+                item.id = itemConfig.toId
+                item.dmg = itemConfig.toDmg
+                item.label = itemConfig.toLabel
+                item.count = countOfItems * itemConfig.toCount / itemConfig.fromCount
+                table.insert(playerData.items, item)
+            end
+            printD(terminalName .. ": Игрок " .. nick .. " обменял " .. itemConfig.fromId .. ":" .. itemConfig.fromDmg .. " в количестве " .. countOfItems .. " по курсу " .. itemConfig.fromCount .. "к" .. itemConfig.toCount)
+        end
+        if(save) then
+            self.db:insert(nick, playerData)
+            if (countOfExchanges > 0) then
+                return countOfItems, " Обменяно " .. countOfItems .. " руд на слитки.", "Заберите из корзины"
+            end
+        end
+        return 0, "Нету руд в инвентаре!"
+    end
 
     setmetatable(obj, self)
     obj:init()
