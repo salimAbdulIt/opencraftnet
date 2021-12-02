@@ -107,7 +107,7 @@ function createListForm(name, label, items, backCallback, buttons)
         itemList:insert(items[i].displayName, items[i])
     end
     itemList.border = 0
-    itemList.W = 70
+    itemList.W = 72
     itemList.H = 15
     itemList.fontColor = 0xFF8F00
 
@@ -301,46 +301,39 @@ function createSellShopForm()
     local buyButton4 = SellShopForm:addLabel(23, 5, " ▀  ▀ ▀▀▀▀ ▀ ▀ ▄▄▄█ ▀  ▀ ▀ ▀ ▀  ▀ ")
 
     local categoryButton1 = SellShopForm:addButton(5, 9, " Разное ", function()
-        SellShopSpecificForm = createSellShopSpecificForm("Minecraft")
-        SellShopSpecificForm:setActive()
+        createSellShopSpecificForm("Minecraft")
     end)
     categoryButton1.W = 23
     categoryButton1.H = 3
     local categoryButton1 = SellShopForm:addButton(29, 9, " Industrial Craft 2 ", function()
-        SellShopSpecificForm = createSellShopSpecificForm("IC2")
-        SellShopSpecificForm:setActive()
+        createSellShopSpecificForm("IC2")
     end)
     categoryButton1.W = 24
     categoryButton1.H = 3
     local categoryButton1 = SellShopForm:addButton(54, 9, " Applied Energistics 2 ", function()
-        SellShopSpecificForm = createSellShopSpecificForm("AE2")
-        SellShopSpecificForm:setActive()
+        createSellShopSpecificForm("AE2")
     end)
     categoryButton1.W = 23
     categoryButton1.H = 3
 
     local categoryButton1 = SellShopForm:addButton(5, 13, " Forestry ", function()
-        SellShopSpecificForm = createSellShopSpecificForm("Forestry")
-        SellShopSpecificForm:setActive()
+        createSellShopSpecificForm("Forestry")
     end)
     categoryButton1.W = 23
     categoryButton1.H = 3
     local categoryButton1 = SellShopForm:addButton(29, 13, " Зачарованные книги ", function()
-        SellShopSpecificForm = createSellShopSpecificForm("Books")
-        SellShopSpecificForm:setActive()
+        createSellShopSpecificForm("Books")
     end)
     categoryButton1.W = 24
     categoryButton1.H = 3
     local categoryButton1 = SellShopForm:addButton(54, 13, " Draconic Evolution ", function()
-        SellShopSpecificForm = createSellShopSpecificForm("DE")
-        SellShopSpecificForm:setActive()
+        createSellShopSpecificForm("DE")
     end)
     categoryButton1.W = 23
     categoryButton1.H = 3
 
     local categoryButton1 = SellShopForm:addButton(5, 17, " Thermal Expansion ", function()
-        SellShopSpecificForm = createSellShopSpecificForm("TE")
-        SellShopSpecificForm:setActive()
+        createSellShopSpecificForm("TE")
     end)
     categoryButton1.W = 23
     categoryButton1.H = 3
@@ -365,65 +358,48 @@ end
 
 
 function createSellShopSpecificForm(category)
-    local ShopForm = forms.addForm()
-    ShopForm.border = 1
-    local shopFrame = ShopForm:addFrame(3, 5, 1)
-    shopFrame.W = 76
-    shopFrame.H = 18
-    local shopNameLabel = ShopForm:addLabel(33, 1, " Legend Shop ")
-    shopNameLabel.fontColor = 0x00FDFF
-    local authorLabel = ShopForm:addLabel(32, 25, " Автор: Durex77 ")
-    authorLabel.fontColor = 0x00FDFF
-
-    local shopNameLabel = ShopForm:addLabel(35, 4, " Магазин ")
-    local shopCountLabel = ShopForm:addLabel(4, 6, " Наименование                                       Количество Цена    ")
-
-    local itemList = ShopForm:addList(5, 7, function()
-    end)
-
-    local sellShopList = shopService:getSellShopList(category)
-
-    for i = 1, #sellShopList do
-        local name = sellShopList[i].label
+    local items = shopService:getSellShopList(category)
+    for i = 1, #items do
+        local name = items[i].label
         for i = 1, 51 - unicode.len(name) do
             name = name .. ' '
         end
-        name = name .. sellShopList[i].count
+        name = name .. items[i].count
 
         for i = 1, 62 - unicode.len(name) do
             name = name .. ' '
         end
 
-        name = name .. sellShopList[i].price
+        name = name .. items[i].price
 
-        itemList:insert(name, sellShopList[i])
+        items[i].displayName = name
     end
-    itemList.border = 0
-    itemList.W = 72
-    itemList.H = 15
-    itemList.fontColor = 0xFF8F00
 
-    local itemCounterNumberSelectForm = createNumberEditForm(function(count)
-        local _, message = shopService:sellItem(nickname, itemList.items[itemList.index], count)
-        createNotification(nil, message, nil, function()
-            SellShopSpecificForm = createSellShopSpecificForm(category)
-            SellShopSpecificForm:setActive()
-        end)
-    end, ShopForm, "Купить")
+    SellShopSpecificForm = createListForm(" Магазин ",
+        " Наименование                                       Количество Цена    ",
+        items,
+        function()
+            createGarbageForm()
+        end,
+        {
+            createButton(" Назад ", 3, 23, function(selectedItem)
+                MainForm = createMainForm(nickname)
+                MainForm:setActive()
+            end),
+            createButton(" Купить ", 68, 23, function(selectedItem)
+                local itemCounterNumberSelectForm = createNumberEditForm(function(count)
+                    local _, message = shopService:sellItem(nickname, selectedItem, count)
+                    createNotification(nil, message, nil, function()
+                        createSellShopSpecificForm(category)
+                    end)
+                end, ShopForm, "Купить")
+                if (selectedItem) then
+                    itemCounterNumberSelectForm:setActive()
+                end
+            end)
+        })
 
-    local shopBackButton = ShopForm:addButton(3, 23, " Назад ", function()
-        SellShopForm:setActive()
-    end)
-
-    local shopWithdrawButton = ShopForm:addButton(68, 23, " Купить ", function()
-        local itemToBuy = itemList.items[itemList.index]
-        if (itemToBuy) then
-            itemCounterNumberSelectForm:setActive()
-        end
-    end)
-    shopBackButton.H = 1
-    shopBackButton.W = 9
-    return ShopForm
+    SellShopSpecificForm:setActive()
 end
 
 function createBuyShopForm()
