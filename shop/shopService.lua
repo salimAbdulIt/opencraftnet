@@ -359,15 +359,15 @@ function ShopService:new(terminalName)
                 item.count = countOfItems * itemConfig.toCount / itemConfig.fromCount
                 table.insert(playerData.items, item)
             end
-            printD(terminalName .. ": Игрок " .. nick .. " обменял " .. itemConfig.fromId .. ":" .. itemConfig.fromDmg .. " в количестве " .. countOfItems .. " по курсу " .. itemConfig.fromCount .. "к" .. itemConfig.toCount)
+            printD(terminalName .. ": Игрок " .. nick .. " обменял " .. itemConfig.fromId .. ":" .. itemConfig.fromDmg .. " на " .. itemConfig.toId .. ":" .. itemConfig.toDmg .. " в количестве " .. countOfItems .. " по курсу " .. itemConfig.fromCount .. "к" .. itemConfig.toCount)
         end
         if(save) then
             self.db:insert(nick, playerData)
             if (countOfExchanges > 0) then
-                return countOfItems, " Обменяно " .. countOfItems .. " руд на слитки.", "Заберите из корзины"
+                return countOfItems, " Обменяно " .. countOfItems .. " предметов.", "Заберите из корзины"
             end
         end
-        return 0, "Нету руд в инвентаре!"
+        return 0, "Нету вещей в инвентаре!"
     end
 
     setmetatable(obj, self)
