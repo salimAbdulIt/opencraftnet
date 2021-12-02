@@ -263,7 +263,7 @@ function createMainForm(nick)
     --    sellButton.color = 0x0202020
 
     local exchangeButton = MainForm:addButton(53, 17, " Обмен руд", function()
-        OreExchangerForm:setActive()
+        createOreExchangerForm()
     end)
     exchangeButton.H = 3
     exchangeButton.W = 21
