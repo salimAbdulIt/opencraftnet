@@ -335,7 +335,7 @@ function ShopService:new(terminalName)
                 item.id = itemConfig.fromId
                 item.dmg = itemConfig.fromDmg
                 item.label = itemConfig.fromLabel
-                item.count = countOfItems * left
+                item.count = left
                 table.insert(playerData.items, item)
             end
             self.db:insert(nick, playerData)
@@ -356,7 +356,7 @@ function ShopService:new(terminalName)
                 item.id = itemConfig.toId
                 item.dmg = itemConfig.toDmg
                 item.label = itemConfig.toLabel
-                item.count = countOfItems * itemConfig.toCount / itemConfig.fromCount
+                item.count = countOfExchanges * itemConfig.toCount
                 table.insert(playerData.items, item)
             end
             printD(terminalName .. ": Игрок " .. nick .. " обменял " .. itemConfig.fromId .. ":" .. itemConfig.fromDmg .. " на " .. itemConfig.toId .. ":" .. itemConfig.toDmg .. " в количестве " .. countOfItems .. " по курсу " .. itemConfig.fromCount .. "к" .. itemConfig.toCount)
