@@ -16,6 +16,7 @@ function ShopService:new(terminalName)
 
     function obj:init()
         self.oreExchangeList = utils.readObjectFromFile("home/config/oreExchanger.cfg")
+        self.exchangeList = utils.readObjectFromFile("home/config/exchanger.cfg")
         self.sellShopList = utils.readObjectFromFile("home/config/sellShop.cfg")
         self.buyShopList = utils.readObjectFromFile("home/config/buyShop.cfg")
 
@@ -54,6 +55,12 @@ function ShopService:new(terminalName)
 
     function obj:getOreExchangeList()
         return self.oreExchangeList
+    end
+
+
+
+    function obj:getExchangeList()
+        return self.exchangeList
     end
 
 

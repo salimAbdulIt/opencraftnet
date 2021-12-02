@@ -13,8 +13,6 @@ local BalanceForm
 
 local timer
 
-local balancedItems = balanceService:getBalancedItems()
-
 function createNumberEditForm(callback, form, buttonText)
     local itemCounterNumberForm = forms:addForm()
     itemCounterNumberForm.border = 2
@@ -54,7 +52,7 @@ function createBalanceForm()
     local itemList = BalanceForm:addList(5, 7, function()
     end)
 
-    local items = balancedItems
+    local items = balanceService:getBalancedItems()
     for i = 1, #items do
         local name = items[i].label
         for i = 1, 60 - unicode.len(name) do
@@ -69,7 +67,7 @@ function createBalanceForm()
     itemList.H = 15
     itemList.fontColor = 0xFF8F00
 
-    createNumberEditForm(function(count)
+    local itemCounterNumberSelectForm = createNumberEditForm(function(count)
         local itemToBalance = itemList.items[itemList.index]
         if (itemToBalance) then
             balanceService:balanceItem(itemToBalance, count)
@@ -80,7 +78,7 @@ function createBalanceForm()
     end, BalanceForm, " Установить ")
 
    BalanceForm:addButton(45, 23, " Обновить  ", function()
-       balancedItems = balanceService:getBalancedItems()
+       balanceService:update()
 
        BalanceForm = createBalanceForm()
        BalanceForm:setActive()
@@ -94,7 +92,7 @@ function createBalanceForm()
             BalanceForm:setActive()
         end
     end)
-    local balanceButton = BalanceForm:addButton(55, 23, " Добавить ", function()
+    local balanceButton = BalanceForm:addButton(56, 23, " Добавить ", function()
         local itemToBalance = itemList.items[itemList.index]
         if (itemToBalance) then
             itemCounterNumberSelectForm:setActive()
@@ -103,7 +101,12 @@ function createBalanceForm()
     return BalanceForm
 end
 
+
 BalanceForm = createBalanceForm()
+
+timer = BalanceForm:addTimer(10, function()
+    balanceService:balance()
+end)
 
 forms.run(BalanceForm) --запускаем gui
 

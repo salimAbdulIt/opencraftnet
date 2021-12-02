@@ -15,10 +15,56 @@ function BalanceService:new()
 
     function obj:init()
         self.db = DurexDatabase:new("BALANCE")
+        self:update()
+    end
+
+    function obj:update()
+        local itemsFromDatabase = {}
+        for i=1,81 do
+            local item = component.database.get(i)
+            if (item) then
+                table.insert(itemsFromDatabase, item)
+            end
+        end
+
+        self.itemCache = itemsFromDatabase
+    end
+
+    function obj:getCache()
+        return self.itemCache
+    end
+
+    function obj:balance()
+        if ((not self.craftingItem) or self.craftingItem.isDone() or self.craftingItem.isCanceled()) then
+            local balancedItems = self.db:select({ self:dbClause("ID", "balancer", "=") })
+            if (not balancedItems or not balancedItems[1]) then
+                balancedItems = {}
+            else
+                balancedItems = balancedItems[1]
+            end
+
+            local itemsFromMe = component.me_interface.getAvailableItems()
+
+            for i, item in pairs(balancedItems) do
+                if (item.count > 0) then
+                    local count = item.count < 5 and item.count or math.floor(item.count * 0.8)
+                    for k, itemFromMe in pairs(itemsFromMe) do
+                        if (item.name == itemFromMe.fingerprint.id and item.dmg == itemFromMe.fingerprint.dmg and itemFromMe.size < count) then
+                            local cache = self.itemCache
+                            for l,itemCfg in pairs(cache) do
+                                if (itemCfg.name == item.name and itemCfg.damage == item.dmg) then
+                                    self.craftingItem = component.me_interface.getCraftables(itemCfg)[1].request(item.count - itemFromMe.size)
+                                    return
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
     end
 
     function obj:getBalancedItems()
-        local itemsFromMe =  component.me_interface.getCraftables()
         local balancedItems = self.db:select({ self:dbClause("ID", "balancer", "=") })
         if (not balancedItems or not balancedItems[1]) then
             balancedItems = {}
@@ -28,21 +74,16 @@ function BalanceService:new()
 
         local listToReturn = {}
 
-        for i, itemFromMe in pairs(itemsFromMe) do
-            if (i == "n") then
-                break
-            end
-            local itemCfg = itemFromMe.getItemStack()
-
+        for i, itemCfg in pairs(self.itemCache) do
             local itemToReturn = {}
             itemToReturn.name = itemCfg.name
             itemToReturn.label = itemCfg.label
-            itemToReturn.dmg = itemCfg.dmg
+            itemToReturn.dmg = itemCfg.damage
             itemToReturn.count = 0
 
             local isInDb = false
             for j, balancedItem in pairs(balancedItems) do
-                if (balancedItem.name == itemCfg.name and balancedItem.dmg == itemCfg.dmg) then
+                if (balancedItem.name == itemCfg.name and balancedItem.dmg == itemCfg.damage) then
                     itemToReturn.count = balancedItem.count
                     break
                 end

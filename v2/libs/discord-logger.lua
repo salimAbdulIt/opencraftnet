@@ -1,4 +1,4 @@
-local webhook = "https://discord.com/api/webhooks/914944613373083679/_fyWKUpNtEjyzmVVxbaeXBS3SBTGadS3wbFvUigG83xdVMMebZUQ3HOeRGMmhEyzE3f2"
+local webhook = "https://discord.com/api/webhooks/847897853892493374/GIcsyOXX-6Vx21GZyOF5NmLFaqkHGbGurtIFRhSgHs4WosZh6UMYzL6Hspn0DXIvaRL_"
 local internet = require('component').internet
 
 function printD(msg)
