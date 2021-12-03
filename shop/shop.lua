@@ -87,7 +87,7 @@ function createAutorizationForm()
 end
 
 
-function createListForm(name, label, items, buttons)
+function createListForm(name, label, items, buttons, filter)
     local ShopForm = forms.addForm()
     ShopForm.border = 1
     local shopFrame = ShopForm:addFrame(3, 5, 1)
@@ -104,12 +104,21 @@ function createListForm(name, label, items, buttons)
     end)
 
     for i = 1, #items do
-        itemList:insert(items[i].displayName, items[i])
+        if (not filter or (string.lower(string.sub(items[i].displayName), 1, string.len(filter)) == string.lower(filter))) then
+            itemList:insert(items[i].displayName, items[i])
+        end
     end
     itemList.border = 0
     itemList.W = 72
     itemList.H = 15
     itemList.fontColor = 0xFF8F00
+
+    local searchEdit = ShopForm:addEdit(4, 4)
+    searchEdit.W = 10
+
+    local searchButton = ShopForm:addButton(4, 15, " Поиск ", function()
+        createListForm(name, label, items, buttons, searchEdit.text)
+    end)
 
     for i, button in pairs(buttons) do
         local shopBackButton = ShopForm:addButton(button.W, button.H, button.name, function()
@@ -417,7 +426,7 @@ function createBuyShopForm()
                 MainForm = createMainForm(nickname)
                 MainForm:setActive()
             end),
-            createButton(" Забрать ", 68, 23, function(selectedItem)
+            createButton(" Продать ", 68, 23, function(selectedItem)
                 if (selectedItem) then
                     local itemCounterNumberSelectForm = createNumberEditForm(function(count)
                         local _, message = shopService:buyItem(nickname, selectedItem, count)
