@@ -502,7 +502,7 @@ function createExchangerForm()
         for i = 1, 25 - unicode.len(name) do
             name = name .. ' '
         end
-        name = name .. items[i].fromCount .. 'к' .. exchangeList[i].toCount
+        name = name .. items[i].fromCount .. 'к' .. items[i].toCount
         for i = 1, 50 - unicode.len(name) do
             name = name .. ' '
         end
