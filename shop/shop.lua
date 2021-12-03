@@ -458,7 +458,7 @@ end
 function createOreExchangerForm()
     local items = shopService:getOreExchangeList()
     for i = 1, #items do
-        local name = items[i].label
+        local name = items[i].fromLabel
         for i = 1, 58 - unicode.len(name) do
             name = name .. ' '
         end
