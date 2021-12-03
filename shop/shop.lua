@@ -104,7 +104,7 @@ function createListForm(name, label, items, buttons, filter)
     end)
 
     for i = 1, #items do
-        if (not filter or (string.lower(string.sub(items[i].displayName), 1, string.len(filter)) == string.lower(filter))) then
+        if (not filter or (string.lower(string.sub(items[i].displayName, 1, string.len(filter)) == string.lower(filter)) then
             itemList:insert(items[i].displayName, items[i])
         end
     end
@@ -114,9 +114,9 @@ function createListForm(name, label, items, buttons, filter)
     itemList.fontColor = 0xFF8F00
 
     local searchEdit = ShopForm:addEdit(3, 2)
-    searchEdit.W = 10
+    searchEdit.W = 15
 
-    local searchButton = ShopForm:addButton(14, 2, " Поиск ", function()
+    local searchButton = ShopForm:addButton(19, 3, " Поиск ", function()
         createListForm(name, label, items, buttons, searchEdit.text)
     end)
 
