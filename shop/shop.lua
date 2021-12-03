@@ -113,10 +113,10 @@ function createListForm(name, label, items, buttons, filter)
     itemList.H = 15
     itemList.fontColor = 0xFF8F00
 
-    local searchEdit = ShopForm:addEdit(4, 4)
+    local searchEdit = ShopForm:addEdit(3, 2)
     searchEdit.W = 10
 
-    local searchButton = ShopForm:addButton(4, 15, " Поиск ", function()
+    local searchButton = ShopForm:addButton(14, 2, " Поиск ", function()
         createListForm(name, label, items, buttons, searchEdit.text)
     end)
 
