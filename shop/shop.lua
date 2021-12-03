@@ -259,8 +259,6 @@ function createMainForm(nick)
     end)
     sellButton.H = 3
     sellButton.W = 22
-    --    sellButton.fontColor = 0xaaaaaa
-    --    sellButton.color = 0x0202020
 
     local exchangeButton = MainForm:addButton(53, 17, " Обмен руд", function()
         createOreExchangerForm()
@@ -498,61 +496,42 @@ function createOreExchangerForm()
 end
 
 function createExchangerForm()
-    local ShopForm = forms.addForm()
-    ShopForm.border = 1
-    local shopFrame = ShopForm:addFrame(3, 5, 1)
-    shopFrame.W = 76
-    shopFrame.H = 18
-    local shopNameLabel = ShopForm:addLabel(33, 1, " Legend Shop ")
-    shopNameLabel.fontColor = 0x00FDFF
-    local authorLabel = ShopForm:addLabel(32, 25, " Автор: Durex77 ")
-    authorLabel.fontColor = 0x00FDFF
-
-    local shopNameLabel = ShopForm:addLabel(35, 4, " Обмен руд ")
-    local shopCountLabel = ShopForm:addLabel(4, 6, " Наименование             Курс обмена              Наименование       ")
-
-    local itemList = ShopForm:addList(5, 7, function()
-    end)
-
-    local exchangeList = shopService:getExchangeList()
-
-    for i = 1, #exchangeList do
-        local name = exchangeList[i].fromLabel
+    local items = shopService:getExchangeList()
+    for i = 1, #items do
+        local name = items[i].fromLabel
         for i = 1, 25 - unicode.len(name) do
             name = name .. ' '
         end
-        name = name .. exchangeList[i].fromCount .. 'к' .. exchangeList[i].toCount
-
+        name = name .. items[i].fromCount .. 'к' .. exchangeList[i].toCount
         for i = 1, 50 - unicode.len(name) do
             name = name .. ' '
         end
-        name = name .. exchangeList[i].toLabel
-
-        itemList:insert(name, exchangeList[i])
+        name = name .. items[i].toLabel
+        items[i].displayName = name
     end
-    itemList.border = 0
-    itemList.W = 70
-    itemList.H = 15
-    itemList.fontColor = 0xFF8F00
 
-    local itemCounterNumberSelectForm = createNumberEditForm(function(count)
-        local _, message, message2 = shopService:exchange(nickname, itemList.items[itemList.index], count)
-        createNotification(nil, message, message2, function()
-            ExchangerForm = createExchangerForm(nickname)
-            ExchangerForm:setActive()
-        end)
-    end, ShopForm, "Обменять")
+    ExchangerForm = createListForm(" Обменик ",
+        " Наименование             Курс обмена              Наименование       ",
+        items,
+        {
+            createButton(" Назад ", 3, 23, function(selectedItem)
+                MainForm = createMainForm(nickname)
+                MainForm:setActive()
+            end),
+            createButton(" Обменять ", 68, 23, function(selectedItem)
+                if (selectedItem) then
+                    local itemCounterNumberSelectForm = createNumberEditForm(function(count)
+                        local _, message, message2 = shopService:exchange(nickname, selectedItem, count)
+                        createNotification(nil, message, message2, function()
+                            createExchangerForm()
+                        end)
+                    end, ExchangerForm, "Обменять")
+                    itemCounterNumberSelectForm:setActive()
+                end
+            end)
+        })
 
-    local shopBackButton = ShopForm:addButton(3, 23, " Назад ", function()
-        MainForm = createMainForm(nickname)
-        MainForm:setActive()
-    end)
-    local shopWithdrawButton = ShopForm:addButton(64, 23, " Обменять ", function()
-        itemCounterNumberSelectForm:setActive()
-    end)
-    shopBackButton.H = 1
-    shopBackButton.W = 9
-    return ShopForm
+    ExchangerForm:setActive()
 end
 
 function createRulesForm()
