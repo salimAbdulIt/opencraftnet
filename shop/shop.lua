@@ -254,8 +254,7 @@ function createMainForm(nick)
     buyButton.W = 21
 
     local sellButton = MainForm:addButton(30, 17, " Продать ", function()
-        BuyShopForm = createBuyShopForm()
-        BuyShopForm:setActive()
+        createBuyShopForm()
     end)
     sellButton.H = 3
     sellButton.W = 22
@@ -267,8 +266,7 @@ function createMainForm(nick)
     exchangeButton.W = 21
 
     local buyButton = MainForm:addButton(8, 21, " Обменик ", function()
-        ExchangerForm = createExchangerForm()
-        ExchangerForm:setActive()
+        createExchangerForm()
     end)
     buyButton.H = 3
     buyButton.W = 21
@@ -394,63 +392,46 @@ function createSellShopSpecificForm(category)
 end
 
 function createBuyShopForm()
-    local ShopForm = forms.addForm()
-    ShopForm.border = 1
-    local shopFrame = ShopForm:addFrame(3, 5, 1)
-    shopFrame.W = 76
-    shopFrame.H = 18
-    local shopNameLabel = ShopForm:addLabel(33, 1, " Legend Shop ")
-    shopNameLabel.fontColor = 0x00FDFF
-    local authorLabel = ShopForm:addLabel(32, 25, " Автор: Durex77 ")
-    authorLabel.fontColor = 0x00FDFF
-
-    local shopNameLabel = ShopForm:addLabel(35, 4, " Скупка ")
-    local shopCountLabel = ShopForm:addLabel(4, 6, " Наименование                                       Количество Цена    ")
-
-    local itemList = ShopForm:addList(5, 7, function()
-    end)
-
-    local buyShopList = shopService:getBuyShopList()
-
-    for i = 1, #buyShopList do
-        local name = buyShopList[i].label
+    local items = shopService:getBuyShopList()
+    for i = 1, #items do
+        local name = items[i].label
         for i = 1, 51 - unicode.len(name) do
             name = name .. ' '
         end
-        name = name .. buyShopList[i].count
+        name = name .. items[i].count
 
         for i = 1, 62 - unicode.len(name) do
             name = name .. ' '
         end
 
-        name = name .. buyShopList[i].price
+        name = name .. items[i].price
 
-        itemList:insert(name, buyShopList[i])
+        items[i].displayName = name
     end
-    itemList.border = 0
-    itemList.W = 72
-    itemList.H = 15
-    itemList.fontColor = 0xFF8F00
 
-    local itemCounterNumberSelectForm = createNumberEditForm(function(count)
-        local _, message = shopService:buyItem(nickname, itemList.items[itemList.index], count)
-        createNotification(nil, message, nil, function()
-            BuyShopForm = createBuyShopForm()
-            BuyShopForm:setActive()
-        end)
-    end, MainForm, "Продать")
+    BuyShopForm = createListForm(" Скупка ",
+        " Наименование                                       Количество Цена    ",
+        items,
+        {
+            createButton(" Назад ", 3, 23, function(selectedItem)
+                MainForm = createMainForm(nickname)
+                MainForm:setActive()
+            end),
+            createButton(" Забрать ", 68, 23, function(selectedItem)
+                if (selectedItem) then
+                    local itemCounterNumberSelectForm = createNumberEditForm(function(count)
+                        local _, message = shopService:buyItem(nickname, selectedItem, count)
+                        createNotification(nil, message, nil, function()
+                            createBuyShopForm()
+                        end)
+                    end, MainForm, "Продать")
 
-    local shopBackButton = ShopForm:addButton(3, 23, " Назад ", function()
-        MainForm = createMainForm(nickname)
-        MainForm:setActive()
-    end)
+                    itemCounterNumberSelectForm:setActive()
+                end
+            end)
+        })
 
-    local shopWithdrawButton = ShopForm:addButton(68, 23, " Продать ", function()
-        itemCounterNumberSelectForm:setActive()
-    end)
-    shopBackButton.H = 1
-    shopBackButton.W = 9
-    return ShopForm
+    BuyShopForm:setActive()
 end
 
 function createOreExchangerForm()
