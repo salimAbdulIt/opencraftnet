@@ -104,7 +104,7 @@ function createListForm(name, label, items, buttons, filter)
     end)
 
     for i = 1, #items do
-        if (not filter or (unicode.lower(unicode.sub(items[i].displayName, 1, unicode.len(filter))) == unicode.lower(filter))) then
+        if (not filter or (unicode.lower(unicode.sub(items[i].displayName, 1, unicode.len(filter))):find(unicode.lower(filter)))) then
             itemList:insert(items[i].displayName, items[i])
         end
     end
