@@ -117,7 +117,7 @@ function createListForm(name, label, items, buttons, filter)
     searchEdit.W = 15
 
     local searchButton = ShopForm:addButton(19, 3, " Поиск ", function()
-        createListForm(name, label, items, buttons, searchEdit.text)
+        createListForm(name, label, items, buttons, searchEdit.text):setActive()
     end)
 
     for i, button in pairs(buttons) do
