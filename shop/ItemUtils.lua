@@ -21,20 +21,27 @@ itemService.giveItem = function(id, dmg, count, nbt)
             if (nbt) then
                 return meInterface.exportItem({ id = id, dmg = dmg, nbt_hash = nbt }, "UP", (count - sum) < 64 and (count - sum) or 64).size
             else
-                local count =  meInterface.exportItem({ id = id, dmg = dmg}, "UP", (count - sum) < 64 and (count - sum) or 64).size
+                local executed1, count = pcall(function()
+                    return meInterface.exportItem({ id = id, dmg = dmg}, "UP", (count - sum) < 64 and (count - sum) or 64).size
+                end)
 
-                if (count and count > 0) then
+                if (executed1 and count > 0) then
                     return count
                 end
                 local itemsFromMe = meInterface.getAvailableItems()
 
                 for k, itemFromMe in pairs(itemsFromMe) do
                     if (id == itemFromMe.fingerprint.id and dmg == itemFromMe.fingerprint.dmg and itemFromMe.size > 0) then
-                        return meInterface.exportItem(itemFromMe.fingerprint, "UP", (count - sum) < 64 and (count - sum) or 64).size
+                        local executed2, count2 = pcall(function()
+                            return meInterface.exportItem(itemFromMe.fingerprint, "UP", (count - sum) < 64 and (count - sum) or 64).size
+                        end)
+                        return count2
                     end
                 end
             end
         end)
+        print(result)
+        os.sleep(5)
         if (not executed) then
             return sum
         end
