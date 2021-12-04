@@ -20,7 +20,7 @@ itemService.giveItem = function(id, dmg, count, nbt)
         local executed, result = pcall(function()
             if (nbt) then
                 return meInterface.exportItem({ id = id, dmg = dmg, nbt_hash = nbt }, "UP", (count - sum) < 64 and (count - sum) or 64).size
-            else if (id == 'Forestry:minerBagT2') then
+            elseif (id == 'Forestry:minerBagT2') then
                 return meInterface.exportItem({ id = id, dmg = dmg}, "UP", (count - sum) < 64 and (count - sum) or 64).size
             else
                 local itemsFromMe = meInterface.getAvailableItems()
