@@ -29,7 +29,7 @@ itemService.giveItem = function(id, dmg, count, nbt)
                 local itemsFromMe = meInterface.getAvailableItems()
 
                 for k, itemFromMe in pairs(itemsFromMe) do
-                    if (id == itemFromMe.fingerprint.id and dmg == itemFromMe.fingerprint.dmg) then
+                    if (id == itemFromMe.fingerprint.id and dmg == itemFromMe.fingerprint.dmg and itemFromMe.size > 0) then
                         return meInterface.exportItem(itemFromMe.fingerprint, "UP", (count - sum) < 64 and (count - sum) or 64).size
                     end
                 end
