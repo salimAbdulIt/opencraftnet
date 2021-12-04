@@ -25,6 +25,8 @@ itemService.giveItem = function(id, dmg, count, nbt)
                     return meInterface.exportItem({ id = id, dmg = dmg }, "UP", (count - sum) < 64 and (count - sum) or 64).size
                 end)
 
+                print(count)
+                os.sleep(5)
                 if (executed1 and count > 0) then
                     return count
                 end
@@ -35,13 +37,14 @@ itemService.giveItem = function(id, dmg, count, nbt)
                         local executed2, count2 = pcall(function()
                             return meInterface.exportItem(itemFromMe.fingerprint, "UP", (count - sum) < 64 and (count - sum) or 64).size
                         end)
+                    print(count2)
+                    os.sleep(5)
                         if executed2 then
                             return count2
                         end
                     end
                 end
             end
-            return 0
         end)
         if (not executed) then
             return sum
