@@ -21,14 +21,14 @@ itemService.giveItem = function(id, dmg, count, nbt)
             if (nbt) then
                 return meInterface.exportItem({ id = id, dmg = dmg, nbt_hash = nbt }, "UP", (count - sum) < 64 and (count - sum) or 64).size
             else
-                local executed1, count = pcall(function()
+                local executed1, count1 = pcall(function()
                     return meInterface.exportItem({ id = id, dmg = dmg }, "UP", (count - sum) < 64 and (count - sum) or 64).size
                 end)
 
-                print(count)
+                print(count1)
                 os.sleep(5)
-                if (executed1 and count > 0) then
-                    return count
+                if (executed1 and count1 > 0) then
+                    return count1
                 end
                 local itemsFromMe = meInterface.getAvailableItems()
 
