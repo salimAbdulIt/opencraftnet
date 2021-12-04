@@ -469,7 +469,7 @@ function createOreExchangerForm()
                     createOreExchangerForm()
                 end)
             end),
-            createButton(" Забрать ", 54, 23, function(selectedItem)
+            createButton(" Обменять ", 54, 23, function(selectedItem)
                 if (selectedItem) then
                     local itemCounterNumberSelectForm = createNumberEditForm(function(count)
                         local _, message, message2 = shopService:exchangeOre(nickname, selectedItem, count)
