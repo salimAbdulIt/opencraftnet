@@ -476,7 +476,7 @@ function createOreExchangerForm()
                         createNotification(nil, message, message2, function()
                             createOreExchangerForm()
                         end)
-                    end, ShopForm, "Обменять")
+                    end, OreExchangerForm, "Обменять")
                     itemCounterNumberSelectForm:setActive()
                 end
             end)
