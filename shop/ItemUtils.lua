@@ -22,7 +22,7 @@ itemService.giveItem = function(id, dmg, count, nbt)
                 return meInterface.exportItem({ id = id, dmg = dmg, nbt_hash = nbt }, "UP", (count - sum) < 64 and (count - sum) or 64).size
             else
                 local executed1, count = pcall(function()
-                    return meInterface.exportItem({ id = id, dmg = dmg}, "UP", (count - sum) < 64 and (count - sum) or 64).size
+                    return meInterface.exportItem({ id = id, dmg = dmg }, "UP", (count - sum) < 64 and (count - sum) or 64).size
                 end)
 
                 if (executed1 and count > 0) then
@@ -35,7 +35,9 @@ itemService.giveItem = function(id, dmg, count, nbt)
                         local executed2, count2 = pcall(function()
                             return meInterface.exportItem(itemFromMe.fingerprint, "UP", (count - sum) < 64 and (count - sum) or 64).size
                         end)
-                        return executed2 and count2 or 0
+                        if executed2 then
+                            return count2
+                        end
                     end
                 end
             end
