@@ -21,28 +21,14 @@ function ShopService:new(terminalName)
         self.buyShopList = utils.readObjectFromFile("home/config/buyShop.cfg")
 
         self.db = DurexDatabase:new("USERS")
-        self.currencies = {}
-        self.currencies[1] = {}
-        self.currencies[1].item = component.database.get(1)
-        self.currencies[1].dbSlot = 1
-        self.currencies[1].money = 1000
+        self.currency = {}
+        self.currency = {}
+        self.currency.item = component.database.get(1)
+        self.currency.dbSlot = 1
+        self.currency.money = 1
 
-        self.currencies[2] = {}
-        self.currencies[2].item = component.database.get(2)
-        self.currencies[2].dbSlot = 2
-        self.currencies[2].money = 10000
 
-        self.currencies[3] = {}
-        self.currencies[3].item = component.database.get(3)
-        self.currencies[3].dbSlot = 3
-        self.currencies[3].money = 100000
-
-        self.currencies[4] = {}
-        self.currencies[4].item = component.database.get(4)
-        self.currencies[4].dbSlot = 4
-        self.currencies[4].money = 1000000
-
-        itemUtils.setCurrency(self.currencies)
+        itemUtils.setCurrency(self.currency)
     end
 
     function obj:dbClause(fieldName, fieldValue, typeOfClause)
