@@ -1,4 +1,4 @@
-local REPOSITOTY = "https://gitlab.com/lfreew1ndl/opencraftnetoriginal/-/raw/dev"
+local REPOSITOTY = "https://gitlab.com/lfreew1ndl/opencraftnetoriginal/-/raw/htc"
 
 local shell = require("shell")
 shell.execute("wget -fq " .. REPOSITOTY .. "/shop/forms.lua /home/lib/forms.lua")
