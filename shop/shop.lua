@@ -18,8 +18,6 @@ local SellShopSpecificForm
 local BuyShopForm
 local RulesForm
 
-local playerOffFunction
-
 local nickname = ""
 local isAutorized = false
 
@@ -56,7 +54,6 @@ function createNumberEditForm(callback, form, buttonText)
     itemCountEdit.validator = function(value)
         return tonumber(value) ~= nil
     end
-    itemCountEdit:addEvent("player_off", playerOffFunction)
     local backButton = itemCounterNumberForm:addButton(3, 8, " Назад ", function()
         form:setActive()
     end)
@@ -118,7 +115,6 @@ function createListForm(name, label, items, buttons, filter)
 
     local searchEdit = ShopForm:addEdit(3, 2)
     searchEdit.W = 15
-    searchEdit:addEvent("player_off", playerOffFunction)
 
 
     local searchButton = ShopForm:addButton(19, 3, " Поиск ", function()
@@ -586,7 +582,7 @@ local Event1 = AutorizationForm:addEvent("player_on", function(e, p)
     end
 end)
 
-playerOffFunction = function(e, p)
+local Event1 = AutorizationForm:addEvent("player_off", function(e, p)
     if (nick ~= 'Durex77') then
         computer.removeUser(nickname)
     end
@@ -594,9 +590,7 @@ playerOffFunction = function(e, p)
         timer:stop()
     end
     AutorizationForm:setActive()
-end
-
-local Event1 = AutorizationForm:addEvent("player_off", playerOffFunction)
+end)
 
 forms.run(AutorizationForm) --запускаем gui
 
