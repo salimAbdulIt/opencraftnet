@@ -312,13 +312,15 @@ local function editText(text, left, top, W, H, validator)
     local event, address, arg1, arg2, arg3
     while running do
         event, address, arg1, arg2, arg3 = term.pull()
+        if event == "player_off" then
+            running = false
+        end
         if type(address) == "string" and isPrimary(address) then
             term.setCursorBlink(false)
             if event == "key_down" then onKeyDown(arg1, arg2)
             elseif event == "clipboard" then onClipboard(arg1)
             elseif event == "touch" or event == "drag" then onClick(arg1, arg2)
             elseif event == "scroll" then onScroll(arg3)
-            elseif event == "player_off" then running = false
             end
             term.setCursorBlink(true)
         end
