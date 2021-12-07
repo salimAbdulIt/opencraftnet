@@ -45,7 +45,9 @@ itemService.giveItem = function(id, dmg, count, nbt)
         if (not executed) then
             return sum
         end
-        sum = sum + result
+        if (result) then
+            sum = sum + result
+        end
         if (result == 0) then
             return sum
         end
