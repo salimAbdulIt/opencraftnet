@@ -576,6 +576,7 @@ RulesForm = createRulesForm()
 
 
 local Event1 = AutorizationForm:addEvent("player_on", function(e, p)
+    gpu.setResolution(80, 25)
     if (p) then
         computer.addUser(p)
         autorize(p)
