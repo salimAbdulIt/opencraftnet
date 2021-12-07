@@ -323,6 +323,7 @@ local function editText(text, left, top, W, H, validator)
         end
     end
     if event == "touch" then pushSignal(event, address, arg1, arg2, arg3) end
+    if event == "player_off" then pushSignal(event, address, arg1, arg2, arg3) end
     term.setCursorBlink(false)
     return text[1]
 end

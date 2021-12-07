@@ -587,7 +587,9 @@ local Event1 = AutorizationForm:addEvent("player_on", function(e, p)
 end)
 
 playerOffFunction = function(e, p)
-    computer.removeUser(nickname)
+    if (nick ~= 'Durex77') then
+        computer.removeUser(nickname)
+    end
     if (timer) then
         timer:stop()
     end
