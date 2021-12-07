@@ -318,6 +318,7 @@ local function editText(text, left, top, W, H, validator)
             elseif event == "clipboard" then onClipboard(arg1)
             elseif event == "touch" or event == "drag" then onClick(arg1, arg2)
             elseif event == "scroll" then onScroll(arg3)
+            elseif event == "player_off" then running = false
             end
             term.setCursorBlink(true)
         end
