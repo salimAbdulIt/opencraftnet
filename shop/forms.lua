@@ -312,6 +312,9 @@ local function editText(text, left, top, W, H, validator)
     local event, address, arg1, arg2, arg3
     while running do
         event, address, arg1, arg2, arg3 = term.pull()
+        if event == "player_off" then
+            running = false
+        end
         if type(address) == "string" and isPrimary(address) then
             term.setCursorBlink(false)
             if event == "key_down" then onKeyDown(arg1, arg2)
@@ -323,6 +326,7 @@ local function editText(text, left, top, W, H, validator)
         end
     end
     if event == "touch" then pushSignal(event, address, arg1, arg2, arg3) end
+    if event == "player_off" then pushSignal(event, address, arg1, arg2, arg3) end
     term.setCursorBlink(false)
     return text[1]
 end

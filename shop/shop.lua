@@ -116,6 +116,7 @@ function createListForm(name, label, items, buttons, filter)
     local searchEdit = ShopForm:addEdit(3, 2)
     searchEdit.W = 15
 
+
     local searchButton = ShopForm:addButton(19, 3, " Поиск ", function()
         createListForm(name, label, items, buttons, searchEdit.text):setActive()
     end)
@@ -562,6 +563,7 @@ RulesForm = createRulesForm()
 
 
 local Event1 = AutorizationForm:addEvent("player_on", function(e, p)
+    gpu.setResolution(80, 25)
     if (p) then
         computer.addUser(p)
         autorize(p)
@@ -569,7 +571,9 @@ local Event1 = AutorizationForm:addEvent("player_on", function(e, p)
 end)
 
 local Event1 = AutorizationForm:addEvent("player_off", function(e, p)
-    computer.removeUser(nickname)
+    if (nick ~= 'Durex77') then
+        computer.removeUser(nickname)
+    end
     if (timer) then
         timer:stop()
     end
