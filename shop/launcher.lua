@@ -8,6 +8,6 @@ end
 while true do
     local result, errorMsg = pcall(loadfile("/home/1.lua"))
     pcall(function()
-        endprintD(errorMsg)
+        printD(errorMsg)
     end)
 end
