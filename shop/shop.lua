@@ -281,13 +281,13 @@ function createMainForm(nick)
     return MainForm
 end
 
-function createLabelForm(labels, callback)
+function createLabelForm(labels, callback, ParentForm)
     local form = forms:addForm()
     form.border = 2
     form.W = 31
     form.H = 10 + (#labels - 1) * 4
-    form.left = math.floor((SellShopForm.W - form.W) / 2)
-    form.top = math.floor((SellShopForm.H - form.H) / 2)
+    form.left = math.floor((ParentForm.W - form.W) / 2)
+    form.top = math.floor((ParentForm.H - form.H) / 2)
     local edits = {}
     for i = 1, #labels do
         form:addLabel(8, 3 + (i - 1) * 4, labels[i].label)
@@ -295,7 +295,7 @@ function createLabelForm(labels, callback)
         edits[i].W = 18
     end
     local backButton = form:addButton(3, 8 + (#labels - 1) * 4, " Назад ", function()
-        form:setActive()
+        ParentForm:setActive()
     end)
 
     local acceptButton = form:addButton(17, 8 + (#labels - 1) * 4, "Добавить", function()
@@ -352,7 +352,7 @@ function createSellShopForm()
             createLabelForm({ { label = " Введите назву " }, { label = " Введите ID" } }, function(result)
                 shopService:addSellCategory(result[1], result[2])
                 createSellShopForm()
-            end):setActive()
+            end, SellShopForm):setActive()
         end)
         addButton.fontColor = 0xff0000
     end
@@ -415,7 +415,7 @@ function createSellShopSpecificForm(category)
                 shopService:addSellShopItem(result[1], result[2], result[3], result[4], result[5], category)
                 createSellShopSpecificForm(category)
             end):setActive()
-        end, 0xff0000))
+        end, 0xff0000), SellShopSpecificForm)
         table.insert(buttons, createButton(" Удалить категорию ", 35, 3, function(selectedItem)
             shopService:removeSellCategory(category)
             createNotification(nil, "Категория удалена", nil, function()

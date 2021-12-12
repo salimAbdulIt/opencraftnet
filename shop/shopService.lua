@@ -83,6 +83,7 @@ function ShopService:new(terminalName)
     end
 
     function obj:addSellShopItem(label, id, dmg, nbt, price, category)
+        if (not label) or (not id) then return end
         local sellItemCfg = {}
         sellItemCfg.label = label
         sellItemCfg.id = id
