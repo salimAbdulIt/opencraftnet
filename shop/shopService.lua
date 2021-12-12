@@ -95,6 +95,27 @@ function ShopService:new(terminalName)
         utils.writeObjectToFile("home/config/sellShop.cfg", self.sellShopList)
     end
 
+    function obj:deleteBuyShopItem(itemCfg)
+        for i = 1, #self.buyShopList do
+            if (self.buyShopList[i].id == itemCfg.id and self.buyShopList[i].dmg == itemCfg.dmg) then
+                table.remove(self.buyShopList, i)
+                break
+            end
+        end
+        utils.writeObjectToFile("home/config/buyShop.cfg", self.buyShopList)
+    end
+
+    function obj:addBuyShopItem(label, id, dmg, price)
+        if (not label) or (not id) then return end
+        local buyItemCfg = {}
+        buyItemCfg.label = label
+        buyItemCfg.id = id
+        buyItemCfg.dmg = (dmg and string.len(dmg) > 0) and tonumber(dmg) or 0
+        buyItemCfg.price = tonumber(price)
+        table.insert(self.buyShopList, buyItemCfg)
+        utils.writeObjectToFile("home/config/buyShop.cfg", self.buyShopList)
+    end
+
     function obj:enableDissableCategory(id)
         for i = 1, #self.sellCategories do
             if (self.sellCategories[i].id == id) then

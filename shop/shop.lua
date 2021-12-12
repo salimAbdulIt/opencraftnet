@@ -456,27 +456,49 @@ function createBuyShopForm()
         items[i].displayName = name
     end
 
+    local buttons = {
+        createButton(" Назад ", 3, 23, function(selectedItem)
+            MainForm = createMainForm(nickname)
+            MainForm:setActive()
+        end),
+        createButton(" Продать ", 68, 23, function(selectedItem)
+            if (selectedItem) then
+                local itemCounterNumberSelectForm = createNumberEditForm(function(count)
+                    local _, message = shopService:buyItem(nickname, selectedItem, count)
+                    createNotification(nil, message, nil, function()
+                        createBuyShopForm()
+                    end)
+                end, MainForm, "Продать")
+
+                itemCounterNumberSelectForm:setActive()
+            end
+        end)
+    }
+
+    if (shopService:isAdmin(nickname)) then
+        table.insert(buttons, createButton("Удалить", 57, 23, function(selectedItem)
+            if (selectedItem) then
+                shopService:deleteBuyShopItem(selectedItem)
+                createBuyShopForm()
+            end
+        end, 0xff0000))
+        table.insert(buttons, createButton("Добавить", 46, 23, function(selectedItem)
+            createLabelForm({
+                { label = " Введите назву " },
+                { label = " Введите ID" },
+                { label = " Введите dmg" },
+                { label = " Введите цену" }
+            }, function(result)
+                shopService:addBuyShopItem(result[1], result[2], result[3], result[4])
+                createBuyShopForm()
+            end, BuyShopForm):setActive()
+        end, 0xff0000))
+    end
+
     BuyShopForm = createListForm(" Скупка ",
         " Наименование                                       Количество Цена    ",
         items,
-        {
-            createButton(" Назад ", 3, 23, function(selectedItem)
-                MainForm = createMainForm(nickname)
-                MainForm:setActive()
-            end),
-            createButton(" Продать ", 68, 23, function(selectedItem)
-                if (selectedItem) then
-                    local itemCounterNumberSelectForm = createNumberEditForm(function(count)
-                        local _, message = shopService:buyItem(nickname, selectedItem, count)
-                        createNotification(nil, message, nil, function()
-                            createBuyShopForm()
-                        end)
-                    end, MainForm, "Продать")
-
-                    itemCounterNumberSelectForm:setActive()
-                end
-            end)
-        })
+        buttons)
 
     BuyShopForm:setActive()
 end
