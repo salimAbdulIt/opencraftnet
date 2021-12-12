@@ -406,6 +406,18 @@ function createSellShopSpecificForm(category)
                 end)
             end
         end, 0xff0000))
+        table.insert(buttons, createButton("Добавить", 45, 23, function(selectedItem)
+            createLabelForm({
+                { label = " Введите назву " },
+                { label = " Введите ID" },
+                { label = " Введите dmg" },
+                { label = " Введите nbt" },
+                { label = " Введите цену" }
+            }, function(result)
+                shopService:addSellShopItem(result[1], result[2], result[3], result[4], result[5])
+                createSellShopSpecificForm(category)
+            end):setActive()
+        end, 0xff0000))
         table.insert(buttons, createButton(" Удалить категорию ", 35, 3, function(selectedItem)
             shopService:removeSellCategory(category)
             createNotification(nil, "Категория удалена", nil, function()
