@@ -57,6 +57,7 @@ function ShopService:new(terminalName)
         local category = {}
         category.label = label
         category.id = id
+        category.enabled = false
         table.insert(self.sellCategories, category)
         utils.writeObjectToFile("home/config/sellShopCategories.cfg", self.sellCategories)
     end
