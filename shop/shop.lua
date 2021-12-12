@@ -401,12 +401,10 @@ function createSellShopSpecificForm(category)
         table.insert(buttons, createButton("Удалить", 57, 23, function(selectedItem)
             if (selectedItem) then
                 shopService:deleteSellShopItem(selectedItem)
-                createNotification(nil, "Предмет удален", nil, function()
-                    createSellShopSpecificForm(category)
-                end)
+                createSellShopSpecificForm(category)
             end
         end, 0xff0000))
-        table.insert(buttons, createButton("Добавить", 45, 23, function(selectedItem)
+        table.insert(buttons, createButton("Добавить", 46, 23, function(selectedItem)
             createLabelForm({
                 { label = " Введите назву " },
                 { label = " Введите ID" },
