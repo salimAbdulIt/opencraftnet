@@ -281,22 +281,22 @@ function createLabelForm(labels, callback)
     local form = forms:addForm()
     form.border = 2
     form.W = 31
-    form.H = 10 + (#labels-1) * 4
+    form.H = 10 + (#labels - 1) * 4
     form.left = math.floor((SellShopForm.W - form.W) / 2)
     form.top = math.floor((SellShopForm.H - form.H) / 2)
     local edits = {}
     for i = 1, #labels do
-        form:addLabel(8, 3 + (i-1) * 4, labels[i].label)
-        edits[i] = form:addEdit(8, 4 + (i-1) * 4)
+        form:addLabel(8, 3 + (i - 1) * 4, labels[i].label)
+        edits[i] = form:addEdit(8, 4 + (i - 1) * 4)
         edits[i].W = 18
     end
-    local backButton = form:addButton(3, 8 + (#labels-1) * 4, " Назад ", function()
+    local backButton = form:addButton(3, 8 + (#labels - 1) * 4, " Назад ", function()
         form:setActive()
     end)
 
-    local acceptButton = form:addButton(17, 8 + (#labels-1) * 4, "Добавить", function()
+    local acceptButton = form:addButton(17, 8 + (#labels - 1) * 4, "Добавить", function()
         local result = {}
-        for i=1, #edits do
+        for i = 1, #edits do
             table.insert(result, edits[i].text and edits[i].text or "")
         end
         callback(result)
@@ -326,7 +326,9 @@ function createSellShopForm()
     }
     for i = 1, #categories do
         local categoryButton1 = SellShopForm:addButton(banners[i].x, banners[i].y, categories[i].label, function()
-            createSellShopSpecificForm(categories[i].id)
+            if (categories[i].enabled or shopService:isAdmin(nickname)) then
+                createSellShopSpecificForm(categories[i].id)
+            end
         end)
         categoryButton1.W = 23
         categoryButton1.H = 3
@@ -343,7 +345,7 @@ function createSellShopForm()
 
     if (shopService:isAdmin(nickname)) then
         local addButton = SellShopForm:addButton(69, 23, " Добавить ", function()
-            createLabelForm({{label=" Введите назву "}, {label=" Введите ID"}}, function (result)
+            createLabelForm({ { label = " Введите назву " }, { label = " Введите ID" } }, function(result)
                 shopService:addSellCategory(result[1], result[2])
                 createSellShopForm()
             end):setActive()
