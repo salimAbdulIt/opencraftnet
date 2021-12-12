@@ -342,12 +342,13 @@ function createSellShopForm()
     end)
 
     if (shopService:isAdmin(nickname)) then
-        local shopBackButton = SellShopForm:addButton(50, 23, " Добавить ", function()
+        local addButton = SellShopForm:addButton(70, 23, " Добавить ", function()
             createLabelForm({{label=" Введите назву "}}, function (result)
-                shopService:addCategory(result[1])
+                shopService:addSellCategory(result[1])
                 createSellShopForm()
             end):setActive()
         end)
+        addButton.fontColor = 0xff0000
     end
 
     SellShopForm:setActive()

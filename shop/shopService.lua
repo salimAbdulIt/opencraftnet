@@ -28,8 +28,7 @@ function ShopService:new(terminalName)
         self.currency.dbSlot = 1
         self.currency.money = 1
         self.admins = {"Durex77"}
-
-
+    
         itemUtils.setCurrency(self.currency)
     end
 
