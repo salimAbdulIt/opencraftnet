@@ -407,7 +407,7 @@ function createSellShopSpecificForm(category)
             end, 0xff0000),
             createButton(categoryConfig.enabled and " Отключить " or " Включить ", 55, 3, function(selectedItem)
                 shopService:enableDissableCategory(category)
-                createNotification(nil, "Категория " .. categoryConfig.enabled and "отключена " or "включена ", nil, function()
+                createNotification(nil, "Категория " .. (categoryConfig.enabled and "отключена " or "включена "), nil, function()
                     createSellShopSpecificForm(category)
                 end)
             end, 0xff0000)
