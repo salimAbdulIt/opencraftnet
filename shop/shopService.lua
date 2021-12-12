@@ -72,6 +72,16 @@ function ShopService:new(terminalName)
         utils.writeObjectToFile("home/config/sellShopCategories.cfg", self.sellCategories)
     end
 
+    function obj:deleteSellShopItem(itemCfg)
+        for i = 1, #self.sellShopList do
+            if (self.sellShopList[i].id == itemCfg.id and self.sellShopList[i].dmg == itemCfg.dmg and self.sellShopList[i].nbt == itemCfg.nbt) then
+                table.remove(self.sellShopList, i)
+                break
+            end
+        end
+        utils.writeObjectToFile("home/config/sellShop.cfg", self.sellShopList)
+    end
+
     function obj:enableDissableCategory(id)
         for i = 1, #self.sellCategories do
             if (self.sellCategories[i].id == id) then

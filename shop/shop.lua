@@ -381,37 +381,46 @@ function createSellShopSpecificForm(category)
 
     local categoryConfig = shopService:getSellCategory(category)
 
+    local buttons = {
+        createButton(" Назад ", 3, 23, function(selectedItem)
+            createSellShopForm()
+        end),
+        createButton(" Купить ", 68, 23, function(selectedItem)
+            local itemCounterNumberSelectForm = createNumberEditForm(function(count)
+                local _, message = shopService:sellItem(nickname, selectedItem, count)
+                createNotification(nil, message, nil, function()
+                    createSellShopSpecificForm(category)
+                end)
+            end, SellShopForm, "Купить")
+            if (selectedItem) then
+                itemCounterNumberSelectForm:setActive()
+            end
+        end)
+    }
+    if (true) then
+        table.insert(buttons, createButton("Удалить", 61, 23, function(selectedItem)
+            if (selectedItem) then
+                shopService:deleteSellShopItem(selectedItem)
+            end
+        end, 0xff0000))
+        table.insert(buttons, createButton(" Удалить категорию ", 35, 3, function(selectedItem)
+            shopService:removeSellCategory(category)
+            createNotification(nil, "Категория удаленна", nil, function()
+                createSellShopForm()
+            end)
+        end, 0xff0000))
+        table.insert(buttons, createButton(categoryConfig.enabled and " Отключить " or " Включить ", 51, 3, function(selectedItem)
+            shopService:enableDissableCategory(category)
+            createNotification(nil, "Категория " .. (categoryConfig.enabled and "включена " or "отключена "), nil, function()
+                createSellShopSpecificForm(category)
+            end)
+        end, 0xff0000))
+    end
+
     SellShopSpecificForm = createListForm(" Магазин ",
         " Наименование                                       Количество Цена    ",
         items,
-        {
-            createButton(" Назад ", 3, 23, function(selectedItem)
-                createSellShopForm()
-            end),
-            createButton(" Купить ", 68, 23, function(selectedItem)
-                local itemCounterNumberSelectForm = createNumberEditForm(function(count)
-                    local _, message = shopService:sellItem(nickname, selectedItem, count)
-                    createNotification(nil, message, nil, function()
-                        createSellShopSpecificForm(category)
-                    end)
-                end, SellShopForm, "Купить")
-                if (selectedItem) then
-                    itemCounterNumberSelectForm:setActive()
-                end
-            end),
-            createButton(" Удалить категорию ", 35, 3, function(selectedItem)
-                shopService:removeSellCategory(category)
-                createNotification(nil, "Категория удаленна", nil, function()
-                    createSellShopForm()
-                end)
-            end, 0xff0000),
-            createButton(categoryConfig.enabled and " ВключитьОтключить " or " Включить ", 52, 3, function(selectedItem)
-                shopService:enableDissableCategory(category)
-                createNotification(nil, "Категория " .. (categoryConfig.enabled and "включена " or "отключена "), nil, function()
-                    createSellShopSpecificForm(category)
-                end)
-            end, 0xff0000)
-        })
+        buttons)
 
     SellShopSpecificForm:setActive()
 end
