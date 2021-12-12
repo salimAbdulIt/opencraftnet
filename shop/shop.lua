@@ -344,6 +344,7 @@ function createSellShopForm()
     if (shopService:isAdmin(nickname)) then
         createLabelForm({{label=" Введите назву "}}, function (result)
             shopService:addCategory(result[1])
+            createSellShopForm()
         end):setActive()
     end
 
