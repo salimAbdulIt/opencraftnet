@@ -12,5 +12,5 @@ shell.execute("wget -fq " .. REPOSITOTY .. "/shop/oreExchanger.cfg /home/config/
 shell.execute("wget -fq " .. REPOSITOTY .. "/shop/exchanger.cfg /home/config/exchanger.cfg")
 shell.execute("wget -fq " .. REPOSITOTY .. "/shop/sellShop.cfg /home/config/sellShop.cfg")
 shell.execute("wget -fq " .. REPOSITOTY .. "/shop/buyShop.cfg /home/config/buyShop.cfg")
-shell.execute("wget -fq " .. REPOSITOTY .. "/shop/buyShop.cfg /home/config/sellShopCategories.cfg")
+shell.execute("wget -fq " .. REPOSITOTY .. "/shop/sellShopCategories.cfg /home/config/sellShopCategories.cfg")
 
