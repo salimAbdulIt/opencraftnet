@@ -27,7 +27,7 @@ function ShopService:new(terminalName)
         self.currency.item = component.database.get(1)
         self.currency.dbSlot = 1
         self.currency.money = 1
-        self.admins = {"Durex77"}
+        self.admins = { "Durex77" }
 
         itemUtils.setCurrency(self.currency)
     end
@@ -41,8 +41,8 @@ function ShopService:new(terminalName)
     end
 
     function obj:isAdmin(nickname)
-        for i=1,#self.admins do
-            if(self.admins[i] == nickname) then
+        for i = 1, #self.admins do
+            if (self.admins[i] == nickname) then
                 return true
             end
         end
@@ -62,9 +62,19 @@ function ShopService:new(terminalName)
     end
 
     function obj:removeSellCategory(id)
-        for i=1,#self.sellCategories do
+        for i = 1, #self.sellCategories do
             if (self.sellCategories[i].id == id) then
                 table.remove(self.sellCategories, i)
+                break
+            end
+        end
+        utils.writeObjectToFile("home/config/sellShopCategories.cfg", self.sellCategories)
+    end
+
+    function obj:enableDissableCategory(id)
+        for i = 1, #self.sellCategories do
+            if (self.sellCategories[i].id == id) then
+                self.sellCategories[i].enabled = not self.sellCategories[i].enabled
                 break
             end
         end
@@ -100,6 +110,14 @@ function ShopService:new(terminalName)
     function obj:getSellShopCategories()
         local sellCategories = self.sellCategories
         return sellCategories
+    end
+
+    function obj:getSellCategory(category)
+        for i = 1, #self.sellCategories do
+            if (self.sellCategories[i].id == category) then
+                return self.sellCategories[i]
+            end
+        end
     end
 
     function obj:getBalance(nick)
@@ -378,7 +396,7 @@ function ShopService:new(terminalName)
             end
             printD(terminalName .. ": Игрок " .. nick .. " обменял " .. itemConfig.fromId .. ":" .. itemConfig.fromDmg .. " на " .. itemConfig.toId .. ":" .. itemConfig.toDmg .. " в количестве " .. countOfItems .. " по курсу " .. itemConfig.fromCount .. "к" .. itemConfig.toCount)
         end
-        if(save) then
+        if (save) then
             self.db:insert(nick, playerData)
             if (countOfExchanges > 0) then
                 return countOfItems, " Обменяно " .. countOfItems .. " предметов.", "Заберите из корзины"

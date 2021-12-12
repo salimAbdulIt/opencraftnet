@@ -379,6 +379,8 @@ function createSellShopSpecificForm(category)
         items[i].displayName = name
     end
 
+    local categoryConfig = shopService:getSellCategory(category)
+
     SellShopSpecificForm = createListForm(" Магазин ",
         " Наименование                                       Количество Цена    ",
         items,
@@ -400,6 +402,12 @@ function createSellShopSpecificForm(category)
             createButton(" Удалить категорию ", 35, 3, function(selectedItem)
                 shopService:removeSellCategory(category)
                 createNotification(nil, "Категория удаленна", nil, function()
+                    createSellShopForm()
+                end)
+            end, 0xff0000),
+            createButton(categoryConfig.enabled and " Отключить " or " Включить ", 55, 3, function(selectedItem)
+                shopService:enableDissableCategory(category)
+                createNotification(nil, "Категория " .. categoryConfig.enabled and "отключена " or "включена ", nil, function()
                     createSellShopSpecificForm(category)
                 end)
             end, 0xff0000)
