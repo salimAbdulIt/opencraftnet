@@ -412,7 +412,7 @@ function createSellShopSpecificForm(category)
                 { label = " Введите nbt" },
                 { label = " Введите цену" }
             }, function(result)
-                shopService:addSellShopItem(result[1], result[2], result[3], result[4], result[5])
+                shopService:addSellShopItem(result[1], result[2], result[3], result[4], result[5], category)
                 createSellShopSpecificForm(category)
             end):setActive()
         end, 0xff0000))

@@ -82,13 +82,14 @@ function ShopService:new(terminalName)
         utils.writeObjectToFile("home/config/sellShop.cfg", self.sellShopList)
     end
 
-    function obj:addSellShopItem(label, id, dmg, nbt, price)
+    function obj:addSellShopItem(label, id, dmg, nbt, price, category)
         local sellItemCfg = {}
         sellItemCfg.label = label
         sellItemCfg.id = id
         sellItemCfg.dmg = (dmg and string.len(dmg) > 0) and tonumber(dmg) or 0
         sellItemCfg.nbt = (nbt and string.len(nbt) > 0) and nbt or nil
         sellItemCfg.price = tonumber(price)
+        sellItemCfg.category = category
         table.insert(self.sellShopList, sellItemCfg)
         utils.writeObjectToFile("home/config/sellShop.cfg", self.sellShopList)
     end
