@@ -19,6 +19,7 @@ function ShopService:new(terminalName)
         self.exchangeList = utils.readObjectFromFile("home/config/exchanger.cfg")
         self.sellShopList = utils.readObjectFromFile("home/config/sellShop.cfg")
         self.buyShopList = utils.readObjectFromFile("home/config/buyShop.cfg")
+        self.sellCategories = utils.readObjectFromFile("home/config/sellShopCategories.cfg")
 
         self.db = DurexDatabase:new("USERS")
         self.currency = {}
@@ -69,6 +70,11 @@ function ShopService:new(terminalName)
         itemUtils.populateUserCount(categoryBuyShopList)
 
         return categoryBuyShopList
+    end
+
+    function obj:getSellShopCategories()
+        local sellCategories = self.sellCategories
+        return sellCategories
     end
 
     function obj:getBalance(nick)

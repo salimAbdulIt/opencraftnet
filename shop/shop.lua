@@ -290,53 +290,24 @@ function createSellShopForm()
     local buyButton3 = SellShopForm:addLabel(23, 4, " █  █ █  █ █▀▄ █▄▄█ █  █ █▀▄ █▄▄█ ")
     local buyButton4 = SellShopForm:addLabel(23, 5, " ▀  ▀ ▀▀▀▀ ▀ ▀ ▄▄▄█ ▀  ▀ ▀ ▀ ▀  ▀ ")
 
-    local categoryButton1 = SellShopForm:addButton(5, 9, " Разное ", function()
-        createSellShopSpecificForm("Minecraft")
-    end)
-    categoryButton1.W = 23
-    categoryButton1.H = 3
-    local categoryButton1 = SellShopForm:addButton(29, 9, " Industrial Craft 2 ", function()
-        createSellShopSpecificForm("IC2")
-    end)
-    categoryButton1.W = 24
-    categoryButton1.H = 3
-    local categoryButton1 = SellShopForm:addButton(54, 9, " Applied Energistics 2 ", function()
-        createSellShopSpecificForm("AE2")
-    end)
-    categoryButton1.W = 23
-    categoryButton1.H = 3
+    local categories = shopService:getSellShopCategories()
 
-    local categoryButton1 = SellShopForm:addButton(5, 13, " Forestry ", function()
-        createSellShopSpecificForm("Forestry")
-    end)
-    categoryButton1.W = 23
-    categoryButton1.H = 3
-    local categoryButton1 = SellShopForm:addButton(29, 13, " Зачарованные книги ", function()
-        createSellShopSpecificForm("Books")
-    end)
-    categoryButton1.W = 24
-    categoryButton1.H = 3
-    local categoryButton1 = SellShopForm:addButton(54, 13, " Draconic Evolution ", function()
-        createSellShopSpecificForm("DE")
-    end)
-    categoryButton1.W = 23
-    categoryButton1.H = 3
-
-    local categoryButton1 = SellShopForm:addButton(5, 17, " Thermal Expansion ", function()
-        createSellShopSpecificForm("TE")
-    end)
-    categoryButton1.W = 23
-    categoryButton1.H = 3
-    local categoryButton1 = SellShopForm:addButton(29, 17, " Скоро ")
-    categoryButton1.W = 24
-    categoryButton1.H = 3
-    categoryButton1.fontColor = 0xaaaaaa
-    categoryButton1.color = 0x000000
-    local categoryButton1 = SellShopForm:addButton(54, 17, " Скоро ")
-    categoryButton1.W = 23
-    categoryButton1.H = 3
-    categoryButton1.fontColor = 0xaaaaaa
-    categoryButton1.color = 0x000000
+    local banners = {
+        {x=5,y=9},{x=29,y=9},{x=54,y=9},
+        {x=5,y=13},{x=29,y=13},{x=54,y=13},
+        {x=5,y=17},{x=29,y=17},{x=54,y=17}
+    }
+    for i=1,#categories do
+        local categoryButton1 = SellShopForm:addButton(banners[i].x, banners[i].y, categories[i].label , function()
+            createSellShopSpecificForm(categories[i].id)
+        end)
+        categoryButton1.W = 23
+        categoryButton1.H = 3
+        if (not categories[i].enabled) then
+            categoryButton1.fontColor = 0xaaaaaa
+            categoryButton1.color = 0x000000
+        end
+    end
 
     local shopBackButton = SellShopForm:addButton(3, 23, " Назад ", function()
         MainForm = createMainForm(nickname)
