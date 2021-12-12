@@ -397,7 +397,7 @@ function createSellShopSpecificForm(category)
                     itemCounterNumberSelectForm:setActive()
                 end
             end),
-            createButton(" Удалить категорию ", 29, 3, function(selectedItem)
+            createButton(" Удалить категорию ", 35, 3, function(selectedItem)
                 shopService:removeSellCategory(category)
                 createNotification(nil, "Категория удаленна", nil, function()
                     createSellShopSpecificForm(category)
