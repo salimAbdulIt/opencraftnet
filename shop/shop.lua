@@ -398,7 +398,7 @@ function createSellShopSpecificForm(category)
         end)
     }
     if (true) then
-        table.insert(buttons, createButton("Удалить", 61, 23, function(selectedItem)
+        table.insert(buttons, createButton("Удалить", 58, 23, function(selectedItem)
             if (selectedItem) then
                 shopService:deleteSellShopItem(selectedItem)
                 createNotification(nil, "Предмет удален", nil, function()
