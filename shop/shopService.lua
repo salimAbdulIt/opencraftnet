@@ -42,7 +42,7 @@ function ShopService:new(terminalName)
     end
 
     function obj:isAdmin(nickname)
-        for i=1,self.admins do
+        for i=1,#self.admins do
             if(self.admins[i] == nickname) then
                 return true
             end
