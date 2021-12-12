@@ -28,7 +28,7 @@ function ShopService:new(terminalName)
         self.currency.dbSlot = 1
         self.currency.money = 1
         self.admins = {"Durex77"}
-    
+
         itemUtils.setCurrency(self.currency)
     end
 
@@ -53,8 +53,11 @@ function ShopService:new(terminalName)
         return self.oreExchangeList
     end
 
-    function obj:addSellCategory(category)
-        table.add(self.sellCategories, category)
+    function obj:addSellCategory(label, id)
+        local category = {}
+        category.label = label
+        category.id = id
+        table.insert(self.sellCategories, category)
         utils.writeObjectToFile("home/config/sellShopCategories.cfg", self.sellCategories)
     end
 
