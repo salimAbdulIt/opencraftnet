@@ -129,16 +129,20 @@ function createListForm(name, label, items, buttons, filter)
                 button.callback()
             end
         end)
+        if (button.fontColor) then
+            shopBackButton.fontColor = button.fontColor
+        end
     end
     return ShopForm
 end
 
-function createButton(buttonName, W, H, callback)
+function createButton(buttonName, W, H, callback, fontColor)
     local button = {}
     button.name = buttonName
     button.W = W
     button.H = H
     button.callback = callback
+    button.fontColor = fontColor
     return button
 end
 
@@ -392,7 +396,13 @@ function createSellShopSpecificForm(category)
                 if (selectedItem) then
                     itemCounterNumberSelectForm:setActive()
                 end
-            end)
+            end),
+            createButton(" Удалить категорию ", 29, 3, function(selectedItem)
+                shopService:removeSellCategory(category)
+                createNotification(nil, "Категория удаленна", nil, function()
+                    createSellShopSpecificForm(category)
+                end)
+            end, 0xff0000)
         })
 
     SellShopSpecificForm:setActive()

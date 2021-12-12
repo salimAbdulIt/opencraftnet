@@ -61,6 +61,16 @@ function ShopService:new(terminalName)
         utils.writeObjectToFile("home/config/sellShopCategories.cfg", self.sellCategories)
     end
 
+    function obj:removeSellCategory(id)
+        for i=1,#self.sellCategories do
+            if (self.sellCategories[i].id == id) then
+                table.remove(self.sellCategories, self.sellCategories[i])
+                break
+            end
+        end
+        utils.writeObjectToFile("home/config/sellShopCategories.cfg", self.sellCategories)
+    end
+
     function obj:getExchangeList()
         return self.exchangeList
     end
