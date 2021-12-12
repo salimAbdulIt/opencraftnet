@@ -277,6 +277,33 @@ function createMainForm(nick)
     return MainForm
 end
 
+function createLabelForm(labels, callback)
+    local form = forms:addForm()
+    form.border = 2
+    form.W = 31
+    form.H = 10 + (#labels-1) * 2
+    form.left = math.floor((SellShopForm.W - form.W) / 2)
+    form.top = math.floor((SellShopForm.H - form.H) / 2)
+    local edits = {}
+    for i = 1, #labels do
+        form:addLabel(8, 3 + (i-1) * 2, labels.label)
+        edits[i] = form:addEdit(8, 4 + (i-1) * 2)
+        edits[i].W = 18
+    end
+    local backButton = form:addButton(3, 8, " Назад ", function()
+        form:setActive()
+    end)
+
+    local acceptButton = form:addButton(17, 8, "Добавить", function()
+        local result = {}
+        for i=1, #edits do
+            table.insert(result, edits[i].text and edits[i].text or "")
+        end
+        callback(result)
+    end)
+    return form
+end
+
 
 function createSellShopForm()
     SellShopForm = forms.addForm()
@@ -293,12 +320,12 @@ function createSellShopForm()
     local categories = shopService:getSellShopCategories()
 
     local banners = {
-        {x=5,y=9},{x=29,y=9},{x=54,y=9},
-        {x=5,y=13},{x=29,y=13},{x=54,y=13},
-        {x=5,y=17},{x=29,y=17},{x=54,y=17}
+        { x = 5, y = 9 }, { x = 29, y = 9 }, { x = 54, y = 9 },
+        { x = 5, y = 13 }, { x = 29, y = 13 }, { x = 54, y = 13 },
+        { x = 5, y = 17 }, { x = 29, y = 17 }, { x = 54, y = 17 }
     }
-    for i=1,#categories do
-        local categoryButton1 = SellShopForm:addButton(banners[i].x, banners[i].y, categories[i].label , function()
+    for i = 1, #categories do
+        local categoryButton1 = SellShopForm:addButton(banners[i].x, banners[i].y, categories[i].label, function()
             createSellShopSpecificForm(categories[i].id)
         end)
         categoryButton1.W = 23
@@ -313,6 +340,12 @@ function createSellShopForm()
         MainForm = createMainForm(nickname)
         MainForm:setActive()
     end)
+
+    if (shopService:isAdmin(nickname)) then
+        createLabelForm({{label=" Введите назву "}}, function (result)
+            shopService:addCategory(result[1])
+        end):setActive()
+    end
 
     SellShopForm:setActive()
 end
@@ -542,7 +575,7 @@ local Event1 = AutorizationForm:addEvent("player_on", function(e, p)
 end)
 
 local Event1 = AutorizationForm:addEvent("player_off", function(e, p)
-    if (nickname ~= 'Durex77') then
+    if (not shopService:isAdmin(nickname)) then
         computer.removeUser(nickname)
     end
     if (timer) then

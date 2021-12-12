@@ -27,6 +27,7 @@ function ShopService:new(terminalName)
         self.currency.item = component.database.get(1)
         self.currency.dbSlot = 1
         self.currency.money = 1
+        self.admins = {"Durex77"}
 
 
         itemUtils.setCurrency(self.currency)
@@ -40,11 +41,23 @@ function ShopService:new(terminalName)
         return clause
     end
 
+    function obj:isAdmin(nickname)
+        for i=1,self.admins do
+            if(self.admins[i] == nickname) then
+                return true
+            end
+        end
+        return false
+    end
+
     function obj:getOreExchangeList()
         return self.oreExchangeList
     end
 
-
+    function obj:addSellCategory(category)
+        table.add(self.sellCategories, category)
+        utils.writeObjectToFile("home/config/sellShopCategories.cfg", self.sellCategories)
+    end
 
     function obj:getExchangeList()
         return self.exchangeList
