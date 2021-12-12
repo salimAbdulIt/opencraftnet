@@ -342,10 +342,12 @@ function createSellShopForm()
     end)
 
     if (shopService:isAdmin(nickname)) then
-        createLabelForm({{label=" Введите назву "}}, function (result)
-            shopService:addCategory(result[1])
-            createSellShopForm()
-        end):setActive()
+        local shopBackButton = SellShopForm:addButton(50, 23, " Добавить ", function()
+            createLabelForm({{label=" Введите назву "}}, function (result)
+                shopService:addCategory(result[1])
+                createSellShopForm()
+            end):setActive()
+        end)
     end
 
     SellShopForm:setActive()
