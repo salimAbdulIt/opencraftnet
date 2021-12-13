@@ -284,8 +284,7 @@ end
 function createLabelForm(labels, callback, ParentForm)
     local form = forms:addForm()
     form.W = (#labels > 4) and 62 or 31
-    form.W = (#labels > 4) and 62 or 31
-    form.H = 10 + (#labels - 1) * 4
+    form.H = 10 + (#labels > 4 and 4 or #labels) * 4
     form.left = math.floor((ParentForm.W - form.W) / 2)
     form.top = math.floor((ParentForm.H - form.H) / 2)
     local edits = {}
