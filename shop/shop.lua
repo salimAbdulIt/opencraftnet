@@ -542,7 +542,7 @@ function createOreExchangerForm()
     if (shopService:isAdmin(nickname)) then
         table.insert(buttons, createButton("Удалить", 43, 23, function(selectedItem)
             if (selectedItem) then
-                shopService:deleteBuyShopItem(selectedItem)
+                shopService:deleteOreExchangeItem(selectedItem)
                 createBuyShopForm()
             end
         end, 0xff0000))
@@ -557,7 +557,7 @@ function createOreExchangerForm()
                 { label = " Введите dmg(на)" },
                 { label = " Введите количестово(на)" }
             }, function(result)
-                shopService:addBuyShopItem(result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
+                shopService:addOreExchangeItem(result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
                 createBuyShopForm()
             end, OreExchangerForm):setActive()
         end, 0xff0000))

@@ -105,6 +105,34 @@ function ShopService:new(terminalName)
         utils.writeObjectToFile("home/config/buyShop.cfg", self.buyShopList)
     end
 
+    function obj:addOreExchangeItem(fromLabel, fromId, fromDmg, fromCount, toLabel, toId, toDmg, toCount)
+        if (not fromLabel) or (not fromId)or (not fromCount) then return end
+        if (not toLabel) or (not toId)or (not toCount) then return end
+        local oreExchangeCfg = {}
+        oreExchangeCfg.fromLabel = fromLabel
+        oreExchangeCfg.fromId = fromId
+        oreExchangeCfg.fromDmg = (fromDmg and string.len(fromDmg) > 0) and tonumber(fromDmg) or 0
+        oreExchangeCfg.fromCount = fromCount
+
+        oreExchangeCfg.toLabel = toLabel
+        oreExchangeCfg.toId = toId
+        oreExchangeCfg.toDmg = (toDmg and string.len(toDmg) > 0) and tonumber(toDmg) or 0
+        oreExchangeCfg.toCount = toCount
+
+        table.insert(self.oreExchangeList, oreExchangeCfg)
+        utils.writeObjectToFile("home/config/oreExchanger.cfg", self.oreExchangeList)
+    end
+
+    function obj:deleteOreExchangeItem(itemCfg)
+        for i = 1, #self.oreExchangeList do
+            if (self.oreExchangeList[i].id == itemCfg.id and self.oreExchangeList[i].dmg == itemCfg.dmg) then
+                table.remove(self.oreExchangeList, i)
+                break
+            end
+        end
+        utils.writeObjectToFile("home/config/oreExchanger.cfg", self.oreExchangeList)
+    end
+
     function obj:addBuyShopItem(label, id, dmg, price)
         if (not label) or (not id) then return end
         local buyItemCfg = {}
