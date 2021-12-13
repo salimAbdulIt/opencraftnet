@@ -283,22 +283,22 @@ end
 
 function createLabelForm(labels, callback, ParentForm)
     local form = forms:addForm()
-    form.border = 2
-    form.W = 31
+    form.W = (#labels > 4) and 62 or 31
+    form.W = (#labels > 4) and 62 or 31
     form.H = 10 + (#labels - 1) * 4
     form.left = math.floor((ParentForm.W - form.W) / 2)
     form.top = math.floor((ParentForm.H - form.H) / 2)
     local edits = {}
     for i = 1, #labels do
-        form:addLabel(8, 3 + (i - 1) * 4, labels[i].label)
-        edits[i] = form:addEdit(8, 4 + (i - 1) * 4)
+        form:addLabel(math.floor(i/4)* 25 + 8, 3 + (i - 1)%4 * 4, labels[i].label)
+        edits[i] = form:addEdit(math.floor(i/4)* 25 + 8, 4 + (i - 1)%4 * 4, labels[i].label)
         edits[i].W = 18
     end
-    local backButton = form:addButton(3, 8 + (#labels - 1) * 4, " Назад ", function()
+    local backButton = form:addButton(3, 8 + ((#labels > 4 and 4 or #labels) - 1) * 4, " Назад ", function()
         ParentForm:setActive()
     end)
 
-    local acceptButton = form:addButton(17, 8 + (#labels - 1) * 4, "Добавить", function()
+    local acceptButton = form:addButton(17, 8 + ((#labels > 4 and 4 or #labels) - 1) * 4, "Добавить", function()
         local result = {}
         for i = 1, #edits do
             table.insert(result, edits[i].text and edits[i].text or "")
@@ -515,32 +515,58 @@ function createOreExchangerForm()
         items[i].displayName = name
     end
 
+    local buttons = {
+        createButton(" Назад ", 3, 23, function(selectedItem)
+            MainForm = createMainForm(nickname)
+            MainForm:setActive()
+        end),
+        createButton(" Обменять все ", 67, 23, function(selectedItem)
+            local _, message, message2 = shopService:exchangeAllOres(nickname)
+            createNotification(nil, message, message2, function()
+                createOreExchangerForm()
+            end)
+        end),
+        createButton(" Обменять ", 54, 23, function(selectedItem)
+            if (selectedItem) then
+                local itemCounterNumberSelectForm = createNumberEditForm(function(count)
+                    local _, message, message2 = shopService:exchangeOre(nickname, selectedItem, count)
+                    createNotification(nil, message, message2, function()
+                        createOreExchangerForm()
+                    end)
+                end, OreExchangerForm, "Обменять")
+                itemCounterNumberSelectForm:setActive()
+            end
+        end)
+    }
+
+    if (shopService:isAdmin(nickname)) then
+        table.insert(buttons, createButton("Удалить", 57, 23, function(selectedItem)
+            if (selectedItem) then
+                shopService:deleteBuyShopItem(selectedItem)
+                createBuyShopForm()
+            end
+        end, 0xff0000))
+        table.insert(buttons, createButton("Добавить", 46, 23, function(selectedItem)
+            createLabelForm({
+                { label = " Введите назву(что)" },
+                { label = " Введите ID(что)" },
+                { label = " Введите dmg(что)" },
+                { label = " Введите количестово(что)" },
+                { label = " Введите назву(на)" },
+                { label = " Введите ID(на)" },
+                { label = " Введите dmg(на)" },
+                { label = " Введите количестово(на)" }
+            }, function(result)
+                shopService:addBuyShopItem(result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
+                createBuyShopForm()
+            end, BuyShopForm):setActive()
+        end, 0xff0000))
+    end
+
     OreExchangerForm = createListForm(" Обмен руд ",
         " Наименование                                              Курс обмена ",
         items,
-        {
-            createButton(" Назад ", 3, 23, function(selectedItem)
-                MainForm = createMainForm(nickname)
-                MainForm:setActive()
-            end),
-            createButton(" Обменять все ", 67, 23, function(selectedItem)
-                local _, message, message2 = shopService:exchangeAllOres(nickname)
-                createNotification(nil, message, message2, function()
-                    createOreExchangerForm()
-                end)
-            end),
-            createButton(" Обменять ", 54, 23, function(selectedItem)
-                if (selectedItem) then
-                    local itemCounterNumberSelectForm = createNumberEditForm(function(count)
-                        local _, message, message2 = shopService:exchangeOre(nickname, selectedItem, count)
-                        createNotification(nil, message, message2, function()
-                            createOreExchangerForm()
-                        end)
-                    end, OreExchangerForm, "Обменять")
-                    itemCounterNumberSelectForm:setActive()
-                end
-            end)
-        })
+        buttons)
 
     OreExchangerForm:setActive()
 end
