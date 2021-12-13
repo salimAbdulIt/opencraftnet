@@ -290,8 +290,8 @@ function createLabelForm(labels, callback, ParentForm)
     form.top = math.floor((ParentForm.H - form.H) / 2)
     local edits = {}
     for i = 1, #labels do
-        form:addLabel(math.floor(i/4)* 25 + 8, 3 + (i - 1)%4 * 4, labels[i].label)
-        edits[i] = form:addEdit(math.floor(i/4)* 25 + 8, 4 + (i - 1)%4 * 4, labels[i].label)
+        form:addLabel(math.floor((i-1)/4)* 25 + 8, 3 + (i - 1)%4 * 4, labels[i].label)
+        edits[i] = form:addEdit(math.floor((i-1)/4)* 25 + 8, 4 + (i - 1)%4 * 4, labels[i].label)
         edits[i].W = 18
     end
     local backButton = form:addButton(3, 8 + ((#labels > 4 and 4 or #labels) - 1) * 4, " Назад ", function()
@@ -540,13 +540,13 @@ function createOreExchangerForm()
     }
 
     if (shopService:isAdmin(nickname)) then
-        table.insert(buttons, createButton("Удалить", 37, 23, function(selectedItem)
+        table.insert(buttons, createButton("Удалить", 43, 23, function(selectedItem)
             if (selectedItem) then
                 shopService:deleteBuyShopItem(selectedItem)
                 createBuyShopForm()
             end
         end, 0xff0000))
-        table.insert(buttons, createButton("Добавить", 26, 23, function(selectedItem)
+        table.insert(buttons, createButton("Добавить", 32, 23, function(selectedItem)
             createLabelForm({
                 { label = " Введите назву(что)" },
                 { label = " Введите ID(что)" },
