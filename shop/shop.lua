@@ -150,7 +150,7 @@ function createGarbageForm()
     local items = shopService:getItems(nickname)
     for i = 1, #items do
         local name = items[i].label
-        for i = 1, 60 - unicode.len(name) do
+        for j = 1, 60 - unicode.len(name) do
             name = name .. ' '
         end
         name = name .. items[i].count .. " шт"
@@ -365,12 +365,12 @@ function createSellShopSpecificForm(category)
     local items = shopService:getSellShopList(category)
     for i = 1, #items do
         local name = items[i].label
-        for i = 1, 51 - unicode.len(name) do
+        for j = 1, 51 - unicode.len(name) do
             name = name .. ' '
         end
         name = name .. items[i].count
 
-        for i = 1, 62 - unicode.len(name) do
+        for j = 1, 62 - unicode.len(name) do
             name = name .. ' '
         end
 
@@ -442,12 +442,12 @@ function createBuyShopForm()
     local items = shopService:getBuyShopList()
     for i = 1, #items do
         local name = items[i].label
-        for i = 1, 51 - unicode.len(name) do
+        for j = 1, 51 - unicode.len(name) do
             name = name .. ' '
         end
         name = name .. items[i].count
 
-        for i = 1, 62 - unicode.len(name) do
+        for j = 1, 62 - unicode.len(name) do
             name = name .. ' '
         end
 
@@ -507,7 +507,7 @@ function createOreExchangerForm()
     local items = shopService:getOreExchangeList()
     for i = 1, #items do
         local name = items[i].fromLabel
-        for i = 1, 58 - unicode.len(name) do
+        for j = 1, 58 - unicode.len(name) do
             name = name .. ' '
         end
         name = name .. items[i].fromCount .. 'к' .. items[i].toCount
@@ -575,11 +575,11 @@ function createExchangerForm()
     local items = shopService:getExchangeList()
     for i = 1, #items do
         local name = items[i].fromLabel
-        for i = 1, 25 - unicode.len(name) do
+        for j = 1, 25 - unicode.len(name) do
             name = name .. ' '
         end
         name = name .. items[i].fromCount .. 'к' .. items[i].toCount
-        for i = 1, 50 - unicode.len(name) do
+        for j = 1, 50 - unicode.len(name) do
             name = name .. ' '
         end
         name = name .. items[i].toLabel
