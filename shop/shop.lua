@@ -543,7 +543,7 @@ function createOreExchangerForm()
         table.insert(buttons, createButton("Удалить", 43, 23, function(selectedItem)
             if (selectedItem) then
                 shopService:deleteOreExchangeItem(selectedItem)
-                createBuyShopForm()
+                createOreExchangerForm()
             end
         end, 0xff0000))
         table.insert(buttons, createButton("Добавить", 32, 23, function(selectedItem)
@@ -558,7 +558,7 @@ function createOreExchangerForm()
                 { label = " Введите количестово(на)" }
             }, function(result)
                 shopService:addOreExchangeItem(result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
-                createBuyShopForm()
+                createOreExchangerForm()
             end, OreExchangerForm):setActive()
         end, 0xff0000))
     end
@@ -586,26 +586,52 @@ function createExchangerForm()
         items[i].displayName = name
     end
 
+    local buttons = {
+        createButton(" Назад ", 3, 23, function(selectedItem)
+            MainForm = createMainForm(nickname)
+            MainForm:setActive()
+        end),
+        createButton(" Обменять ", 68, 23, function(selectedItem)
+            if (selectedItem) then
+                local itemCounterNumberSelectForm = createNumberEditForm(function(count)
+                    local _, message, message2 = shopService:exchange(nickname, selectedItem, count)
+                    createNotification(nil, message, message2, function()
+                        createExchangerForm()
+                    end)
+                end, ExchangerForm, "Обменять")
+                itemCounterNumberSelectForm:setActive()
+            end
+        end)
+    }
+
+    if (shopService:isAdmin(nickname)) then
+        table.insert(buttons, createButton("Удалить", 43, 23, function(selectedItem)
+            if (selectedItem) then
+                shopService:deleteExchangeItem(selectedItem)
+                createExchangerForm()
+            end
+        end, 0xff0000))
+        table.insert(buttons, createButton("Добавить", 32, 23, function(selectedItem)
+            createLabelForm({
+                { label = " Введите назву(что)" },
+                { label = " Введите ID(что)" },
+                { label = " Введите dmg(что)" },
+                { label = " Введите количестово(что)" },
+                { label = " Введите назву(на)" },
+                { label = " Введите ID(на)" },
+                { label = " Введите dmg(на)" },
+                { label = " Введите количестово(на)" }
+            }, function(result)
+                shopService:addExchangeItem(result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
+                createExchangerForm()
+            end, ExchangerForm):setActive()
+        end, 0xff0000))
+    end
+
     ExchangerForm = createListForm(" Обменик ",
         " Наименование             Курс обмена              Наименование       ",
         items,
-        {
-            createButton(" Назад ", 3, 23, function(selectedItem)
-                MainForm = createMainForm(nickname)
-                MainForm:setActive()
-            end),
-            createButton(" Обменять ", 68, 23, function(selectedItem)
-                if (selectedItem) then
-                    local itemCounterNumberSelectForm = createNumberEditForm(function(count)
-                        local _, message, message2 = shopService:exchange(nickname, selectedItem, count)
-                        createNotification(nil, message, message2, function()
-                            createExchangerForm()
-                        end)
-                    end, ExchangerForm, "Обменять")
-                    itemCounterNumberSelectForm:setActive()
-                end
-            end)
-        })
+        buttons)
 
     ExchangerForm:setActive()
 end

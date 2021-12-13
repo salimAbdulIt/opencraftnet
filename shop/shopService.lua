@@ -133,6 +133,34 @@ function ShopService:new(terminalName)
         utils.writeObjectToFile("home/config/oreExchanger.cfg", self.oreExchangeList)
     end
 
+    function obj:addExchangeItem(fromLabel, fromId, fromDmg, fromCount, toLabel, toId, toDmg, toCount)
+        if (not fromLabel) or (not fromId)or (not fromCount) then return end
+        if (not toLabel) or (not toId)or (not toCount) then return end
+        local exchangeCfg = {}
+        exchangeCfg.fromLabel = fromLabel
+        exchangeCfg.fromId = fromId
+        exchangeCfg.fromDmg = (fromDmg and string.len(fromDmg) > 0) and tonumber(fromDmg) or 0
+        exchangeCfg.fromCount = fromCount
+
+        exchangeCfg.toLabel = toLabel
+        exchangeCfg.toId = toId
+        exchangeCfg.toDmg = (toDmg and string.len(toDmg) > 0) and tonumber(toDmg) or 0
+        exchangeCfg.toCount = toCount
+
+        table.insert(self.exchangeList, exchangeCfg)
+        utils.writeObjectToFile("home/config/exchanger.cfg", self.exchangeList)
+    end
+
+    function obj:deleteExchangeItem(itemCfg)
+        for i = 1, #self.exchangeList do
+            if (self.exchangeList[i].id == itemCfg.id and self.exchangeList[i].dmg == itemCfg.dmg) then
+                table.remove(self.exchangeList, i)
+                break
+            end
+        end
+        utils.writeObjectToFile("home/config/exchanger.cfg", self.exchangeList)
+    end
+
     function obj:addBuyShopItem(label, id, dmg, price)
         if (not label) or (not id) then return end
         local buyItemCfg = {}
