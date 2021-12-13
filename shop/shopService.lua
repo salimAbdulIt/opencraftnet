@@ -125,7 +125,8 @@ function ShopService:new(terminalName)
 
     function obj:deleteOreExchangeItem(itemCfg)
         for i = 1, #self.oreExchangeList do
-            if (self.oreExchangeList[i].id == itemCfg.id and self.oreExchangeList[i].dmg == itemCfg.dmg) then
+            if (self.oreExchangeList[i].fromId == itemCfg.fromId and self.oreExchangeList[i].fromDmg == itemCfg.fromDmg and
+                    self.oreExchangeList[i].toId == itemCfg.toId and self.oreExchangeList[i].toDmg == itemCfg.toDmg) then
                 table.remove(self.oreExchangeList, i)
                 break
             end
@@ -153,8 +154,8 @@ function ShopService:new(terminalName)
 
     function obj:deleteExchangeItem(itemCfg)
         for i = 1, #self.exchangeList do
-            if (self.exchangeList[i].id == itemCfg.id and self.exchangeList[i].dmg == itemCfg.dmg) then
-                table.remove(self.exchangeList, i)
+            if (self.exchangeList[i].fromId == itemCfg.fromId and self.exchangeList[i].fromDmg == itemCfg.fromDmg and
+                    self.exchangeList[i].toId == itemCfg.toId and self.exchangeList[i].toDmg == itemCfg.toDmg) then                table.remove(self.exchangeList, i)
                 break
             end
         end
