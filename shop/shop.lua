@@ -654,11 +654,8 @@ function createRulesForm()
 
     ruleList:insert("1. Баланс на компьютерах разный, пользуйтесь одним магазином для удобства пользования! ")
     ruleList:insert("2. При возникновении какого либо вопроса, обращайтесь к:")
-    ruleList:insert("   Graciya")
     ruleList:insert("   Durex77")
-    ruleList:insert("   Zarik1")
-    ruleList:insert("   m_dessert")
-    ruleList:insert("3. Вывод/ввод денег осуществляется кратно 1000")
+    ruleList:insert("3. Вывод/ввод денег осуществляется кратно 1")
 
     ruleList.border = 0
     ruleList.W = 73

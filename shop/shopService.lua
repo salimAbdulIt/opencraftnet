@@ -7,10 +7,6 @@ local pim = component.pim
 local event = require('event')
 require('dlog')
 
---event.shouldInterrupt = function()
---    return false
---end
-
 function ShopService:new(terminalName)
     local obj = {}
 
