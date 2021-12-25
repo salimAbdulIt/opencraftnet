@@ -1,4 +1,5 @@
 local event = require("event")
+local gpu = require('component').gpu
 require('dlog')
 
 event.shouldInterrupt = function()
@@ -6,6 +7,7 @@ event.shouldInterrupt = function()
 end
 
 while true do
+    gpu.setResolution(80, 25)
     local result, errorMsg = pcall(loadfile("/home/1.lua"))
     pcall(function()
         printD(errorMsg)

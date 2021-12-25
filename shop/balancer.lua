@@ -36,6 +36,27 @@ function createNumberEditForm(callback, form, buttonText)
     return itemCounterNumberForm
 end
 
+
+function createLabelEditForm(callback, form, buttonText)
+    local itemCounterNumberForm = forms:addForm()
+    itemCounterNumberForm.border = 2
+    itemCounterNumberForm.W = 31
+    itemCounterNumberForm.H = 10
+    itemCounterNumberForm.left = math.floor((form.W - itemCounterNumberForm.W) / 2)
+    itemCounterNumberForm.top = math.floor((form.H - itemCounterNumberForm.H) / 2)
+    itemCounterNumberForm:addLabel(8, 3, "Введите название")
+    local itemCountEdit = itemCounterNumberForm:addEdit(8, 4)
+    itemCountEdit.W = 18
+    local backButton = itemCounterNumberForm:addButton(3, 8, " Назад ", function()
+        form:setActive()
+    end)
+
+    local acceptButton = itemCounterNumberForm:addButton(17, 8, buttonText, function()
+        callback(itemCountEdit.text and itemCountEdit.text or "")
+    end)
+    return itemCounterNumberForm
+end
+
 function createBalanceForm()
     local BalanceForm = forms.addForm()
     BalanceForm.border = 1
@@ -55,7 +76,7 @@ function createBalanceForm()
     local items = balanceService:getBalancedItems()
     for i = 1, #items do
         local name = items[i].label
-        for i = 1, 60 - unicode.len(name) do
+        for j = 1, 60 - unicode.len(name) do
             name = name .. ' '
         end
         name = name .. items[i].count .. " шт"
@@ -77,9 +98,18 @@ function createBalanceForm()
 
     end, BalanceForm, " Установить ")
 
+    local itemRenameEditForm = createLabelEditForm(function(name)
+        local itemToBalance = itemList.items[itemList.index]
+        if (itemToBalance) then
+            balanceService:renameItem(itemToBalance, name)
+            BalanceForm = createBalanceForm()
+            BalanceForm:setActive()
+        end
+
+    end, BalanceForm, " Установить ")
+
    BalanceForm:addButton(45, 23, " Обновить  ", function()
        balanceService:update()
-
        BalanceForm = createBalanceForm()
        BalanceForm:setActive()
     end)
@@ -87,15 +117,21 @@ function createBalanceForm()
     BalanceForm:addButton(68, 23, " Убрать  ", function()
         local itemToBalance = itemList.items[itemList.index]
         if (itemToBalance) then
-            balanceService:balanceItem(itemToBalance, 0)
+            balanceService:balanceItem(itemToBalance, -1)
             BalanceForm = createBalanceForm()
             BalanceForm:setActive()
         end
     end)
-    local balanceButton = BalanceForm:addButton(56, 23, " Добавить ", function()
+    local balanceButton = BalanceForm:addButton(56, 23, " Изменить ", function()
         local itemToBalance = itemList.items[itemList.index]
         if (itemToBalance) then
             itemCounterNumberSelectForm:setActive()
+        end
+    end)
+    local balanceButton = BalanceForm:addButton(31, 23, " Переименовать ", function()
+        local itemToBalance = itemList.items[itemList.index]
+        if (itemToBalance) then
+            itemRenameEditForm:setActive()
         end
     end)
     return BalanceForm
@@ -104,7 +140,7 @@ end
 
 BalanceForm = createBalanceForm()
 
-timer = BalanceForm:addTimer(1, function()
+timer = BalanceForm:addTimer(0.2, function()
     balanceService:balance()
 end)
 

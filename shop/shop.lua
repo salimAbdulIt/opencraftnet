@@ -579,7 +579,7 @@ function createExchangerForm()
             name = name .. ' '
         end
         name = name .. items[i].fromCount .. 'к' .. items[i].toCount
-        for j = 1, 50 - unicode.len(name) do
+        for j = 1, 38 - unicode.len(name) do
             name = name .. ' '
         end
         name = name .. items[i].toLabel
@@ -629,7 +629,7 @@ function createExchangerForm()
     end
 
     ExchangerForm = createListForm(" Обменик ",
-        " Наименование             Курс обмена              Наименование       ",
+        " Наименование             Курс обмена  Наименование                   ",
         items,
         buttons)
 

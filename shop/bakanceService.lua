@@ -2,9 +2,9 @@ local component = require('component')
 require('database')
 local utils = require('utils')
 BalanceService = {}
-local pim = component.pim
 local event = require('event')
-require('dlog')
+local chat = component.chat_box
+chat.setName("Pidor")
 
 event.shouldInterrupt = function()
     return false
@@ -19,32 +19,61 @@ function BalanceService:new()
     end
 
     function obj:update()
-        local itemsFromDatabase = {}
+        self.balancedItems = self.db:select({ self:dbClause("ID", "balancer", "=") })
+
+        if (not self.balancedItems or not self.balancedItems[1]) then
+            self.balancedItems = {}
+        else
+            self.balancedItems = self.balancedItems[1]
+        end
+
         for i = 1, 81 do
             local item = component.database.get(i)
             if (item) then
-                table.insert(itemsFromDatabase, item)
+                local isFound = false
+                for j=1,#self.balancedItems do
+                    if (self.balancedItems[j].name == item.name and self.balancedItems[j].damage == item.damage) then
+                        isFound = true
+                        break
+                    end
+                end
+                if (not isFound) then
+                    component.database.clear(i)
+                    local newItem = {}
+                    newItem.name = item.name
+                    newItem.damage = item.damage
+                    newItem.label = item.label
+                    newItem.count = 0
+                    table.insert(self.balancedItems, newItem)
+                end
             end
         end
-
-        self.itemCache = itemsFromDatabase
+        self.db:insert("balancer", self.balancedItems)
     end
 
     function obj:getCache()
-        return self.itemCache
+        return self.balancedItems
     end
 
     function obj:balance()
-        if ((not self.craftingItem) or self.craftingItem.isDone() or self.craftingItem.isCanceled()) then
-            local balancedItems = self.db:select({ self:dbClause("ID", "balancer", "=") })
-            if (not balancedItems or not balancedItems[1]) then
-                balancedItems = {}
-            else
-                balancedItems = balancedItems[1]
+        local cpus = component.me_interface.getCpus()
+        if (not cpus) then
+            self.craftingItem = nil
+        else
+            local isAllCpusOff = true
+            for i=1,#cpus do
+                if (cpus[i].busy) then
+                    isAllCpusOff = false
+                end
             end
+            if (isAllCpusOff) then
+                self.craftingItem = nil
+            end
+        end
 
+        if ((not self.craftingItem) or self.craftingItem.isDone() or self.craftingItem.isCanceled()) then
 
-            local item = balancedItems[self.currentIndex]
+            local item = self.balancedItems[self.currentIndex]
             if (not item) then
                 self.currentIndex = 1
                 return
@@ -53,16 +82,15 @@ function BalanceService:new()
 
             if (item.count > 0) then
                 local count = item.count < 5 and item.count or math.floor(item.count * 0.8)
-                local itemFromMe = component.me_interface.getItemDetail({ id = item.name, dmg = item.dmg }).basic()
+                local itemFromMe = component.me_interface.getItemDetail({ id = item.name, dmg = item.damage }).basic()
 
                 if (itemFromMe.qty < count) then
-                    local cache = self.itemCache
-                    for l, itemCfg in pairs(cache) do
-
-                        if (itemCfg.name == item.name and itemCfg.damage == item.dmg) then
-                            self.craftingItem = component.me_interface.getCraftables(itemCfg)[1].request(item.count - itemFromMe.qty)
-                            return
-                        end
+                    local filter = {}
+                    filter.name = itemFromMe.id
+                    filter.damage = itemFromMe.dmg
+                    self.craftingItem = component.me_interface.getCraftables(filter)[1].request(item.count - itemFromMe.qty)
+                    if (not self.craftingItem.isCanceled()) then
+                        chat.say(item.label .. " " .. (item.count - itemFromMe.qty) .. 'шт.')
                     end
                 end
             end
@@ -77,26 +105,7 @@ function BalanceService:new()
             balancedItems = balancedItems[1]
         end
 
-        local listToReturn = {}
-
-        for i, itemCfg in pairs(self.itemCache) do
-            local itemToReturn = {}
-            itemToReturn.name = itemCfg.name
-            itemToReturn.label = itemCfg.label
-            itemToReturn.dmg = itemCfg.damage
-            itemToReturn.count = 0
-
-            local isInDb = false
-            for j, balancedItem in pairs(balancedItems) do
-                if (balancedItem.name == itemCfg.name and balancedItem.dmg == itemCfg.damage) then
-                    itemToReturn.count = balancedItem.count
-                    break
-                end
-            end
-            table.insert(listToReturn, itemToReturn)
-        end
-
-        return listToReturn
+        return balancedItems
     end
 
     function obj:dbClause(fieldName, fieldValue, typeOfClause)
@@ -108,26 +117,34 @@ function BalanceService:new()
     end
 
     function obj:balanceItem(item, count)
-        local balancedItems = self.db:select({ self:dbClause("ID", "balancer", "=") })
-        if (not balancedItems or not balancedItems[1]) then
-            balancedItems = {}
-        else
-            balancedItems = balancedItems[1]
-        end
-
-        for i, itemFromDb in pairs(balancedItems) do
-            if (itemFromDb.name == item.name and itemFromDb.dmg == item.dmg) then
+        for i, itemFromDb in pairs(self.balancedItems) do
+            if (itemFromDb.name == item.name and itemFromDb.damage == item.damage) then
+                if (count == -1) then
+                    table.remove(self.balancedItems, i)
+                    self.db:insert("balancer", self.balancedItems)
+                    return
+                end
                 itemFromDb.count = count
-                self.db:insert("balancer", balancedItems)
+                self.db:insert("balancer", self.balancedItems)
                 return
             end
         end
         local newItem = {}
         newItem.name = item.name
-        newItem.dmg = item.dmg
+        newItem.damage = item.damage
         newItem.count = count
-        table.insert(balancedItems, newItem)
-        self.db:insert("balancer", balancedItems)
+        table.insert(self.balancedItems, newItem)
+        self.db:insert("balancer", self.balancedItems)
+    end
+
+    function obj:renameItem(item, name)
+        for i, itemFromDb in pairs(self.balancedItems) do
+            if (itemFromDb.name == item.name and itemFromDb.damage == item.damage) then
+                itemFromDb.label = name
+                self.db:insert("balancer", self.balancedItems)
+                return
+            end
+        end
     end
 
     setmetatable(obj, self)
