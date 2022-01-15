@@ -62,15 +62,16 @@ function serializable._serialize(tab, stream, flushSize, res, i, level)
             -- wrap in [""] for extra safety
             res[i] = "[\"" .. k .. "\"]"
             i = i + 1
-        elseif tkey == "number" then
+        elseif tkey == "number" or tkey == "boolean" then
             res[i] = "[" .. tostring(k) .. "]"
-            i = i + 1
-        elseif tkey == "boolean" then
-            res[i] = tostring(k)
             i = i + 1
         elseif tkey == "table" then
             -- only call recursively for tables to avoid functionc call overhead
+            res[i] = "["
+            i = i + 1
             res, i = serializable._serialize(k, stream, flushSize, res, i, level + 1)
+            res[i] = "]"
+            i = i + 1
         else
             error(string.format("Tried serializing value of %s type", tkey))
         end
@@ -121,10 +122,14 @@ function serializable.serialize(tab, stream, flushSize)
     local ok = false
     local flushSize = flushSize or serializable.flushSize
     while not ok do
-        ok = pcall(serializable._serialize, tab, stream, flushSize)
+        ok, err = pcall(serializable._serialize, tab, stream, flushSize)
         if not ok then
-            utils.freeMemory()
-            flushSize = flushSize // 2
+            if string.find(err, "not enough memory") then
+                utils.freeMemory()
+                flushSize = flushSize // 2
+            else
+                error(err)
+            end
         end
     end
 end
@@ -163,14 +168,14 @@ function serializable.unserialize(stream, readSize)
     end
 
     local f, err = load(getChunk)
-    -- take care to garbage collect the loaded strings before attempting to run the loaded function
-    buf = nil
-    utils.freeMemory()
     if f then
         local ok, res = pcall(f)
-        -- garbage collect the function which returned deserialized table as we only care about the table itself
-        f = nil
-        utils.freeMemory()
+        if not ok then
+            -- garbage collect the loaded strings if running the loaded function failed and rerun
+            buf = nil
+            utils.freeMemory()
+            ok, res = pcall(f)
+        end
         if ok then
             return res
         else

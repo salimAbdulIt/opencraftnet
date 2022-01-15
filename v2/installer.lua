@@ -1,4 +1,4 @@
-local REPOSITOTY = "https://gitlab.com/lfreew1ndl/opencraftnetoriginal/-/raw/dev"
+local REPOSITOTY = "https://gitlab.com/lfreew1ndl/opencraftnetoriginal/-/raw/1.7.10"
 
 local shell = require("shell")
 shell.execute("wget -fq " .. REPOSITOTY .. "/v2/launcher.lua /home/1.lua")
