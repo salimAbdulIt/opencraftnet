@@ -1,6 +1,7 @@
 local utils = {}
 local component = require("component")
 local serial = require("serialization")
+local serializable = require("serializable")
 local shell = require("shell")
 local io = require('io')
 local filesystem = require("filesystem")
