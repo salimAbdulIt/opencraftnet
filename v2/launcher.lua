@@ -20,6 +20,10 @@ local libs = {
         path = "/lib/utils.lua"
     },
     {
+        url = REPOSITORY .. "/v2/libs/serializable.lua",
+        path = "/lib/serializable.lua"
+    },
+    {
         url = REPOSITORY .. "/v2/database.lua",
         path = "/lib/database.lua"
     },
@@ -30,10 +34,6 @@ local libs = {
     {
         url = REPOSITORY .. "/v2/storage-interface.lua",
         path = "/home/storage-interface.lua"
-    },
-    {
-        url = REPOSITORY .. "/v2/transposers-tests.lua",
-        path = "/home/transposers-tests.lua"
     },
     {
         url = REPOSITORY .. "/v2/libs/unit.lua",
