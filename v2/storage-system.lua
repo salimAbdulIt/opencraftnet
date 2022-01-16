@@ -2,6 +2,8 @@ local component = require('component')
 require('transposers')
 require('database')
 StorageSystem = {}
+
+local ROBOT_SIZE = 83
 function StorageSystem:new()
     local obj = {}
 
@@ -10,7 +12,7 @@ function StorageSystem:new()
         self.transposers = Transposers:new()
         local storages = self.transposers:getAllStorages()
         for address, storage in pairs (storages) do
-            if (storage.size == 48) then
+            if (storage.size == ROBOT_SIZE) then
                 self.robotAddress = address
             end
         end
@@ -145,7 +147,7 @@ function StorageSystem:new()
         allItems = nil
         local storages = self.transposers:getAllStorages()
         for address, storage in pairs (storages) do
-            if (storage.size == 48) then
+            if (storage.size == ROBOT_SIZE) then
                 self.robotAddress = address
             elseif (not (address.address == "" and address.side == 1)) then
                 local itemsOfStorage = self.transposers:getAllStacks(address.address, address.side).getAll()
