@@ -59,7 +59,7 @@ function FreeSubSectorIterator:new(parent)
     end
 
     setmetatable(obj, self)
-    obj1:init()
+    obj:init()
     self.__index = self; return obj
 end
 
@@ -119,7 +119,7 @@ function SubSectorIterator:new(parent)
     end
 
     setmetatable(obj, self)
-    obj1:init()
+    obj:init()
     self.__index = self; return obj
 end
 
