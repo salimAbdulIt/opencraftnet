@@ -74,13 +74,16 @@ function AllSectorsIterator:new(parent)
     function obj:next()
         if (self.currentSubSector > self.fromSector * self.sectorNumbers) then
             self.currentSubSector = nil
+            self.nextSlotNumber = nil
         else
             self.currentSubSector = self.currentSubSector + 1
+            self.nextSlotNumber = self.currentSubSector + 1
         end
     end
 
     function obj:close()
         self.currentSubSector = nil
+        self.nextSlotNumber = nil
     end
 
     function obj:getSectorNumber()
@@ -96,17 +99,17 @@ function AllSectorsIterator:new(parent)
     end
 
     function obj:getNextSlot()
-        if (not self.nextFreeSlotNumber) then
+        if (not self.nextSlotNumber) then
             self:getSector()
         end
-        return self.nextFreeSlotNumber
+        return self.nextSlotNumber
     end
 
     function obj:getSector()
         if (not self.sector) then
-            local nextFreeSlotNumber, flag, wholeSector = parent:readFromSubSector(parent.freeSubSectorNumber)
+            local _, flag, wholeSector = parent:readFromSubSector(self.currentSubSector)
             self.sector = wholeSector
-            self.nextFreeSlotNumber = nextFreeSlotNumber
+            self.nextSlotNumber = self.currentSubSector + 1
         end
         return self.sector
     end
@@ -287,11 +290,14 @@ function Drive:new(_fromSector, _numberOfSectors, _subSectorsNumber)
 
     function obj:clearDriver()
         local lastSubSector = self.fromSubSector + self.sectorNumbers * self.subSectorsNumber
+        local allSubSectorIterator = AllSectorsIterator:new(self)
         for i = self.fromSubSector, lastSubSector - 1 do
-            self:writeToSubSectors(i, "2" .. (i + 1) .. '$', true)
+            self:writeToSubSectors(allSubSectorIterator, "2" .. (i + 1) .. '$', true)
+            allSubSectorIterator:next()
         end
         self:writeToSubSectors(lastSubSector, "2" .. 0 .. '$', true)
-        self.freeSubSectorNumber = 1
+        allSubSectorIterator:stop()
+        self.freeSubSectorNumber = self.fromSubSector + 1
     end
 
 
