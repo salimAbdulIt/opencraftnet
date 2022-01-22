@@ -7,7 +7,6 @@ local FreeSubSectorIterator = {}
 function FreeSubSectorIterator:new(parent)
     local obj = {}
     function obj:init()
-
     end
 
     function obj:next()
@@ -44,7 +43,61 @@ function FreeSubSectorIterator:new(parent)
 
     function obj:getNextSlot()
         if (not self.nextFreeSlotNumber) then
-              self:getSector()
+            self:getSector()
+        end
+        return self.nextFreeSlotNumber
+    end
+
+    function obj:getSector()
+        if (not self.sector) then
+            local nextFreeSlotNumber, flag, wholeSector = parent:readFromSubSector(parent.freeSubSectorNumber)
+            self.sector = wholeSector
+            self.nextFreeSlotNumber = nextFreeSlotNumber
+        end
+        return self.sector
+    end
+
+    setmetatable(obj, self)
+    obj:init()
+    self.__index = self; return obj
+end
+
+local AllSectorsIterator = {}
+function AllSectorsIterator:new(parent)
+    local obj = {}
+    function obj:init()
+        self.currentSubSector = self.metadataSubSector
+        self.fromSector = parent.fromSector
+        self.sectorNumbers = parent.sectorNumbers
+    end
+
+    function obj:next()
+        if (self.currentSubSector > self.fromSector * self.sectorNumbers) then
+            self.currentSubSector = nil
+        else
+            self.currentSubSector = self.currentSubSector + 1
+        end
+    end
+
+    function obj:close()
+        self.currentSubSector = nil
+    end
+
+    function obj:getSectorNumber()
+        return self.currentSubSector / self.sectorNumbers
+    end
+
+    function obj:getSubSectorNumber()
+        return self.currentSubSector
+    end
+
+    function obj:getSectorsSubSectorNumber()
+        return self.currentSubSector % self.sectorNumbers + 1
+    end
+
+    function obj:getNextSlot()
+        if (not self.nextFreeSlotNumber) then
+            self:getSector()
         end
         return self.nextFreeSlotNumber
     end
@@ -67,7 +120,6 @@ local SubSectorIterator = {}
 function SubSectorIterator:new(parent)
     local obj = {}
     function obj:init()
-
     end
 
     function obj:next()
@@ -155,7 +207,7 @@ function Drive:new(_fromSector, _numberOfSectors, _subSectorsNumber)
 
     function obj:parseSubSectorNumber(subSectorNumber)
         local sectorNumber = math.floor(subSectorNumber / self.subSectorsNumber) + 1
-        local sectorsSubSector = subSectorNumber % self.subSectorsNumber
+        local sectorsSubSector = subSectorNumber % self.subSectorsNumber + 1
         return sectorNumber, sectorsSubSector
     end
 
@@ -179,7 +231,7 @@ function Drive:new(_fromSector, _numberOfSectors, _subSectorsNumber)
         local sectorNumber, sectorsSubSector = self:parseSubSectorNumber(subSectorNumber)
         local data = drive.readSector(sectorNumber)
 
-        local indexOfTheFlag = 1 + (sectorsSubSector * self.subSectorSize)
+        local indexOfTheFlag = 1 + ((sectorsSubSector-1) * self.subSectorSize)
         local flag = data:sub(indexOfTheFlag, indexOfTheFlag)
         local parsedData
         if (flag == '0') then
@@ -191,7 +243,7 @@ function Drive:new(_fromSector, _numberOfSectors, _subSectorsNumber)
             if (nextFlag == '2') then
                 error("Corrupted data. Free slot instead of data")
             end
-            parsedData = data:sub(startIndex, startIndex + (nextSubSectorNumber:len() + 2) * sectorsSubSector) .. nextPartOfParsedData
+            parsedData = data:sub(startIndex, startIndex + (nextSubSectorNumber:len() + 2) * (sectorsSubSector-1)) .. nextPartOfParsedData
         elseif (flag == '2') then
             local nextFreeSubSectorNumber = self:parseMetaNumber(data, indexOfTheFlag)
             return nextFreeSubSectorNumber, flag, data
@@ -208,7 +260,7 @@ function Drive:new(_fromSector, _numberOfSectors, _subSectorsNumber)
 
 
     function obj:writeToSubSectors(subSectorsIterator, newData, ignoreMeta)
-        local sectorNumber =  subSectorsIterator:getSectorNumber()
+        local sectorNumber = subSectorsIterator:getSectorNumber()
         local sectorsSubSectorNumber = subSectorsIterator:getSectorsSubSectorNumber()
 
         local newDataLen = newData:len()
@@ -221,7 +273,7 @@ function Drive:new(_fromSector, _numberOfSectors, _subSectorsNumber)
             drive.writeSector(sectorNumber, data)
 
             subSectorsIterator:next()
-            self:writeToSubSector(subSectorsIterator, newDataWithMeta:sub(self.subSectorSize + 1))
+            self:writeToSubSectors(subSectorsIterator, newDataWithMeta:sub(self.subSectorSize + 1))
         else
             local data = subSectorsIterator:getSector()
             local newDataWithMeta = ignoreMeta and newData or ('1' .. nextSlot .. "$" .. newData)
@@ -233,33 +285,12 @@ function Drive:new(_fromSector, _numberOfSectors, _subSectorsNumber)
         end
     end
 
-    function obj:getFreeSubSector()
-        if (not self.freeSubSectorNumber) then
-            error("Not enough space")
-        end
-        return self.freeSubSectorNumber
-    end
-
-    function obj:pollFreeSubSector()
-        if (not self.freeSubSectorNumber) then
-            error("Not enough space")
-        end
-        local freeSubSectorNumber, flag, wholeSector = self:readFromSubSector(self.freeSubSectorNumber)
-        if (flag ~= '2') then
-            error("Corrupted data. Data instead of free slot")
-        end
-        local oldFreeSlotNumber = self.freeSubSectorNumber
-        self.freeSubSectorNumber = freeSubSectorNumber
-        self:writeToSubSector(self.metadataSubSector, "3" .. (metaData[2]) .. '$', true)
-        return oldFreeSlotNumber, wholeSector
-    end
-
     function obj:clearDriver()
         local lastSubSector = self.fromSubSector + self.sectorNumbers * self.subSectorsNumber
         for i = self.fromSubSector, lastSubSector - 1 do
-            self:writeToSubSector(i, "2" .. (i + 1) .. '$', true)
+            self:writeToSubSectors(i, "2" .. (i + 1) .. '$', true)
         end
-        self:writeToSubSector(lastSubSector, "2" .. 0 .. '$', true)
+        self:writeToSubSectors(lastSubSector, "2" .. 0 .. '$', true)
         self.freeSubSectorNumber = 1
     end
 
