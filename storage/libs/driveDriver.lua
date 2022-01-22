@@ -141,6 +141,7 @@ function Drive:new(_fromSector, _numberOfSectors, _subSectorsNumber)
         self.freeSubSectorNumber = self.metadataSubSector + 1
 
         self.freeSubSectorIterator = self:createFreeSubSectorIterator()
+        self.subSectorSize = self.sectorSize / self.subSectorsNumber
 
         local parsedData, flag, wholeSector = self:readFromSubSector(self.metadataSubSector)
         if (flag == 2) then
@@ -150,7 +151,6 @@ function Drive:new(_fromSector, _numberOfSectors, _subSectorsNumber)
         else
             self:clearDriver()
         end
-        self.subSectorSize = self.sectorSize / self.subSectorsNumber
     end
 
     function obj:parseSubSectorNumber(subSectorNumber)
