@@ -11,7 +11,7 @@ function FreeSubSectorIterator:new(parent)
 
     function obj:next()
         self.sector = nil
-        parent.freeSubSectorNumber = self.nextFreeSlotNumber
+        parent.freeSubSectorNumber = self:getNextSlot()
         self.nextFreeSlotNumber = nil
         self.sectorNumber = nil
         self.sectorsSubSectorNumber = nil
