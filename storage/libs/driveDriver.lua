@@ -194,6 +194,7 @@ function Drive:new(_fromSector, _numberOfSectors, _subSectorsNumber)
         self.sectorNumbers = _numberOfSectors
         self.fromSubSector = self.metadataSubSector + 1
         self.freeSubSectorNumber = self.metadataSubSector + 1
+        self.fromSector = _fromSector
 
         self.freeSubSectorIterator = self:createFreeSubSectorIterator()
         self.subSectorSize = self.sectorSize / self.subSectorsNumber
