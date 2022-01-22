@@ -87,7 +87,7 @@ function AllSectorsIterator:new(parent)
     end
 
     function obj:getSectorNumber()
-        return math.floor(self.currentSubSector / self.sectorNumbers)
+        return math.floor(self.currentSubSector / self.sectorNumbers) + 1
     end
 
     function obj:getSubSectorNumber()
