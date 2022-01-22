@@ -66,7 +66,7 @@ local AllSectorsIterator = {}
 function AllSectorsIterator:new(parent)
     local obj = {}
     function obj:init()
-        self.currentSubSector = self.metadataSubSector
+        self.currentSubSector = parent.metadataSubSector
         self.fromSector = parent.fromSector
         self.sectorNumbers = parent.sectorNumbers
     end
