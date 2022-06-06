@@ -116,7 +116,7 @@ local function recount()
             newTime = "HZ"
         else
             local seconds = newTime%60
-            newTime = math.floor((newTime / 60)) .. ':' .. seconds > 9 and seconds or ('0' .. seconds)
+            newTime = math.floor((newTime / 60)) .. ':' .. ((seconds > 9) and seconds or ('0' .. seconds))
         end
         bosses[i].timer.setText(newTime)
     end
