@@ -2,27 +2,48 @@ local component = require('component')
 local g = component.openperipheral_bridge
 local event = require('event')
 local internet = component.internet
+
+local scale = 2
+local betweenLines = 17
 local bosses = {
     {
-        name = "ZEZ",
+        name = "Ада",
+        cooldown = 60 * 30,
+        title = "lol",
+        color = 0xFF0000
+    },
+    {
+        name = "Зез",
         cooldown = 60 * 24,
         title = "lol",
         color = 0xFF0000
     },
     {
-        name = "VALIRE",
+        name = "Мефисто",
+        cooldown = 60 * 23,
+        title = "lol",
+        color = 0xFF0000
+    },
+    {
+        name = "Валир",
         cooldown = 60 * 20,
         title = "lol",
         color = 0xFF0000
     },
     {
-        name = "ЦУРИ",
+        name = "Абаддон",
+        cooldown = 60 * 30,
+        title = "lol",
+        color = 0xFF0000
+    },
+    {
+        name = "Цури",
         cooldown = 700,
         title = "lol",
         color = 0xFF0000
     },
     {
-        name = "СУШКА",
+        name = "Сушка",
         cooldown = 700,
         title = "lol",
         color = 0xFF0000
@@ -33,42 +54,6 @@ local bosses = {
         title = "lol",
         color = 0xFF0000
     },
-    {
-        name = "Ральф",
-        cooldown = 60 * 10,
-        title = "lol",
-        color = 0x999900
-    },
-    {
-        name = "Брекет",
-        cooldown = 60 * 15,
-        title = "lol",
-        color = 0x999900
-    },
-    {
-        name = "Снежный ком",
-        cooldown = 60 * 15,
-        title = "lol",
-        color = 0x999900
-    },
-    {
-        name = "Орк",
-        cooldown = 60 * 15,
-        title = "lol",
-        color = 0x999900
-    },
-    {
-        name = "Охрана улица",
-        cooldown = 60 * 4,
-        title = "lol",
-        color = 0x000000
-    },
-    {
-        name = "Охрана дом",
-        cooldown = 60 * 4,
-        title = "lol",
-        color = 0x000000
-    }
 }
 
 local function clean()
@@ -77,16 +62,16 @@ end
 
 local function buildGui()
     for i = 1, #bosses do
-        bosses[i].kill = g.addText(30, 5 + (i * 17), "X")
-        bosses[i].kill.setScale(2)
+        bosses[i].kill = g.addText(30, 5 + (i * betweenLines), "X")
+        bosses[i].kill.setScale(scale)
         bosses[i].kill.setAlpha(0.5)
 
-        local text = g.addText(50, 5 + (i * 17), bosses[i].name)
-        text.setScale(2)
+        local text = g.addText(50, 5 + (i * betweenLines), bosses[i].name)
+        text.setScale(scale)
         text.setAlpha(0.5)
 
-        bosses[i].timer = g.addText(200, 5 + (i * 17), 'HZ')
-        bosses[i].timer.setScale(2)
+        bosses[i].timer = g.addText(200, 5 + (i * betweenLines), 'HZ')
+        bosses[i].timer.setScale(scale)
         bosses[i].timer.setAlpha(0.7)
         bosses[i].timer.setColor(bosses[i].color)
 
